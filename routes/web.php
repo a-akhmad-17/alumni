@@ -7,8 +7,12 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StrukturController;
 use Illuminate\Support\Facades\Route;
+
+// Dynamic XML Sitemap Route
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
