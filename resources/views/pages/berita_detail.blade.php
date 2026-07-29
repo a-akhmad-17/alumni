@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', $berita->judul)
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($berita->ringkasan ?? $berita->isi), 160))
+@section('meta_image', asset($berita->gambar))
+@section('og_type', 'article')
 
 @section('content')
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

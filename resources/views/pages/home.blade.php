@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Beranda')
+@section('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Menjalin silaturahmi, jaringan profesional, informasi berita, direktori alumni, dan pengabdian alumni di seluruh nusantara.')
 
 @section('content')
 <!-- Hero Section with background.webp Image & Modern Dark Overlay -->

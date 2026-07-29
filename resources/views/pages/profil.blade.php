@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Tentang Kami')
+@section('title', 'Profil & Sejarah Organisasi')
+@section('meta_description', 'Profil lengkap, Visi & Misi, Sejarah Transformasi SMAN Kajuara menjadi SMAN 8 Bone, Beasiswa, dan AD/ART IKA SMAN Kajuara / IKA SMAN 8 Bone.')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

@@ -3,17 +3,38 @@
 @section('title', 'Manajemen Galeri & Video - Dasbor Internal')
 
 @section('content')
-<div class="space-y-6" x-data="{ modalTambah: false, modalEdit: false, editData: {}, mediaType: 'foto' }">
+<div class="space-y-6" x-data="{
+    modalTambah: false,
+    modalEdit: false,
+    modalKelolaFoto: false,
+    selectedAlbumTitle: '',
+    selectedAlbumItems: [],
+    editData: {},
+    mediaType: 'foto',
+    openKelolaModal(title, items) {
+        this.modalEdit = false;
+        this.modalTambah = false;
+        this.selectedAlbumTitle = title;
+        this.selectedAlbumItems = items;
+        this.modalKelolaFoto = true;
+    },
+    openEditModal(item) {
+        this.modalKelolaFoto = false;
+        this.modalTambah = false;
+        this.editData = item;
+        this.modalEdit = true;
+    }
+}">
     <!-- Header Card -->
     <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <span class="text-xs uppercase font-bold text-amber-600 tracking-wider block mb-1">Manajemen Halaman Publik</span>
             <h1 class="font-heading font-extrabold text-2xl text-slate-900">Galeri Foto & Video Dokumentasi</h1>
-            <p class="text-xs text-slate-500 mt-1">Upload foto sampul album, foto dokumentasi tambahan, dan tautan video dokumentasi kegiatan alumni.</p>
+            <p class="text-xs text-slate-500 mt-1">Upload album foto kegiatan, kelola foto dokumentasi, dan tautan video dokumentasi kegiatan alumni.</p>
         </div>
 
-        <button @click="modalTambah = true" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-cloud-arrow-up mr-2 text-amber-400"></i>Tambah Galeri / Video Baru
+        <button @click="modalEdit = false; modalKelolaFoto = false; modalTambah = true" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-cloud-arrow-up mr-2 text-amber-400"></i>Tambah Album / Video Baru
         </button>
     </div>
 
@@ -21,6 +42,7 @@
         <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2">
             <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
             <span>{{ session('success') }}</span>
+        </div>
     @endif
 
     <!-- Filter Header Bar -->
@@ -55,13 +77,26 @@
         </form>
     </div>
 
-    <!-- Photo Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        @forelse($galeriList as $foto)
+    <!-- Photo Album Grid (Grouped by Activity Title) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @forelse($groupedAlbums as $judul => $items)
+            @php
+                $coverItem = $items->where('is_cover', 1)->first() ?? $items->first();
+                $totalFoto = $items->count();
+                $itemsArray = $items->map(function($i) {
+                    return [
+                        'id' => (string) $i->id,
+                        'judul' => (string) $i->judul,
+                        'gambar' => (string) $i->gambar,
+                        'is_cover' => (int) $i->is_cover,
+                        'tipe' => (string) $i->tipe,
+                    ];
+                })->values()->toArray();
+            @endphp
             <div class="bg-white rounded-2xl overflow-hidden flex flex-col justify-between border border-slate-200 shadow-sm hover:shadow-md transition">
-                <div class="h-44 relative bg-slate-900 flex items-center justify-center overflow-hidden">
-                    @if($foto->gambar)
-                        <img src="{{ str_starts_with($foto->gambar, 'http') ? $foto->gambar : asset($foto->gambar) }}" alt="{{ $foto->judul }}" class="w-full h-full object-cover">
+                <div class="h-48 relative bg-slate-900 flex items-center justify-center overflow-hidden">
+                    @if($coverItem->gambar)
+                        <img src="{{ str_starts_with($coverItem->gambar, 'http') ? $coverItem->gambar : asset($coverItem->gambar) }}" alt="{{ $judul }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-slate-900 flex flex-col items-center justify-center text-amber-400 p-4 text-center">
                             <i class="fa-solid fa-video text-3xl mb-1"></i>
@@ -71,32 +106,40 @@
 
                     <div class="absolute top-2 left-2 flex items-center space-x-1">
                         <span class="px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold">
-                            {{ $foto->kategori }}
+                            {{ $coverItem->kategori }}
                         </span>
-                        @if($foto->tipe == 'video')
+                        @if($coverItem->tipe == 'video')
                             <span class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center">
                                 <i class="fa-solid fa-play mr-1"></i>Video
                             </span>
-                        @elseif($foto->is_cover)
-                            <span class="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-900 text-[10px] font-extrabold uppercase">
-                                Sampul Album
+                        @else
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-900 text-[10px] font-extrabold uppercase shadow-sm">
+                                <i class="fa-solid fa-images mr-1"></i>{{ $totalFoto }} Foto
                             </span>
                         @endif
                     </div>
                 </div>
-                <div class="p-4 flex-grow flex flex-col justify-between">
+
+                <div class="p-5 flex-grow flex flex-col justify-between">
                     <div>
-                        <h4 class="font-heading font-bold text-slate-900 text-sm line-clamp-1 mb-1">{{ $foto->judul }}</h4>
-                        <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">{{ $foto->deskripsi ?? 'Dokumentasi kegiatan.' }}</p>
+                        <h4 class="font-heading font-bold text-slate-900 text-base line-clamp-1 mb-1">{{ $judul }}</h4>
+                        <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">{{ $coverItem->deskripsi ?? 'Dokumentasi kegiatan alumni.' }}</p>
                     </div>
-                    <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                        <button @click="editData = @js($foto); modalEdit = true" class="px-3 py-1 bg-amber-50 text-amber-700 hover:bg-amber-600 hover:text-white rounded-lg text-xs font-bold transition border border-amber-200 flex items-center">
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between gap-1">
+                        <button type="button" @click="openKelolaModal(@js($judul), @js($itemsArray))" class="px-3 py-1.5 bg-sky-50 text-sky-700 hover:bg-sky-600 hover:text-white rounded-lg text-xs font-bold transition border border-sky-200 flex items-center">
+                            <i class="fa-solid fa-images mr-1"></i> Kelola ({{ $totalFoto }})
+                        </button>
+
+                        <button type="button" @click="openEditModal(@js($coverItem))" class="px-3 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-600 hover:text-white rounded-lg text-xs font-bold transition border border-amber-200 flex items-center">
                             <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
                         </button>
-                        <form action="{{ route('admin.galeri.delete', $foto->id) }}" method="POST" onsubmit="return confirm('Apakah Boss yakin ingin menghapus foto/video ini?')">
+
+                        <form action="{{ route('admin.galeri.delete', $coverItem->id) }}" method="POST" onsubmit="return confirm('Apakah Boss yakin ingin menghapus seluruh album {{ $judul }} ini?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="px-3 py-1 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg text-xs font-bold transition border border-red-200 flex items-center">
+                            <input type="hidden" name="delete_album" value="1">
+                            <button type="submit" class="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg text-xs font-bold transition border border-red-200 flex items-center">
                                 <i class="fa-solid fa-trash mr-1"></i> Hapus
                             </button>
                         </form>
@@ -105,13 +148,9 @@
             </div>
         @empty
             <div class="col-span-full py-12 text-center bg-white rounded-2xl text-slate-400 italic border border-slate-200">
-                Belum ada item galeri yang diupload.
+                Belum ada album galeri yang diupload.
             </div>
         @endforelse
-    </div>
-
-    <div class="pt-4">
-        {{ $galeriList->links() }}
     </div>
 
     <!-- Modal Tambah Galeri (Sampul Utama, Foto Dokumentasi Tambahan & Video URL) -->
@@ -252,6 +291,50 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal Kelola Foto Dalam Album -->
+    <div x-show="modalKelolaFoto" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 overflow-y-auto" style="display: none;">
+        <div @click.away="modalKelolaFoto = false" class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full border border-slate-200 shadow-2xl relative my-8 max-h-[85vh] flex flex-col">
+            <button @click="modalKelolaFoto = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900"><i class="fa-solid fa-xmark text-xl"></i></button>
+
+            <div class="mb-4 shrink-0 border-b border-slate-200 pb-3">
+                <span class="text-xs uppercase font-bold text-amber-600 tracking-wider">Kelola Isi Album Foto</span>
+                <h3 class="font-heading font-extrabold text-xl text-slate-900" x-text="selectedAlbumTitle"></h3>
+            </div>
+
+            <!-- Scrollable Photos Grid inside Modal -->
+            <div class="overflow-y-auto flex-grow pr-1 space-y-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <template x-for="item in selectedAlbumItems" :key="item.id">
+                        <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 relative group flex flex-col justify-between">
+                            <div class="h-32 relative bg-slate-900 overflow-hidden">
+                                <img :src="item.gambar.startsWith('http') ? item.gambar : '{{ url('/') }}/' + item.gambar" class="w-full h-full object-cover">
+                                <template x-if="item.is_cover">
+                                    <span class="absolute top-1 left-1 px-2 py-0.5 bg-amber-500 text-slate-950 font-black text-[9px] uppercase rounded-md shadow-sm">
+                                        Sampul
+                                    </span>
+                                </template>
+                            </div>
+                            <div class="p-2 flex items-center justify-between bg-white border-t border-slate-100">
+                                <span class="text-[10px] text-slate-500 font-medium truncate" x-text="item.is_cover ? 'Sampul Utama' : 'Foto Dokumentasi'"></span>
+                                <form :action="'{{ url('/admin/galeri') }}/' + item.id" method="POST" onsubmit="return confirm('Hapus foto ini dari album?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="px-2 py-1 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded text-[10px] font-bold transition border border-red-200">
+                                        <i class="fa-solid fa-trash"></i> Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200 flex justify-end shrink-0">
+                <button @click="modalKelolaFoto = false" class="px-6 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl">Tutup</button>
+            </div>
         </div>
     </div>
 </div>

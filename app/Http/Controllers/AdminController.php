@@ -554,8 +554,10 @@ class AdminController extends Controller
             $query->where('tipe', $request->tipe);
         }
 
-        $galeriList = $query->orderBy('created_at', 'desc')->paginate(8)->withQueryString();
-        return view('admin.galeri_index', compact('galeriList'));
+        $allGaleri = $query->orderBy('created_at', 'desc')->get();
+        $groupedAlbums = $allGaleri->groupBy('judul');
+
+        return view('admin.galeri_index', compact('groupedAlbums'));
     }
 
     public function storeGaleri(Request $request)
@@ -672,6 +674,13 @@ class AdminController extends Controller
     public function deleteGaleri($id)
     {
         $galeri = Galeri::findOrFail($id);
+
+        if (request()->has('delete_album')) {
+            $count = Galeri::where('judul', $galeri->judul)->count();
+            Galeri::where('judul', $galeri->judul)->delete();
+            return back()->with('success', "Seluruh album '{$galeri->judul}' ({$count} foto) berhasil dihapus!");
+        }
+
         $galeri->delete();
         return back()->with('success', 'Foto galeri berhasil dihapus!');
     }

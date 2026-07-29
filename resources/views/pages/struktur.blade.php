@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Struktur Pengurus & Direktori Foto')
+@section('title', 'Struktur Kepengurusan & Organogram')
+@section('meta_description', 'Susunan Pengurus Pusat IKA SMAN Kajuara / IKA SMAN 8 Bone Periode 2026-2031, Organogram visual, dan rincian 8 bidang kerja teknis.')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ filterKat: 'semua', searchQuery: '', selectedBidang: null, modalBidang: false }">

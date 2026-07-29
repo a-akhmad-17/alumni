@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Galeri Foto & Video Dokumentasi')
+@section('meta_description', 'Dokumentasi foto kegiatan alumni dan pemutar video dokumentasi resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone.')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ mediaFilter: 'semua', viewMode: 'album', lightboxOpen: false, videoModalOpen: false, activeVideoUrl: '', currentAlbum: [], currentIndex: 0, currentTitle: '', currentDesc: '', currentKat: '' }">

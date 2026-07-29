@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Kabar & Berita Alumni')
+@section('title', 'Kabar & Kegiatan Alumni')
+@section('meta_description', 'Kumpulan berita, pengumuman, dan artikel kegiatan terbaru Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone.')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

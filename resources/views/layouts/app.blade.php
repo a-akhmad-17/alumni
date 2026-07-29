@@ -4,7 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'IKA SMAN Kajuara / SMAN 8 Bone') - Official Portal Alumni</title>
+    <!-- Dynamic SEO Meta Tags -->
+    <title>@yield('title', 'Beranda') - IKA SMAN Kajuara / IKA SMAN 8 Bone</title>
+    <meta name="description" content="@yield('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'IKA SMAN 8 Bone, IKA SMAN Kajuara, Alumni SMAN 8 Bone, Alumni SMAN Kajuara, Portal Alumni Bone, Sekolah SMAN 8 Bone')">
+    <meta name="author" content="Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- OpenGraph (Facebook, WhatsApp, LinkedIn, Telegram) -->
+    <meta property="og:site_name" content="IKA SMAN Kajuara / IKA SMAN 8 Bone">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('title', 'Beranda') - IKA SMAN Kajuara / IKA SMAN 8 Bone">
+    <meta property="og:description" content="@yield('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
+    <meta property="og:image" content="@yield('meta_image', asset('assets/images/meta_image.png'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="@yield('title', 'Beranda') - IKA SMAN Kajuara / IKA SMAN 8 Bone">
+    <meta name="twitter:description" content="@yield('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
+    <meta name="twitter:image" content="@yield('meta_image', asset('assets/images/meta_image.png'))">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/webp" href="{{ asset('assets/images/logo.webp') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo.webp') }}">
+
+    <!-- Structured Data Schema.org (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "IKA SMAN Kajuara / IKA SMAN 8 Bone",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('assets/images/logo.webp') }}",
+        "sameAs": [
+            "https://facebook.com",
+            "https://instagram.com",
+            "https://youtube.com"
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Jl. H. Abd. Hamid, Kajuara",
+            "addressLocality": "Kabupaten Bone",
+            "addressRegion": "Sulawesi Selatan",
+            "postalCode": "92776",
+            "addressCountry": "ID"
+        }
+    }
+    </script>
     
     <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
