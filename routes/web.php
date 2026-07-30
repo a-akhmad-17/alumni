@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KtaController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StrukturController;
@@ -37,6 +38,13 @@ Route::get('/alumni/berita/{slug}', [BeritaController::class, 'detail']);
 
 Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri');
 Route::get('/alumni/galeri', [GaleriController::class, 'index']);
+
+// KTA Digital Routes
+Route::get('/kta', [KtaController::class, 'index'])->name('kta.index');
+Route::get('/alumni/kta', [KtaController::class, 'index']);
+Route::get('/kta/detail/{id}', [KtaController::class, 'show'])->name('kta.show');
+Route::get('/kta/verifikasi/{id}', [KtaController::class, 'verify'])->name('kta.verify');
+Route::get('/alumni/kta/verifikasi/{id}', [KtaController::class, 'verify']);
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

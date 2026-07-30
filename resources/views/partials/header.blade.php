@@ -30,6 +30,9 @@
                 <a href="{{ route('alumni.index') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('alumni.*') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-users mr-1.5 opacity-70"></i>Data Alumni
                 </a>
+                <a href="{{ route('kta.index') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('kta.*') ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20' : 'text-slate-700 hover:text-slate-900 hover:bg-amber-50' }}">
+                    <i class="fa-solid fa-id-card mr-1.5 opacity-80 text-amber-600"></i>KTA Digital
+                </a>
                 <a href="{{ route('berita.index') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('berita.*') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-newspaper mr-1.5 opacity-70"></i>Berita
                 </a>
@@ -67,6 +70,7 @@
         <a href="{{ route('profil') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-landmark w-6 text-slate-500"></i>Tentang Kami</a>
         <a href="{{ route('struktur') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-sitemap w-6 text-slate-500"></i>Struktur</a>
         <a href="{{ route('alumni.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-users w-6 text-slate-500"></i>Data Alumni</a>
+        <a href="{{ route('kta.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-bold text-amber-700 hover:bg-amber-50"><i class="fa-solid fa-id-card w-6 text-amber-500"></i>KTA Digital</a>
         <a href="{{ route('berita.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-newspaper w-6 text-slate-500"></i>Berita</a>
         <a href="{{ route('galeri') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-images w-6 text-slate-500"></i>Galeri</a>
         <div class="pt-4 border-t border-slate-200">

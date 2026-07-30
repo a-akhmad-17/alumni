@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS mst_alumni (
     deskripsi_prestasi TEXT,
     foto VARCHAR(255),
     status VARCHAR(20) DEFAULT 'approved',
+    no_kta VARCHAR(50) NULL,
     deleted_at DATETIME NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

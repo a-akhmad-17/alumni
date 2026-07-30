@@ -28,6 +28,7 @@ class Alumni extends Model
         'deskripsi_prestasi',
         'foto',
         'status',
+        'no_kta',
     ];
 
     protected $dates = ['deleted_at'];

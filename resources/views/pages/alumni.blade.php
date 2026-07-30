@@ -288,7 +288,10 @@
                 </div>
             </div>
 
-            <div class="mt-6 flex justify-end">
+            <div class="mt-6 flex items-center justify-between">
+                <a :href="'{{ route('kta.index') }}?id=' + selectedAlumni.id" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center transition">
+                    <i class="fa-solid fa-id-card mr-2 text-slate-900"></i>Cetak / Lihat KTA
+                </a>
                 <button @click="modalOpen = false" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl">Tutup</button>
             </div>
         </div>
