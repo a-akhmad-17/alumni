@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumni;
+use App\Models\Beasiswa;
 use App\Models\Berita;
 use App\Models\Bidang;
 use App\Models\Galeri;
@@ -22,6 +23,7 @@ class AdminController extends Controller
         $totalBerita = Berita::count();
         $totalGaleri = Galeri::count();
         $totalPengurus = Pengurus::count();
+        $totalBeasiswa = Beasiswa::count();
 
         $recentAlumni = Alumni::orderBy('created_at', 'desc')->take(5)->get();
         $recentBerita = Berita::orderBy('created_at', 'desc')->take(5)->get();
@@ -31,6 +33,7 @@ class AdminController extends Controller
             'totalBerita',
             'totalGaleri',
             'totalPengurus',
+            'totalBeasiswa',
             'recentAlumni',
             'recentBerita'
         ));
@@ -909,5 +912,89 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return back()->with('success', 'Pengguna admin berhasil dihapus!');
+    }
+
+    // ==================== KELOLA BEASISWA ====================
+    public function beasiswa(Request $request)
+    {
+        $query = Beasiswa::query();
+
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('informasi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status') && $request->status !== 'semua') {
+            $query->where('status', $request->status);
+        }
+
+        $beasiswaList = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        return view('admin.beasiswa_index', compact('beasiswaList'));
+    }
+
+    public function storeBeasiswa(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'informasi' => 'required|string',
+            'link_eksternal' => 'required|url|max:500',
+            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'status' => 'nullable|string|max:20',
+        ]);
+
+        $gambarUrl = null;
+        if ($request->hasFile('gambar')) {
+            $gambarUrl = $this->uploadAndConvertToWebp($request->file('gambar'), 'beasiswa');
+        }
+
+        Beasiswa::create([
+            'id' => (string) Str::uuid(),
+            'judul' => $request->judul,
+            'slug' => Str::slug($request->judul) . '-' . rand(100, 999),
+            'informasi' => $request->informasi,
+            'link_eksternal' => $request->link_eksternal,
+            'gambar' => $gambarUrl,
+            'status' => $request->status ?? 'published',
+        ]);
+
+        return back()->with('success', 'Informasi beasiswa baru berhasil ditambahkan!');
+    }
+
+    public function updateBeasiswa(Request $request, $id)
+    {
+        $beasiswa = Beasiswa::findOrFail($id);
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'informasi' => 'required|string',
+            'link_eksternal' => 'required|url|max:500',
+            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'status' => 'nullable|string|max:20',
+        ]);
+
+        $gambarUrl = $beasiswa->gambar;
+        if ($request->hasFile('gambar')) {
+            $gambarUrl = $this->uploadAndConvertToWebp($request->file('gambar'), 'beasiswa');
+        }
+
+        $beasiswa->update([
+            'judul' => $request->judul,
+            'slug' => Str::slug($request->judul),
+            'informasi' => $request->informasi,
+            'link_eksternal' => $request->link_eksternal,
+            'gambar' => $gambarUrl,
+            'status' => $request->status ?? $beasiswa->status ?? 'published',
+        ]);
+
+        return back()->with('success', 'Informasi beasiswa berhasil diperbarui!');
+    }
+
+    public function deleteBeasiswa($id)
+    {
+        $beasiswa = Beasiswa::findOrFail($id);
+        $beasiswa->delete();
+        return back()->with('success', 'Informasi beasiswa berhasil dihapus!');
     }
 }

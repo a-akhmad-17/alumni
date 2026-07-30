@@ -36,6 +36,9 @@
                 <a href="{{ route('berita.index') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('berita.*') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-newspaper mr-1.5 opacity-70"></i>Berita
                 </a>
+                <a href="{{ route('beasiswa.index') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('beasiswa.*') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
+                    <i class="fa-solid fa-graduation-cap mr-1.5 opacity-70"></i>Beasiswa
+                </a>
                 <a href="{{ route('galeri') }}" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('galeri') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-images mr-1.5 opacity-70"></i>Galeri
                 </a>
@@ -72,6 +75,7 @@
         <a href="{{ route('alumni.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-users w-6 text-slate-500"></i>Data Alumni</a>
         <a href="{{ route('kta.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-bold text-amber-700 hover:bg-amber-50"><i class="fa-solid fa-id-card w-6 text-amber-500"></i>KTA Digital</a>
         <a href="{{ route('berita.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-newspaper w-6 text-slate-500"></i>Berita</a>
+        <a href="{{ route('beasiswa.index') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-graduation-cap w-6 text-slate-500"></i>Beasiswa</a>
         <a href="{{ route('galeri') }}" class="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100"><i class="fa-solid fa-images w-6 text-slate-500"></i>Galeri</a>
         <div class="pt-4 border-t border-slate-200">
             @auth

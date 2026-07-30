@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AlumniController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\BeasiswaController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KtaController;
@@ -45,6 +46,10 @@ Route::get('/alumni/kta', [KtaController::class, 'index']);
 Route::get('/kta/detail/{id}', [KtaController::class, 'show'])->name('kta.show');
 Route::get('/kta/verifikasi/{id}', [KtaController::class, 'verify'])->name('kta.verify');
 Route::get('/alumni/kta/verifikasi/{id}', [KtaController::class, 'verify']);
+
+// Beasiswa Routes
+Route::get('/beasiswa', [BeasiswaController::class, 'index'])->name('beasiswa.index');
+Route::get('/alumni/beasiswa', [BeasiswaController::class, 'index']);
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -96,6 +101,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/kategori-berita', [AdminController::class, 'storeKategoriBerita'])->name('kategori-berita.store');
     Route::put('/kategori-berita/{id}', [AdminController::class, 'updateKategoriBerita'])->name('kategori-berita.update');
     Route::delete('/kategori-berita/{id}', [AdminController::class, 'deleteKategoriBerita'])->name('kategori-berita.delete');
+
+    // CRUD Beasiswa
+    Route::get('/beasiswa', [AdminController::class, 'beasiswa'])->name('beasiswa');
+    Route::post('/beasiswa', [AdminController::class, 'storeBeasiswa'])->name('beasiswa.store');
+    Route::put('/beasiswa/{id}', [AdminController::class, 'updateBeasiswa'])->name('beasiswa.update');
+    Route::delete('/beasiswa/{id}', [AdminController::class, 'deleteBeasiswa'])->name('beasiswa.delete');
 
     // CRUD User Management
     Route::get('/users', [AdminController::class, 'users'])->name('users');

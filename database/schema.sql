@@ -95,6 +95,19 @@ CREATE TABLE IF NOT EXISTS trn_galeri (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS trn_beasiswa (
+    id VARCHAR(36) PRIMARY KEY,
+    judul VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL,
+    informasi TEXT NOT NULL,
+    link_eksternal VARCHAR(500) NOT NULL,
+    gambar VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'published',
+    deleted_at DATETIME NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS log_activity (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id VARCHAR(36),
