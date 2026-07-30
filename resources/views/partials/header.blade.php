@@ -25,7 +25,7 @@
 
                 <!-- 2. Dropdown Profil -->
                 <div class="relative" @mouseenter="dropdownProfil = true" @mouseleave="dropdownProfil = false">
-                    <button type="button" @click="dropdownProfil = !dropdownProfil" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center {{ request()->routeIs('profil', 'struktur') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
+                    <button type="button" @click="dropdownProfil = !dropdownProfil" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center {{ request()->routeIs('profil', 'struktur', 'ad-art') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100' }}">
                         <i class="fa-solid fa-landmark mr-1.5 opacity-70"></i>Profil
                         <i class="fa-solid fa-chevron-down ml-1.5 text-xs opacity-60 transition-transform duration-200" :class="{ 'rotate-180': dropdownProfil }"></i>
                     </button>
@@ -34,13 +34,16 @@
                          x-transition:enter-start="opacity-0 translate-y-1" 
                          x-transition:enter-end="opacity-100 translate-y-0" 
                          x-transition:leave="transition ease-in duration-100" 
-                         class="absolute left-0 mt-1 w-48 rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-slate-200/80 p-2 z-50 space-y-1" 
+                         class="absolute left-0 mt-1 w-52 rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-slate-200/80 p-2 z-50 space-y-1" 
                          style="display: none;">
                         <a href="{{ route('profil') }}" class="flex items-center px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 {{ request()->routeIs('profil') ? 'bg-slate-100 font-bold text-slate-900' : '' }}">
                             <i class="fa-solid fa-circle-info w-5 text-amber-500"></i>Tentang Kami
                         </a>
                         <a href="{{ route('struktur') }}" class="flex items-center px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 {{ request()->routeIs('struktur') ? 'bg-slate-100 font-bold text-slate-900' : '' }}">
                             <i class="fa-solid fa-sitemap w-5 text-sky-500"></i>Struktur Pengurus
+                        </a>
+                        <a href="{{ route('ad-art') }}" class="flex items-center px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 {{ request()->routeIs('ad-art') ? 'bg-slate-100 font-bold text-slate-900' : '' }}">
+                            <i class="fa-solid fa-file-contract w-5 text-emerald-500"></i>AD / ART Organisasi
                         </a>
                     </div>
                 </div>
@@ -132,6 +135,7 @@
             <div x-show="subOpen" class="pl-8 space-y-1 pt-1">
                 <a href="{{ route('profil') }}" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100">Tentang Kami</a>
                 <a href="{{ route('struktur') }}" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100">Struktur Pengurus</a>
+                <a href="{{ route('ad-art') }}" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100">AD / ART Organisasi</a>
             </div>
         </div>
 

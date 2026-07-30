@@ -30,6 +30,9 @@ Route::get('/alumni/data-alumni/api/{id}', [AlumniController::class, 'detail']);
 Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
 Route::get('/alumni/profil', [ProfilController::class, 'index']);
 
+Route::get('/ad-art', [ProfilController::class, 'adArt'])->name('ad-art');
+Route::get('/alumni/ad-art', [ProfilController::class, 'adArt']);
+
 Route::get('/struktur', [StrukturController::class, 'index'])->name('struktur');
 Route::get('/alumni/struktur', [StrukturController::class, 'index']);
 

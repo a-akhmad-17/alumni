@@ -10,4 +10,9 @@ class ProfilController extends Controller
     {
         return view('pages.profil');
     }
+
+    public function adArt()
+    {
+        return view('pages.ad_art');
+    }
 }

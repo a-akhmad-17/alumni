@@ -57,6 +57,11 @@
 
         <div class="border-t border-slate-200 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
             <p class="text-center sm:text-left">&copy; {{ date('Y') }} IKA SMAN Kajuara / IKA SMAN 8 Bone. All rights reserved.</p>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('profil') }}" class="hover:text-slate-900 transition">Tentang Kami</a>
+                <a href="{{ route('ad-art') }}" class="hover:text-slate-900 transition font-bold text-slate-700">AD / ART Organisasi</a>
+                <a href="{{ route('struktur') }}" class="hover:text-slate-900 transition">Struktur Pengurus</a>
+            </div>
         </div>
     </div>
 </footer>
