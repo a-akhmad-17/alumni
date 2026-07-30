@@ -48,10 +48,30 @@ class HomeController extends Controller
         $dekadeLabels = array_keys($dekadeData);
         $dekadeCounts = array_values($dekadeData);
 
-        // 📊 GRAFIK 3: Trend Keaktifan & Pertumbuhan Alumni 6 Bulan (Spline Area Chart)
-        $trendMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
-        $trendRegistrasi = [12, 19, 25, 32, 45, 68, $totalAlumni];
-        $trendKegiatan = [2, 4, 3, 6, 8, 11, $totalBerita + 5];
+        // 📊 GRAFIK 3: Trend Keaktifan & Pertumbuhan Alumni 6 Bulan (Spline Area Chart Realtime)
+        $trendMonths = [];
+        $trendRegistrasi = [];
+        $trendKegiatan = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $monthDate = now()->subMonths($i);
+            $monthName = $monthDate->translatedFormat('M');
+            $year = $monthDate->year;
+            $month = $monthDate->month;
+
+            // Total akumulasi registrasi alumni hingga akhir bulan tersebut (Grafik Pertumbuhan)
+            $regCount = Alumni::where('created_at', '<=', $monthDate->copy()->endOfMonth())->count();
+            
+            // Total kegiatan / berita publik yang terbit pada bulan tersebut
+            $kegiatanCount = Berita::where('status', 'published')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->count();
+
+            $trendMonths[] = $monthName;
+            $trendRegistrasi[] = $regCount;
+            $trendKegiatan[] = $kegiatanCount;
+        }
 
         // Highlight Berita Terbaru
         $beritaHighlights = Berita::where('status', 'published')
