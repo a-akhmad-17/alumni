@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumni;
 use App\Models\Berita;
 use App\Models\Galeri;
+use App\Models\Infografis;
 use App\Models\Pengurus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -141,6 +142,13 @@ class HomeController extends Controller
         // Recent Galeri Preview
         $galeriPreviews = Galeri::orderBy('created_at', 'desc')->take(4)->get();
 
+        // 📢 Auto Popup Announcement Flyers (Max 3 Active Popup Flyers)
+        $popupFlyers = Infografis::where('is_popup', 1)
+            ->where('status', 'published')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
         return view('pages.home', compact(
             'totalAlumni',
             'totalAngkatan',
@@ -157,7 +165,8 @@ class HomeController extends Controller
             'alumniHighlights',
             'galeriPreviews',
             'availableYears',
-            'chartYear'
+            'chartYear',
+            'popupFlyers'
         ));
     }
 }

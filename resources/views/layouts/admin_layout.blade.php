@@ -107,6 +107,10 @@
                         <i class="fa-solid fa-graduation-cap w-5 text-center text-amber-400"></i>
                         <span>Kelola Beasiswa</span>
                     </a>
+                    <a href="{{ route('admin.infografis') }}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.infografis*') ? 'bg-white text-slate-900 shadow-md font-bold' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-bullhorn w-5 text-center text-amber-400"></i>
+                        <span>Kelola Infografis & Popup</span>
+                    </a>
                     <a href="{{ route('admin.kategori-berita') }}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.kategori-berita*') ? 'bg-white text-slate-900 shadow-md font-bold' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                         <i class="fa-solid fa-tags w-5 text-center text-amber-400"></i>
                         <span>Kategori Berita</span>

@@ -108,6 +108,21 @@ CREATE TABLE IF NOT EXISTS trn_beasiswa (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS trn_infografis (
+    id VARCHAR(36) PRIMARY KEY,
+    judul VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL,
+    deskripsi TEXT,
+    gambar VARCHAR(255) NOT NULL,
+    link_tautan VARCHAR(500),
+    is_popup TINYINT(1) DEFAULT 0,
+    urutan INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'published',
+    deleted_at DATETIME NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS log_activity (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id VARCHAR(36),

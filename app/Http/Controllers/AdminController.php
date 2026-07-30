@@ -7,6 +7,7 @@ use App\Models\Beasiswa;
 use App\Models\Berita;
 use App\Models\Bidang;
 use App\Models\Galeri;
+use App\Models\Infografis;
 use App\Models\KategoriBerita;
 use App\Models\Pengurus;
 use App\Models\User;
@@ -996,5 +997,111 @@ class AdminController extends Controller
         $beasiswa = Beasiswa::findOrFail($id);
         $beasiswa->delete();
         return back()->with('success', 'Informasi beasiswa berhasil dihapus!');
+    }
+
+    // ==================== KELOLA INFOGRAFIS & POPUP FLYER ====================
+    public function infografis(Request $request)
+    {
+        $query = Infografis::query();
+
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status') && $request->status !== 'semua') {
+            $query->where('status', $request->status);
+        }
+
+        $infografisList = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        $popupCount = Infografis::where('is_popup', 1)->where('status', 'published')->count();
+
+        return view('admin.infografis_index', compact('infografisList', 'popupCount'));
+    }
+
+    public function storeInfografis(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'link_tautan' => 'nullable|url|max:500',
+            'gambar' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'is_popup' => 'nullable|boolean',
+            'status' => 'nullable|string|max:20',
+        ]);
+
+        $gambarUrl = $this->uploadAndConvertToWebp($request->file('gambar'), 'infografis');
+
+        Infografis::create([
+            'id' => (string) Str::uuid(),
+            'judul' => $request->judul,
+            'slug' => Str::slug($request->judul) . '-' . rand(100, 999),
+            'deskripsi' => $request->deskripsi,
+            'gambar' => $gambarUrl,
+            'link_tautan' => $request->link_tautan,
+            'is_popup' => $request->has('is_popup') ? 1 : 0,
+            'status' => $request->status ?? 'published',
+        ]);
+
+        return back()->with('success', 'Infografis / Flyer baru berhasil ditambahkan!');
+    }
+
+    public function updateInfografis(Request $request, $id)
+    {
+        $infografis = Infografis::findOrFail($id);
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'link_tautan' => 'nullable|url|max:500',
+            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'is_popup' => 'nullable|boolean',
+            'status' => 'nullable|string|max:20',
+        ]);
+
+        $gambarUrl = $infografis->gambar;
+        if ($request->hasFile('gambar')) {
+            $gambarUrl = $this->uploadAndConvertToWebp($request->file('gambar'), 'infografis');
+        }
+
+        $infografis->update([
+            'judul' => $request->judul,
+            'slug' => Str::slug($request->judul),
+            'deskripsi' => $request->deskripsi,
+            'gambar' => $gambarUrl,
+            'link_tautan' => $request->link_tautan,
+            'is_popup' => $request->has('is_popup') ? 1 : 0,
+            'status' => $request->status ?? $infografis->status ?? 'published',
+        ]);
+
+        return back()->with('success', 'Data infografis berhasil diperbarui!');
+    }
+
+    public function togglePopupInfografis($id)
+    {
+        $infografis = Infografis::findOrFail($id);
+        $newStatus = $infografis->is_popup ? 0 : 1;
+
+        // Cek kuota jika mengaktifkan popup
+        if ($newStatus == 1) {
+            $currentActiveCount = Infografis::where('is_popup', 1)->where('status', 'published')->count();
+            if ($currentActiveCount >= 3) {
+                return back()->with('error', 'Maksimal 3 Flyer Announcement Popup yang dapat diaktifkan bersamaan!');
+            }
+        }
+
+        $infografis->update(['is_popup' => $newStatus]);
+        $statusMsg = $newStatus ? 'diaktifkan sebagai Popup Flyer Beranda!' : 'dinonaktifkan dari Popup Flyer Beranda.';
+
+        return back()->with('success', "Infografis '{$infografis->judul}' berhasil {$statusMsg}");
+    }
+
+    public function deleteInfografis($id)
+    {
+        $infografis = Infografis::findOrFail($id);
+        $infografis->delete();
+        return back()->with('success', 'Infografis berhasil dihapus!');
     }
 }

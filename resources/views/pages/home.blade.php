@@ -364,6 +364,123 @@
     </div>
 </section>
 @endif
+
+<!-- 📢 AUTO POPUP ANNOUNCEMENT FLYER CAROUSEL (POWERED BY ALPINE.JS) -->
+@if(isset($popupFlyers) && $popupFlyers->count() > 0)
+<div x-data="{ 
+        showFlyerPopup: false, 
+        activeSlide: 0, 
+        totalSlides: {{ $popupFlyers->count() }},
+        init() {
+            if (!sessionStorage.getItem('hideFlyerPopup')) {
+                setTimeout(() => { this.showFlyerPopup = true; }, 600);
+            }
+        },
+        closeModal(dontShowAgain = false) {
+            this.showFlyerPopup = false;
+            if (dontShowAgain) {
+                sessionStorage.setItem('hideFlyerPopup', 'true');
+            }
+        },
+        nextSlide() {
+            this.activeSlide = (this.activeSlide + 1) % this.totalSlides;
+        },
+        prevSlide() {
+            this.activeSlide = (this.activeSlide - 1 + this.totalSlides) % this.totalSlides;
+        }
+    }" 
+    x-show="showFlyerPopup" 
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 overflow-y-auto" 
+    style="display: none;">
+
+    <div @click.away="closeModal()" class="bg-white rounded-3xl p-4 sm:p-6 max-w-lg w-full border border-slate-200 shadow-2xl relative my-auto overflow-hidden">
+        <!-- Close Button -->
+        <button @click="closeModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center z-20 shadow-md transition">
+            <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+
+        <!-- Top Header Tag -->
+        <div class="mb-3 flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center">
+                <i class="fa-solid fa-bullhorn mr-1.5"></i>PENGUMUMAN ALUMNI
+            </span>
+            <template x-if="totalSlides > 1">
+                <span class="text-xs text-slate-400 font-bold" x-text="(activeSlide + 1) + ' / ' + totalSlides"></span>
+            </template>
+        </div>
+
+        <!-- Carousel Slider Container -->
+        <div class="relative w-full aspect-[4/5] max-h-[50vh] bg-slate-950 rounded-2xl overflow-hidden border border-slate-200 shadow-inner mb-4">
+            @foreach($popupFlyers as $index => $flyer)
+                <div x-show="activeSlide === {{ $index }}" 
+                     x-transition:enter="transition ease-out duration-300 transform"
+                     x-transition:enter-start="opacity-0 translate-x-4"
+                     x-transition:enter-end="opacity-100 translate-x-0"
+                     x-transition:leave="transition ease-in duration-200 transform"
+                     x-transition:leave-start="opacity-100 translate-x-0"
+                     x-transition:leave-end="opacity-0 -translate-x-4"
+                     class="absolute inset-0 w-full h-full flex items-center justify-center bg-slate-950">
+                    <img src="{{ asset($flyer->gambar) }}" alt="{{ $flyer->judul }}" class="w-full h-full object-contain">
+                </div>
+            @endforeach
+
+            <!-- Prev / Next Slider Arrows (Only if > 1 slide) -->
+            <template x-if="totalSlides > 1">
+                <div>
+                    <button @click="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white flex items-center justify-center transition shadow-lg">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button @click="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white flex items-center justify-center transition shadow-lg">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <!-- Current Active Slide Metadata -->
+        @foreach($popupFlyers as $index => $flyer)
+            <div x-show="activeSlide === {{ $index }}" class="space-y-2 mb-4">
+                <h3 class="font-heading font-extrabold text-lg text-slate-900 leading-snug">{{ $flyer->judul }}</h3>
+                @if($flyer->deskripsi)
+                    <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">{{ $flyer->deskripsi }}</p>
+                @endif
+                @if($flyer->link_tautan)
+                    <a href="{{ $flyer->link_tautan }}" target="_blank" class="inline-flex items-center text-xs font-bold text-amber-600 hover:text-amber-700">
+                        <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i>Buka Link Informasi Selengkapnya
+                    </a>
+                @endif
+            </div>
+        @endforeach
+
+        <!-- Dots Indicator Navigation (Only if > 1 slide) -->
+        <template x-if="totalSlides > 1">
+            <div class="flex items-center justify-center space-x-1.5 mb-4">
+                <template x-for="(item, i) in totalSlides" :key="i">
+                    <button @click="activeSlide = i" 
+                            class="h-2 rounded-full transition-all duration-300"
+                            :class="activeSlide === i ? 'w-6 bg-amber-500' : 'w-2 bg-slate-300'"></button>
+                </template>
+            </div>
+        </template>
+
+        <!-- Footer Control Buttons -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+            <button @click="closeModal(true)" class="text-[11px] text-slate-400 hover:text-slate-700 font-semibold underline">
+                Jangan Tampilkan Lagi
+            </button>
+            <button @click="closeModal()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md transition">
+                Tutup Pendaftaran
+            </button>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')

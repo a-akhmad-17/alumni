@@ -7,6 +7,7 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BeasiswaController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InfografisController;
 use App\Http\Controllers\KtaController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SitemapController;
@@ -50,6 +51,10 @@ Route::get('/alumni/kta/verifikasi/{id}', [KtaController::class, 'verify']);
 // Beasiswa Routes
 Route::get('/beasiswa', [BeasiswaController::class, 'index'])->name('beasiswa.index');
 Route::get('/alumni/beasiswa', [BeasiswaController::class, 'index']);
+
+// Infografis Routes
+Route::get('/infografis', [InfografisController::class, 'index'])->name('infografis.index');
+Route::get('/alumni/infografis', [InfografisController::class, 'index']);
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -107,6 +112,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/beasiswa', [AdminController::class, 'storeBeasiswa'])->name('beasiswa.store');
     Route::put('/beasiswa/{id}', [AdminController::class, 'updateBeasiswa'])->name('beasiswa.update');
     Route::delete('/beasiswa/{id}', [AdminController::class, 'deleteBeasiswa'])->name('beasiswa.delete');
+
+    // CRUD Infografis & Popup Flyer
+    Route::get('/infografis', [AdminController::class, 'infografis'])->name('infografis');
+    Route::post('/infografis', [AdminController::class, 'storeInfografis'])->name('infografis.store');
+    Route::put('/infografis/{id}', [AdminController::class, 'updateInfografis'])->name('infografis.update');
+    Route::put('/infografis/{id}/toggle-popup', [AdminController::class, 'togglePopupInfografis'])->name('infografis.togglePopup');
+    Route::delete('/infografis/{id}', [AdminController::class, 'deleteInfografis'])->name('infografis.delete');
 
     // CRUD User Management
     Route::get('/users', [AdminController::class, 'users'])->name('users');
