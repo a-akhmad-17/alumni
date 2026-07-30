@@ -55,11 +55,9 @@
             <div class="sm:col-span-3">
                 <select name="kategori" onchange="this.form.submit()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-slate-800">
                     <option value="semua" {{ request('kategori') == 'semua' ? 'selected' : '' }}>Semua Kategori</option>
-                    <option value="Reuni" {{ request('kategori') == 'Reuni' ? 'selected' : '' }}>Reuni</option>
-                    <option value="Beasiswa" {{ request('kategori') == 'Beasiswa' ? 'selected' : '' }}>Beasiswa</option>
-                    <option value="Bakti Sosial" {{ request('kategori') == 'Bakti Sosial' ? 'selected' : '' }}>Bakti Sosial</option>
-                    <option value="Rapat" {{ request('kategori') == 'Rapat' ? 'selected' : '' }}>Rapat Kerja</option>
-                    <option value="Olahraga & Seni" {{ request('kategori') == 'Olahraga & Seni' ? 'selected' : '' }}>Olahraga & Seni</option>
+                    @foreach($kategoriList as $kat)
+                        <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="sm:col-span-3 flex gap-2">
@@ -186,16 +184,23 @@
                     <input type="text" name="judul" required placeholder="Contoh: Reuni Akbar Angkatan 2015 / Bakti Sosial 2026" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
                 </div>
 
+                <!-- Shared Datalist for Category Inputs -->
+                <datalist id="preset_kategori_list">
+                    @foreach($kategoriList as $kat)
+                        <option value="{{ $kat }}">
+                    @endforeach
+                </datalist>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kategori Kegiatan *</label>
-                        <select name="kategori" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
-                            <option value="Reuni">Reuni</option>
-                            <option value="Beasiswa">Beasiswa</option>
-                            <option value="Bakti Sosial">Bakti Sosial</option>
-                            <option value="Rapat">Rapat Kerja</option>
-                            <option value="Olahraga & Seni">Olahraga & Seni</option>
-                        </select>
+                        <input type="text" name="kategori" x-ref="inputKatTambah" list="preset_kategori_list" required placeholder="Pilih / ketik kategori..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
+                        <div class="flex flex-wrap gap-1 mt-1.5">
+                            <button type="button" @click="$refs.inputKatTambah.value = 'Umum'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Umum</button>
+                            <button type="button" @click="$refs.inputKatTambah.value = 'Rapat Pengurus'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Rapat Pengurus</button>
+                            <button type="button" @click="$refs.inputKatTambah.value = 'Kegiatan'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Kegiatan</button>
+                            <button type="button" @click="$refs.inputKatTambah.value = 'Beasiswa'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Beasiswa</button>
+                        </div>
                     </div>
 
                     <!-- Input Video URL jika tipe Video -->
@@ -260,13 +265,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kategori *</label>
-                        <select name="kategori" x-model="editData.kategori" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
-                            <option value="Reuni">Reuni</option>
-                            <option value="Beasiswa">Beasiswa</option>
-                            <option value="Bakti Sosial">Bakti Sosial</option>
-                            <option value="Rapat">Rapat Kerja</option>
-                            <option value="Olahraga & Seni">Olahraga & Seni</option>
-                        </select>
+                        <input type="text" name="kategori" x-model="editData.kategori" list="preset_kategori_list" required placeholder="Pilih / ketik kategori..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
+                        <div class="flex flex-wrap gap-1 mt-1.5">
+                            <button type="button" @click="editData.kategori = 'Umum'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Umum</button>
+                            <button type="button" @click="editData.kategori = 'Rapat Pengurus'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Rapat Pengurus</button>
+                            <button type="button" @click="editData.kategori = 'Kegiatan'" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-[10px] font-bold border border-slate-200">Kegiatan</button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ganti Foto (Opsional)</label>

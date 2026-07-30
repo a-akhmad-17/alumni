@@ -558,7 +558,11 @@ class AdminController extends Controller
         $allGaleri = $query->orderBy('created_at', 'desc')->get();
         $groupedAlbums = $allGaleri->groupBy('judul');
 
-        return view('admin.galeri_index', compact('groupedAlbums'));
+        $existingKategori = Galeri::distinct()->whereNotNull('kategori')->pluck('kategori')->toArray();
+        $defaultKategori = ['Umum', 'Rapat Pengurus', 'Kegiatan', 'Beasiswa'];
+        $kategoriList = array_values(array_unique(array_merge($defaultKategori, $existingKategori)));
+
+        return view('admin.galeri_index', compact('groupedAlbums', 'kategoriList'));
     }
 
     public function storeGaleri(Request $request)

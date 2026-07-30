@@ -27,7 +27,9 @@ class GaleriController extends Controller
         }
 
         $galeriList = $query->orderBy('created_at', 'desc')->get();
-        $kategoriList = Galeri::distinct()->pluck('kategori');
+        $existingKategori = Galeri::distinct()->whereNotNull('kategori')->pluck('kategori')->toArray();
+        $defaultKategori = ['Umum', 'Rapat Pengurus', 'Kegiatan', 'Beasiswa'];
+        $kategoriList = array_values(array_unique(array_merge($defaultKategori, $existingKategori)));
 
         // Group photos by activity title for multi-photo album view
         $kegiatanGrouped = $galeriList->groupBy('judul');

@@ -4,7 +4,7 @@
 @section('meta_description', 'Dokumentasi foto kegiatan alumni dan pemutar video dokumentasi resmi Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone.')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ mediaFilter: 'semua', viewMode: 'album', lightboxOpen: false, videoModalOpen: false, activeVideoUrl: '', currentAlbum: [], currentIndex: 0, currentTitle: '', currentDesc: '', currentKat: '' }">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ mediaFilter: 'semua', kategoriFilter: 'semua', viewMode: 'album', lightboxOpen: false, videoModalOpen: false, activeVideoUrl: '', currentAlbum: [], currentIndex: 0, currentTitle: '', currentDesc: '', currentKat: '' }">
     <!-- Header Banner -->
     <div class="text-center max-w-3xl mx-auto mb-10">
         <span class="px-3.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 font-semibold text-xs uppercase tracking-wider inline-block mb-3">
@@ -12,23 +12,35 @@
         </span>
         <h1 class="font-heading text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">Galeri Kegiatan Alumni</h1>
         <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
-            Kumpulan album foto kenangan reuni, video liputan acara, bakti sosial, dan momen berharga IKA SMAN Kajuara / SMAN 8 Bone.
+            Kumpulan album foto kenangan reuni, video liputan acara, rapat pengurus, bakti sosial, dan momen berharga IKA SMAN Kajuara / SMAN 8 Bone.
         </p>
     </div>
 
     <!-- Filter Categories & View Mode Toggle -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 border-b border-slate-200 pb-6">
-        <!-- Media Filter Buttons (Semua, Foto, Video) -->
-        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <button @click="mediaFilter = 'semua'" :class="mediaFilter === 'semua' ? 'bg-slate-900 text-white shadow-sm font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs transition">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-10 border-b border-slate-200 pb-6">
+        <!-- Media Filter & Category Buttons -->
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+            <!-- Media Type Filter -->
+            <button @click="mediaFilter = 'semua'" :class="mediaFilter === 'semua' ? 'bg-slate-900 text-white shadow-sm font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'" class="px-3.5 py-2 rounded-xl text-xs transition">
                 Semua Media
             </button>
-            <button @click="mediaFilter = 'foto'" :class="mediaFilter === 'foto' ? 'bg-slate-900 text-white shadow-sm font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs transition flex items-center">
+            <button @click="mediaFilter = 'foto'" :class="mediaFilter === 'foto' ? 'bg-slate-900 text-white shadow-sm font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'" class="px-3.5 py-2 rounded-xl text-xs transition flex items-center">
                 <i class="fa-solid fa-images mr-1.5 text-amber-400"></i>Album Foto
             </button>
-            <button @click="mediaFilter = 'video'" :class="mediaFilter === 'video' ? 'bg-slate-900 text-white shadow-sm font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs transition flex items-center">
-                <i class="fa-solid fa-circle-play mr-1.5 text-rose-500"></i>Video Dokumentasi
+            <button @click="mediaFilter = 'video'" :class="mediaFilter === 'video' ? 'bg-slate-900 text-white shadow-sm font-bold' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'" class="px-3.5 py-2 rounded-xl text-xs transition flex items-center">
+                <i class="fa-solid fa-circle-play mr-1.5 text-rose-500"></i>Video
             </button>
+
+            <!-- Divider -->
+            <span class="h-6 w-px bg-slate-300 mx-1 hidden sm:inline-block"></span>
+
+            <!-- Category Filter Dropdown -->
+            <select x-model="kategoriFilter" class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:border-slate-900 cursor-pointer shadow-sm">
+                <option value="semua">Semua Kategori</option>
+                @foreach($kategoriList as $kat)
+                    <option value="{{ $kat }}">{{ $kat }}</option>
+                @endforeach
+            </select>
         </div>
 
         <!-- View Mode Toggle -->
@@ -51,7 +63,7 @@
                 $hasVideo = $items->where('tipe', 'video')->first();
                 $isMediaMatch = true;
             @endphp
-            <div x-show="mediaFilter === 'semua' || (mediaFilter === 'foto' && {{ $totalFoto > 0 ? 'true' : 'false' }}) || (mediaFilter === 'video' && {{ $hasVideo ? 'true' : 'false' }})" class="glass-card rounded-3xl overflow-hidden cursor-pointer group border border-slate-200 hover:border-amber-400 transition duration-300 bg-white flex flex-col justify-between shadow-md hover:shadow-xl">
+            <div x-show="(mediaFilter === 'semua' || (mediaFilter === 'foto' && {{ $totalFoto > 0 ? 'true' : 'false' }}) || (mediaFilter === 'video' && {{ $hasVideo ? 'true' : 'false' }})) && (kategoriFilter === 'semua' || '{{ $coverPhoto->kategori }}' === kategoriFilter)" class="glass-card rounded-3xl overflow-hidden cursor-pointer group border border-slate-200 hover:border-amber-400 transition duration-300 bg-white flex flex-col justify-between shadow-md hover:shadow-xl">
                 
                 <!-- Media Header / Cover Photo -->
                 <div class="h-64 relative bg-slate-900 overflow-hidden" @click="
@@ -153,7 +165,7 @@
     <!-- 🖼️ MODE 2: SEMUA PRATINJAU GRID -->
     <div x-show="viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         @forelse($galeriList as $foto)
-            <div x-show="mediaFilter === 'semua' || (mediaFilter === '{{ $foto->tipe }}')" @click="
+            <div x-show="(mediaFilter === 'semua' || mediaFilter === '{{ $foto->tipe }}') && (kategoriFilter === 'semua' || '{{ $foto->kategori }}' === kategoriFilter)" @click="
                 if('{{ $foto->tipe }}' === 'video') {
                     activeVideoUrl = getEmbedUrl('{{ $foto->video_url }}');
                     currentTitle = '{{ e($foto->judul) }}';
