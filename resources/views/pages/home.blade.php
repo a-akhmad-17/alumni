@@ -131,7 +131,7 @@
                         <button @click="modalSambutan = true" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all duration-300 flex items-center">
                             <i class="fa-solid fa-book-open mr-2 text-amber-400"></i>Baca Sambutan Lengkap
                         </button>
-                        <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-location-dot mr-1"></i>Kajuara, 1 Agustus 2026</span>
+                        <span class="text-xs text-slate-600 font-medium"><i class="fa-solid fa-location-dot mr-1"></i>Kajuara, 1 Agustus 2026</span>
                     </div>
                 </div>
             </div>
@@ -206,7 +206,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
             <div>
-                <span class="text-amber-600 font-semibold text-xs uppercase tracking-wider block mb-1">Analytics & Demografi</span>
+                <span class="text-amber-700 font-semibold text-xs uppercase tracking-wider block mb-1">Analytics & Demografi</span>
                 <h2 class="font-heading font-bold text-3xl text-slate-900">Statistik & Trend Alumni</h2>
                 <p class="text-sm text-slate-600 mt-1">Visualisasi data sebaran profesi, angkatan, serta grafik pertumbuhan alumni secara *real-time*.</p>
             </div>
@@ -381,7 +381,7 @@
                 <i class="fa-solid fa-bullhorn mr-1.5"></i>PENGUMUMAN ALUMNI
             </span>
             <template x-if="totalSlides > 1">
-                <span class="text-xs text-slate-400 font-bold" x-text="(activeSlide + 1) + ' / ' + totalSlides"></span>
+                <span class="text-xs text-slate-600 font-bold" x-text="(activeSlide + 1) + ' / ' + totalSlides"></span>
             </template>
         </div>
 

@@ -21,7 +21,7 @@
             <div class="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center mb-6 shadow-md">
                 <i class="fa-solid fa-eye text-2xl text-amber-400"></i>
             </div>
-            <span class="text-xs uppercase font-bold text-amber-600 tracking-wider block mb-2">Visi Organisasi (2026 - 2031)</span>
+            <span class="text-xs uppercase font-bold text-amber-700 tracking-wider block mb-2">Visi Organisasi (2026 - 2031)</span>
             <h2 class="font-heading font-extrabold text-2xl text-slate-900 mb-4 leading-snug">Visi Utama IKA</h2>
             <p class="text-slate-700 text-base leading-relaxed italic border-l-4 border-amber-500 pl-4 py-1 bg-amber-50/50 rounded-r-xl">
                 "Mewujudkan jaringan dan silaturahmi yang solid bersama alumni untuk kemajuan dan citra almamater SMAN Kajuara / SMAN 8 Bone."
@@ -54,7 +54,7 @@
     <!-- 🚀 SECTION PROGRAM UNGGULAN LINTAS BIDANG -->
     <div class="mb-20">
         <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="text-amber-600 font-semibold text-xs uppercase tracking-wider block mb-2">Agenda Prioritas Organisasi</span>
+            <span class="text-amber-700 font-semibold text-xs uppercase tracking-wider block mb-2">Agenda Prioritas Organisasi</span>
             <h2 class="font-heading font-extrabold text-3xl text-slate-900">7 Program Unggulan IKA</h2>
             <p class="text-slate-600 text-sm mt-2">Program lintas bidang sebagai identitas dan bentuk kontribusi nyata bagi almamater & masyarakat.</p>
         </div>
@@ -128,7 +128,7 @@
                 </p>
             </div>
             <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-500">
-                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">Perubahan Nomenklatur</span>
+                <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block mb-1">Perubahan Nomenklatur</span>
                 <h3 class="font-heading font-bold text-lg text-slate-900">Alih Nama Menjadi SMAN 8 Bone</h3>
                 <p class="text-sm text-slate-600 mt-2 leading-relaxed">
                     Sesuai dengan kebijakan pemerintah daerah, sekolah resmi berganti nama menjadi SMA Negeri 8 Bone tanpa menghilangkan identitas sejarah Kajuara.

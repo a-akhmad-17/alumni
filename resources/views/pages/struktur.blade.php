@@ -35,7 +35,7 @@
     <!-- 🌳 SECTION 1: BAGAN HIRARKI ORGANOGRAM TERSTRUKTUR (VISUAL ORGANOGRAM TREE) -->
     <div class="mb-20">
         <div class="text-center mb-10">
-            <span class="text-amber-600 font-bold text-xs uppercase tracking-widest block mb-1">Hirarki Kepemimpinan</span>
+            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest block mb-1">Hirarki Kepemimpinan</span>
             <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-slate-900"><i class="fa-solid fa-sitemap mr-2.5 text-amber-600"></i>Bagan Pengurus Inti</h2>
             <div class="w-16 h-1 bg-slate-900 rounded-full mx-auto mt-3"></div>
         </div>
@@ -185,7 +185,7 @@
     <div class="mb-20">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-6">
             <div>
-                <span class="text-amber-600 font-bold text-xs uppercase tracking-widest block mb-1">Galeri Personel</span>
+                <span class="text-amber-700 font-bold text-xs uppercase tracking-widest block mb-1">Galeri Personel</span>
                 <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-slate-900">Direktori Profil Pengurus</h2>
                 <p class="text-sm text-slate-600 mt-1">Daftar lengkap foto dan profil pengurus IKA SMAN Kajuara / SMAN 8 Bone.</p>
             </div>
@@ -254,7 +254,7 @@
                     <!-- Details Body -->
                     <div class="p-5 flex-grow flex flex-col justify-between">
                         <div>
-                            <span class="text-[11px] font-extrabold uppercase text-amber-600 tracking-wider block mb-1">
+                            <span class="text-[11px] font-extrabold uppercase text-amber-700 tracking-wider block mb-1">
                                 {{ $p->jabatan }}
                             </span>
                             <h3 class="font-heading font-extrabold text-base text-slate-900 leading-snug mb-1">
@@ -266,7 +266,7 @@
                         </div>
 
                         <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-                            <span class="text-[10px] font-semibold text-slate-400">
+                            <span class="text-[10px] font-semibold text-slate-600">
                                 Periode {{ $p->periode ?? '2026-2031' }}
                             </span>
                             <div class="flex space-x-1.5">
@@ -290,7 +290,7 @@
     <!-- 🛠️ SECTION 3: 8 BIDANG KERJA ORGANISASI (DENGAN TIM PENGURUS & PROGRAM KERJA) -->
     <div class="mb-20">
         <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="text-amber-600 font-bold text-xs uppercase tracking-widest block mb-1">Program Kerja Teknis</span>
+            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest block mb-1">Program Kerja Teknis</span>
             <h2 class="font-heading font-extrabold text-3xl text-slate-900">8 Bidang Kerja & Personel Penanggung Jawab</h2>
             <p class="text-sm text-slate-600 mt-2">Fokus program dan pengurus teknis yang menahkodai setiap divisi IKA SMAN Kajuara / IKA SMAN 8 Bone.</p>
         </div>

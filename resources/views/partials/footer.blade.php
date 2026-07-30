@@ -7,7 +7,7 @@
                     <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA SMAN Kajuara / IKA SMAN 8 BONE" class="h-11 w-auto object-contain shrink-0">
                     <div>
                         <span class="font-heading font-extrabold text-base text-slate-900 tracking-tight block leading-snug">IKA SMAN KAJUARA</span>
-                        <span class="text-xs text-amber-600 font-extrabold tracking-wider block uppercase">IKA SMAN 8 BONE</span>
+                        <span class="text-xs text-amber-700 font-extrabold tracking-wider block uppercase">IKA SMAN 8 BONE</span>
                     </div>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed max-w-md">
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="border-t border-slate-200 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
+        <div class="border-t border-slate-200 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-600 gap-3">
             <p class="text-center sm:text-left">&copy; {{ date('Y') }} IKA SMAN Kajuara / IKA SMAN 8 Bone. All rights reserved.</p>
             <div class="flex items-center space-x-4">
                 <a href="{{ route('profil') }}" class="hover:text-slate-900 transition">Tentang Kami</a>
