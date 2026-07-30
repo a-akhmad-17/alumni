@@ -202,12 +202,27 @@
 </section>
 
 <!-- SECTION ANALYTICS: 3 MACAM GRAFIK INTERAKTIF -->
-<section class="py-12 bg-slate-100/70 border-y border-slate-200">
+<section id="analytics" class="py-12 bg-slate-100/70 border-y border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="text-amber-600 font-semibold text-xs uppercase tracking-wider block mb-2">Analytics & Demografi</span>
-            <h2 class="font-heading font-bold text-3xl text-slate-900">Statistik & Trend Alumni</h2>
-            <p class="text-sm text-slate-600 mt-2">Visualisasi data sebaran profesi, angkatan, serta grafik pertumbuhan alumni secara *real-time*.</p>
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+            <div>
+                <span class="text-amber-600 font-semibold text-xs uppercase tracking-wider block mb-1">Analytics & Demografi</span>
+                <h2 class="font-heading font-bold text-3xl text-slate-900">Statistik & Trend Alumni</h2>
+                <p class="text-sm text-slate-600 mt-1">Visualisasi data sebaran profesi, angkatan, serta grafik pertumbuhan alumni secara *real-time*.</p>
+            </div>
+
+            <!-- Filter Tahun per Tahun -->
+            <form action="{{ url('/#analytics') }}" method="GET" class="flex items-center space-x-2 shrink-0 bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
+                <label for="chart_year" class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-calendar-days text-amber-500 mr-1.5"></i>Filter Tahun:
+                </label>
+                <select name="chart_year" id="chart_year" onchange="this.form.submit()" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-slate-900 cursor-pointer">
+                    <option value="semua" {{ request('chart_year', 'semua') == 'semua' ? 'selected' : '' }}>Semua Tahun (Keseluruhan)</option>
+                    @foreach($availableYears as $yr)
+                        <option value="{{ $yr }}" {{ request('chart_year') == $yr ? 'selected' : '' }}>Tahun {{ $yr }}</option>
+                    @endforeach
+                </select>
+            </form>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">

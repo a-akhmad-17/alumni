@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Counter Statistics
         $totalAlumni = Alumni::count();
@@ -19,10 +19,32 @@ class HomeController extends Controller
         $totalBerita = Berita::where('status', 'published')->count();
         $totalPengurus = Pengurus::where('is_inti', 1)->count();
 
+        // 📅 List Available Registration Years for Filter
+        $availableYears = Alumni::selectRaw('YEAR(created_at) as yr')
+            ->distinct()
+            ->orderBy('yr', 'desc')
+            ->pluck('yr')
+            ->filter()
+            ->values()
+            ->toArray();
+
+        $currentYr = (int) date('Y');
+        if (!in_array($currentYr, $availableYears)) {
+            array_unshift($availableYears, $currentYr);
+        }
+
+        $chartYear = $request->query('chart_year', 'semua');
+
         // 📊 GRAFIK 1: Sebaran Kategori Profesi Alumni (Donut Chart)
-        $allAlumniProfesi = Alumni::where(function($q) {
+        $profesiQuery = Alumni::where(function($q) {
             $q->whereNotNull('profesi')->orWhereNotNull('kategori_profesi');
-        })->get();
+        });
+
+        if ($chartYear !== 'semua') {
+            $profesiQuery->whereYear('created_at', $chartYear);
+        }
+
+        $allAlumniProfesi = $profesiQuery->get();
         $profesiGrouped = [];
 
         foreach ($allAlumniProfesi as $alm) {
@@ -34,43 +56,71 @@ class HomeController extends Controller
         }
 
         arsort($profesiGrouped);
-
         $profesiLabels = array_keys($profesiGrouped);
         $profesiCounts = array_values($profesiGrouped);
 
+        if (empty($profesiLabels)) {
+            $profesiLabels = ['Belum ada data'];
+            $profesiCounts = [0];
+        }
+
         // 📊 GRAFIK 2: Sebaran Alumni per Dekade Angkatan (Column/Bar Chart)
+        $dekadeQuery = function($min, $max) use ($chartYear) {
+            $q = Alumni::whereBetween('angkatan', [$min, $max]);
+            if ($chartYear !== 'semua') {
+                $q->whereYear('created_at', $chartYear);
+            }
+            return $q->count();
+        };
+
         $dekadeData = [
-            '1990 - 1999' => Alumni::whereBetween('angkatan', [1990, 1999])->count(),
-            '2000 - 2009' => Alumni::whereBetween('angkatan', [2000, 2009])->count(),
-            '2010 - 2019' => Alumni::whereBetween('angkatan', [2010, 2019])->count(),
-            '2020 - 2026' => Alumni::whereBetween('angkatan', [2020, 2026])->count(),
+            '1990 - 1999' => $dekadeQuery(1990, 1999),
+            '2000 - 2009' => $dekadeQuery(2000, 2009),
+            '2010 - 2019' => $dekadeQuery(2010, 2019),
+            '2020 - 2026' => $dekadeQuery(2020, 2026),
         ];
         $dekadeLabels = array_keys($dekadeData);
         $dekadeCounts = array_values($dekadeData);
 
-        // 📊 GRAFIK 3: Trend Keaktifan & Pertumbuhan Alumni 6 Bulan (Spline Area Chart Realtime)
+        // 📊 GRAFIK 3: Trend Keaktifan & Pertumbuhan Alumni (Spline Area Chart Realtime)
         $trendMonths = [];
         $trendRegistrasi = [];
         $trendKegiatan = [];
 
-        for ($i = 5; $i >= 0; $i--) {
-            $monthDate = now()->subMonths($i);
-            $monthName = $monthDate->translatedFormat('M');
-            $year = $monthDate->year;
-            $month = $monthDate->month;
+        if ($chartYear !== 'semua') {
+            // Trend 12 Bulan untuk Tahun Terpilih
+            $indonesianMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            for ($m = 1; $m <= 12; $m++) {
+                $monthDate = \Carbon\Carbon::createFromDate((int) $chartYear, $m, 1);
+                
+                $regCount = Alumni::where('created_at', '<=', $monthDate->copy()->endOfMonth())->count();
+                $kegiatanCount = Berita::where('status', 'published')
+                    ->whereYear('created_at', $chartYear)
+                    ->whereMonth('created_at', $m)
+                    ->count();
 
-            // Total akumulasi registrasi alumni hingga akhir bulan tersebut (Grafik Pertumbuhan)
-            $regCount = Alumni::where('created_at', '<=', $monthDate->copy()->endOfMonth())->count();
-            
-            // Total kegiatan / berita publik yang terbit pada bulan tersebut
-            $kegiatanCount = Berita::where('status', 'published')
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
-                ->count();
+                $trendMonths[] = $indonesianMonths[$m - 1];
+                $trendRegistrasi[] = $regCount;
+                $trendKegiatan[] = $kegiatanCount;
+            }
+        } else {
+            // Trend 6 Bulan Terakhir
+            for ($i = 5; $i >= 0; $i--) {
+                $monthDate = now()->subMonths($i);
+                $monthName = $monthDate->translatedFormat('M');
+                $year = $monthDate->year;
+                $month = $monthDate->month;
 
-            $trendMonths[] = $monthName;
-            $trendRegistrasi[] = $regCount;
-            $trendKegiatan[] = $kegiatanCount;
+                $regCount = Alumni::where('created_at', '<=', $monthDate->copy()->endOfMonth())->count();
+                $kegiatanCount = Berita::where('status', 'published')
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->count();
+
+                $trendMonths[] = $monthName;
+                $trendRegistrasi[] = $regCount;
+                $trendKegiatan[] = $kegiatanCount;
+            }
         }
 
         // Highlight Berita Terbaru
@@ -105,7 +155,9 @@ class HomeController extends Controller
             'trendKegiatan',
             'beritaHighlights',
             'alumniHighlights',
-            'galeriPreviews'
+            'galeriPreviews',
+            'availableYears',
+            'chartYear'
         ));
     }
 }
