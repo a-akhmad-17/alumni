@@ -645,6 +645,8 @@ class AdminController extends Controller
     public function updateGaleri(Request $request, $id)
     {
         $galeri = Galeri::findOrFail($id);
+        $oldJudul = $galeri->judul;
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -664,6 +666,16 @@ class AdminController extends Controller
             }
         }
 
+        // Update seluruh foto/item dalam album yang sama agar tidak terpecah/double
+        if (!empty($oldJudul)) {
+            Galeri::where('judul', $oldJudul)->update([
+                'judul' => $request->judul,
+                'kategori' => $request->kategori,
+                'deskripsi' => $request->deskripsi,
+            ]);
+        }
+
+        // Update data spesifik item ini (seperti foto/video_url/tipe)
         $galeri->update([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
@@ -673,7 +685,7 @@ class AdminController extends Controller
             'tipe' => $request->tipe,
         ]);
 
-        return back()->with('success', 'Item galeri berhasil diperbarui!');
+        return back()->with('success', 'Album galeri berhasil diperbarui!');
     }
 
     public function deleteGaleri($id)
