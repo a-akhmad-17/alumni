@@ -1028,9 +1028,15 @@ class AdminController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'link_tautan' => 'nullable|string|max:500',
-            'gambar' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'gambar' => 'required|image|mimes:jpeg,jpg,png,webp|max:10240',
             'is_popup' => 'nullable|boolean',
             'status' => 'nullable|string|max:20',
+        ], [
+            'judul.required' => 'Judul infografis / flyer wajib diisi!',
+            'gambar.required' => 'File gambar flyer wajib diunggah!',
+            'gambar.image' => 'File yang diunggah harus berupa gambar (JPG, PNG, WEBP).',
+            'gambar.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran file gambar terlalu besar! Maksimal ukuran file yang diperbolehkan adalah 10 MB.',
         ]);
 
         $linkTautan = $request->link_tautan;
@@ -1069,9 +1075,14 @@ class AdminController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'link_tautan' => 'nullable|string|max:500',
-            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:10240',
             'is_popup' => 'nullable|boolean',
             'status' => 'nullable|string|max:20',
+        ], [
+            'judul.required' => 'Judul infografis / flyer wajib diisi!',
+            'gambar.image' => 'File yang diunggah harus berupa gambar (JPG, PNG, WEBP).',
+            'gambar.mimes' => 'Format gambar harus JPEG, JPG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran file gambar terlalu besar! Maksimal ukuran file yang diperbolehkan adalah 10 MB.',
         ]);
 
         $linkTautan = $request->link_tautan;
@@ -1083,7 +1094,7 @@ class AdminController extends Controller
         if ($isPopup == 1 && !$infografis->is_popup) {
             $currentActiveCount = Infografis::where('is_popup', 1)->where('status', 'published')->count();
             if ($currentActiveCount >= 3) {
-                return back()->with('error', 'Gagal mengaktifkan Popup: Maksimal 3 Flyer Announcement Popup yang dapat diaktifkan bersamaan!');
+                return back()->with('error', 'Gagal mengaktifkan Popup: Maksimal 3 Flyer Announcement Popup yang dapat diaktifkan bersamaan!')->withInput();
             }
         }
 

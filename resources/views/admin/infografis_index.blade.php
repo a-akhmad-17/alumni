@@ -3,7 +3,7 @@
 @section('title', 'Kelola Infografis & Popup Flyer')
 
 @section('content')
-<div x-data="{ modalAdd: {{ $errors->any() ? 'true' : 'false' }}, modalEdit: false, selectedInfografis: {} }">
+<div x-data="{ modalAdd: {{ ($errors->any() || session('error')) ? 'true' : 'false' }}, modalEdit: false, selectedInfografis: {}, fileSizeErrorAdd: '', fileSizeErrorEdit: '' }">
     
     <!-- Top Header -->
     <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -28,29 +28,6 @@
                 <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
                 <span>{{ session('success') }}</span>
             </div>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center justify-between shadow-sm">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold shadow-sm space-y-1">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-rose-600 text-base"></i>
-                <span>Gagal menyimpan data infografis:</span>
-            </div>
-            <ul class="list-disc list-inside pl-5 font-normal">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
         </div>
     @endif
 
@@ -159,26 +136,55 @@
 
             <h3 class="font-heading font-extrabold text-lg text-slate-900 mb-4">Tambah Flyer / Infografis Baru</h3>
 
+            <!-- Alert Notification Inside Modal -->
+            <div x-show="fileSizeErrorAdd" class="p-3.5 mb-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center space-x-2" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation text-rose-600 text-base shrink-0"></i>
+                <span x-text="fileSizeErrorAdd"></span>
+            </div>
+
+            @if(session('error'))
+                <div class="p-3.5 mb-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-xmark text-rose-600 text-base shrink-0"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="p-3.5 mb-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-600 text-base shrink-0"></i>
+                        <span>Gagal Menyimpan Infografis:</span>
+                    </div>
+                    <ul class="list-disc list-inside pl-4 font-normal">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('admin.infografis.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Infografis / Flyer *</label>
-                    <input type="text" name="judul" required placeholder="Contoh: Pengumuman Mubes IKA SMAN Kajuara 2026" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
+                    <input type="text" name="judul" value="{{ old('judul') }}" required placeholder="Contoh: Pengumuman Mubes IKA SMAN Kajuara 2026" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi Singkat (Opsional)</label>
-                    <textarea name="deskripsi" rows="3" placeholder="Informasi singkat penjelasan flyer..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900"></textarea>
+                    <textarea name="deskripsi" rows="3" placeholder="Informasi singkat penjelasan flyer..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">{{ old('deskripsi') }}</textarea>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Link Tautan Terkait (Opsional)</label>
-                    <input type="url" name="link_tautan" placeholder="https://..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
+                    <input type="text" name="link_tautan" value="{{ old('link_tautan') }}" placeholder="https://... atau www. link terkait" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Upload Gambar Flyer (Auto WebP) *</label>
-                    <input type="file" name="gambar" required accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white">
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Upload Gambar Flyer (Auto WebP, Max 10 MB) *</label>
+                    <input type="file" name="gambar" required accept="image/*" 
+                           @change="if($event.target.files[0] && $event.target.files[0].size > 10 * 1024 * 1024) { fileSizeErrorAdd = 'Ukuran file gambar (' + ($event.target.files[0].size / (1024*1024)).toFixed(1) + ' MB) terlalu besar! Maksimal ukuran file adalah 10 MB.'; $event.target.value = ''; } else { fileSizeErrorAdd = ''; }" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white">
                 </div>
 
                 <div class="flex items-center justify-between p-3 rounded-2xl bg-amber-50 border border-amber-200">
@@ -186,14 +192,14 @@
                         <span class="block text-xs font-bold text-slate-900">Tampilkan di Popup Beranda</span>
                         <span class="text-[10px] text-slate-500">Otomatis muncul saat homepage pertama dibuka (Max 3 flyer)</span>
                     </div>
-                    <input type="checkbox" name="is_popup" value="1" class="w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-slate-900">
+                    <input type="checkbox" name="is_popup" value="1" {{ old('is_popup') ? 'checked' : '' }} class="w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-slate-900">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Status Publikasi</label>
                     <select name="status" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
+                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
+                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                     </select>
                 </div>
 
@@ -214,6 +220,12 @@
 
             <h3 class="font-heading font-extrabold text-lg text-slate-900 mb-4">Edit Data Infografis</h3>
 
+            <!-- Alert Notification Inside Modal Edit -->
+            <div x-show="fileSizeErrorEdit" class="p-3.5 mb-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center space-x-2" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation text-rose-600 text-base shrink-0"></i>
+                <span x-text="fileSizeErrorEdit"></span>
+            </div>
+
             <form :action="'{{ url('/admin/infografis') }}/' + selectedInfografis.id" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 @method('PUT')
@@ -230,12 +242,14 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Link Tautan Terkait (Opsional)</label>
-                    <input type="url" name="link_tautan" x-model="selectedInfografis.link_tautan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
+                    <input type="text" name="link_tautan" x-model="selectedInfografis.link_tautan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ganti Gambar Flyer (Opsional)</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white">
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ganti Gambar Flyer (Opsional, Max 10 MB)</label>
+                    <input type="file" name="gambar" accept="image/*" 
+                           @change="if($event.target.files[0] && $event.target.files[0].size > 10 * 1024 * 1024) { fileSizeErrorEdit = 'Ukuran file gambar (' + ($event.target.files[0].size / (1024*1024)).toFixed(1) + ' MB) terlalu besar! Maksimal ukuran file adalah 10 MB.'; $event.target.value = ''; } else { fileSizeErrorEdit = ''; }" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white">
                 </div>
 
                 <div class="flex items-center justify-between p-3 rounded-2xl bg-amber-50 border border-amber-200">
