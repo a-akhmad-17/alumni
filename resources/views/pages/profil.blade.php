@@ -161,7 +161,7 @@
                     <i class="fa-solid" :class="activeAcc === 1 ? 'fa-chevron-up text-amber-600' : 'fa-chevron-down text-slate-400'"></i>
                 </button>
                 <div x-show="activeAcc === 1" class="px-5 pb-5 text-sm text-slate-600 border-t border-slate-100 pt-4 leading-relaxed">
-                    Organisasi ini bernama Ikatan Alumni SMAN Kajuara / SMAN 8 Bone (disingkat IKA SMAN KAJUARA / IKA SMAN 8 BONE). Didirikan untuk jangka waktu yang tidak ditentukan dan berkedudukan pusat di Kajuara, Kabupaten Bone, Sulawesi Selatan.
+                    Organisasi ini bernama Ikatan Keluarga Alumni SMAN Kajuara / SMAN 8 Bone (disingkat IKA SMAN KAJUARA / IKA SMAN 8 BONE). Didirikan untuk jangka waktu yang tidak ditentukan dan berkedudukan pusat di Kajuara, Kabupaten Bone, Sulawesi Selatan.
                 </div>
             </div>
 

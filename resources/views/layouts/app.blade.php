@@ -6,9 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Dynamic SEO Meta Tags -->
     <title>@yield('title', 'Beranda') - IKA SMAN Kajuara / IKA SMAN 8 Bone</title>
-    <meta name="description" content="@yield('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
+    <meta name="description" content="@yield('meta_description', 'Portal Resmi Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
     <meta name="keywords" content="@yield('meta_keywords', 'IKA SMAN 8 Bone, IKA SMAN Kajuara, Alumni SMAN 8 Bone, Alumni SMAN Kajuara, Portal Alumni Bone, Sekolah SMAN 8 Bone')">
-    <meta name="author" content="Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone">
+    <meta name="author" content="Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
 
@@ -17,7 +17,7 @@
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('title', 'Beranda') - IKA SMAN Kajuara / IKA SMAN 8 Bone">
-    <meta property="og:description" content="@yield('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
+    <meta property="og:description" content="@yield('meta_description', 'Portal Resmi Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
     <meta property="og:image" content="@yield('meta_image', asset('assets/images/meta_image.png'))">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -27,7 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ url()->current() }}">
     <meta name="twitter:title" content="@yield('title', 'Beranda') - IKA SMAN Kajuara / IKA SMAN 8 Bone">
-    <meta name="twitter:description" content="@yield('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Portal Resmi Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone. Wadah silaturahmi, jaringan profesional, berita kegiatan, direktori alumni, dan pengabdian almamater.')">
     <meta name="twitter:image" content="@yield('meta_image', asset('assets/images/meta_image.png'))">
 
     <!-- Favicon -->

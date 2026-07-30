@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Beranda')
-@section('meta_description', 'Portal Resmi Ikatan Alumni SMAN Kajuara / IKA SMAN 8 Bone. Menjalin silaturahmi, jaringan profesional, informasi berita, direktori alumni, dan pengabdian alumni di seluruh nusantara.')
+@section('meta_description', 'Portal Resmi Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone. Menjalin silaturahmi, jaringan profesional, informasi berita, direktori alumni, dan pengabdian alumni di seluruh nusantara.')
 
 @section('content')
 <!-- Hero Section with background.webp Image & Modern Dark Overlay -->
@@ -14,7 +14,7 @@
             <!-- Tagline Pill -->
             <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/30 text-white text-xs font-semibold uppercase tracking-wider mb-8 shadow-lg">
                 <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-                <span>Portal Resmi Ikatan Alumni SMAN Kajuara / SMAN 8 Bone</span>
+                <span>Portal Resmi Ikatan Keluarga Alumni SMAN Kajuara / SMAN 8 Bone</span>
             </div>
 
             <!-- Main Heading -->

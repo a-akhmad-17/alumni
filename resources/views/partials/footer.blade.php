@@ -11,7 +11,7 @@
                     </div>
                 </div>
                 <p class="text-xs text-slate-500 leading-relaxed max-w-sm">
-                    Wadah silaturahmi, jaringan profesional, dan pengabdian alumni Ikatan Alumni SMAN Kajuara / SMAN 8 Bone untuk almamater dan masyarakat.
+                    Wadah silaturahmi, jaringan profesional, dan pengabdian alumni Ikatan Keluarga Alumni SMAN Kajuara / SMAN 8 Bone untuk almamater dan masyarakat.
                 </p>
                 <div class="flex space-x-2 pt-1">
                     <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs"><i class="fa-brands fa-instagram"></i></a>
