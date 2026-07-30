@@ -40,21 +40,23 @@
                 </div>
             </div>
 
-            <!-- Col 3: Jam Layanan & Informasi -->
+            <!-- Col 3: Layanan KTA Alumni -->
             <div class="lg:col-span-2">
-                <h4 class="font-heading font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">Jam Layanan</h4>
+                <h4 class="font-heading font-bold text-slate-900 text-xs uppercase tracking-wider mb-3 flex items-center">
+                    <i class="fa-solid fa-id-card text-amber-500 mr-1.5"></i>KTA Alumni
+                </h4>
                 <div class="space-y-2 text-xs">
-                    <p class="flex items-start">
-                        <i class="fa-solid fa-clock text-slate-700 mr-2 mt-0.5 shrink-0"></i>
-                        <span>Senin - Sabtu: 08.00 - 16.00 WITA</span>
+                    <p class="flex items-center text-slate-700">
+                        <i class="fa-solid fa-address-card text-slate-700 mr-2 shrink-0"></i>
+                        <span>E-KTA Digital Alumni</span>
                     </p>
-                    <p class="flex items-center">
-                        <i class="fa-solid fa-calendar-xmark text-slate-700 mr-2 shrink-0"></i>
-                        <span>Minggu & Libur: Tutup</span>
+                    <p class="flex items-center text-slate-700">
+                        <i class="fa-solid fa-shield-check text-emerald-600 mr-2 shrink-0"></i>
+                        <span>Terverifikasi Sistem</span>
                     </p>
-                    <p class="flex items-center">
-                        <i class="fa-solid fa-id-card text-slate-700 mr-2 shrink-0"></i>
-                        <span>Layanan Alumni</span>
+                    <p class="flex items-center text-slate-700">
+                        <i class="fa-solid fa-qrcode text-slate-700 mr-2 shrink-0"></i>
+                        <span>Integrasi QR Anggota</span>
                     </p>
                 </div>
             </div>
