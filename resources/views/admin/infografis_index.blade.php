@@ -3,7 +3,7 @@
 @section('title', 'Kelola Infografis & Popup Flyer')
 
 @section('content')
-<div x-data="{ modalAdd: false, modalEdit: false, selectedInfografis: {} }">
+<div x-data="{ modalAdd: {{ $errors->any() ? 'true' : 'false' }}, modalEdit: false, selectedInfografis: {} }">
     
     <!-- Top Header -->
     <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -37,6 +37,20 @@
                 <i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i>
                 <span>{{ session('error') }}</span>
             </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold shadow-sm space-y-1">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600 text-base"></i>
+                <span>Gagal menyimpan data infografis:</span>
+            </div>
+            <ul class="list-disc list-inside pl-5 font-normal">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -80,7 +94,7 @@
                     @forelse($infografisList as $item)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="py-3 px-4">
-                                <img src="{{ asset($item->gambar) }}" alt="Flyer" class="w-16 h-20 object-cover rounded-lg border border-slate-200">
+                                <img src="{{ str_starts_with($item->gambar, 'http') ? $item->gambar : asset($item->gambar) }}" alt="Flyer" class="w-16 h-20 object-cover rounded-lg border border-slate-200">
                             </td>
                             <td class="py-3 px-4 max-w-xs">
                                 <h4 class="font-bold text-slate-900 text-sm line-clamp-1">{{ $item->judul }}</h4>

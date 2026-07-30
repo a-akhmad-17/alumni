@@ -378,7 +378,7 @@
                      x-transition:leave-start="opacity-100 translate-x-0"
                      x-transition:leave-end="opacity-0 -translate-x-4"
                      class="absolute inset-0 w-full h-full flex items-center justify-center bg-slate-950">
-                    <img src="{{ asset($flyer->gambar) }}" alt="{{ $flyer->judul }}" class="w-full h-full object-contain">
+                    <img src="{{ str_starts_with($flyer->gambar, 'http') ? $flyer->gambar : asset($flyer->gambar) }}" alt="{{ $flyer->judul }}" class="w-full h-full object-contain">
                 </div>
             @endforeach
 

@@ -41,7 +41,7 @@
                 <div>
                     <!-- Image Card with Zoom Click -->
                     <div class="w-full aspect-[4/5] bg-slate-950 overflow-hidden relative cursor-pointer" @click="lightboxOpen = true; activeFlyer = @js($item)">
-                        <img src="{{ asset($item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ str_starts_with($item->gambar, 'http') ? $item->gambar : asset($item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span class="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-slate-900 font-bold text-xs shadow-lg">
                                 <i class="fa-solid fa-expand mr-1.5 text-amber-500"></i>Perbesar Flyer
@@ -108,7 +108,7 @@
 
             <div class="overflow-y-auto pr-1">
                 <div class="w-full bg-slate-950 rounded-2xl overflow-hidden mb-4 border border-slate-200">
-                    <img :src="'{{ url('/') }}/' + activeFlyer.gambar" :alt="activeFlyer.judul" class="w-full h-auto max-h-[60vh] object-contain mx-auto">
+                    <img :src="activeFlyer.gambar ? (activeFlyer.gambar.startsWith('http') ? activeFlyer.gambar : '{{ url('/') }}/' + activeFlyer.gambar) : ''" :alt="activeFlyer.judul" class="w-full h-auto max-h-[60vh] object-contain mx-auto">
                 </div>
 
                 <h3 class="font-heading font-extrabold text-xl text-slate-900 mb-2" x-text="activeFlyer.judul"></h3>

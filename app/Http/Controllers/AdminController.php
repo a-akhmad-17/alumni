@@ -1027,11 +1027,24 @@ class AdminController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'link_tautan' => 'nullable|url|max:500',
+            'link_tautan' => 'nullable|string|max:500',
             'gambar' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
             'is_popup' => 'nullable|boolean',
             'status' => 'nullable|string|max:20',
         ]);
+
+        $linkTautan = $request->link_tautan;
+        if ($linkTautan && !preg_match("~^(?:f|ht)tps?://~i", $linkTautan)) {
+            $linkTautan = "https://" . $linkTautan;
+        }
+
+        $isPopup = $request->has('is_popup') ? 1 : 0;
+        if ($isPopup == 1) {
+            $currentActiveCount = Infografis::where('is_popup', 1)->where('status', 'published')->count();
+            if ($currentActiveCount >= 3) {
+                return back()->with('error', 'Gagal mengaktifkan Popup: Maksimal 3 Flyer Announcement Popup yang dapat diaktifkan bersamaan! Silakan nonaktifkan salah satu flyer terlebih dahulu.')->withInput();
+            }
+        }
 
         $gambarUrl = $this->uploadAndConvertToWebp($request->file('gambar'), 'infografis');
 
@@ -1041,8 +1054,8 @@ class AdminController extends Controller
             'slug' => Str::slug($request->judul) . '-' . rand(100, 999),
             'deskripsi' => $request->deskripsi,
             'gambar' => $gambarUrl,
-            'link_tautan' => $request->link_tautan,
-            'is_popup' => $request->has('is_popup') ? 1 : 0,
+            'link_tautan' => $linkTautan,
+            'is_popup' => $isPopup,
             'status' => $request->status ?? 'published',
         ]);
 
@@ -1055,11 +1068,24 @@ class AdminController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'link_tautan' => 'nullable|url|max:500',
+            'link_tautan' => 'nullable|string|max:500',
             'gambar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'is_popup' => 'nullable|boolean',
             'status' => 'nullable|string|max:20',
         ]);
+
+        $linkTautan = $request->link_tautan;
+        if ($linkTautan && !preg_match("~^(?:f|ht)tps?://~i", $linkTautan)) {
+            $linkTautan = "https://" . $linkTautan;
+        }
+
+        $isPopup = $request->has('is_popup') ? 1 : 0;
+        if ($isPopup == 1 && !$infografis->is_popup) {
+            $currentActiveCount = Infografis::where('is_popup', 1)->where('status', 'published')->count();
+            if ($currentActiveCount >= 3) {
+                return back()->with('error', 'Gagal mengaktifkan Popup: Maksimal 3 Flyer Announcement Popup yang dapat diaktifkan bersamaan!');
+            }
+        }
 
         $gambarUrl = $infografis->gambar;
         if ($request->hasFile('gambar')) {
@@ -1071,8 +1097,8 @@ class AdminController extends Controller
             'slug' => Str::slug($request->judul),
             'deskripsi' => $request->deskripsi,
             'gambar' => $gambarUrl,
-            'link_tautan' => $request->link_tautan,
-            'is_popup' => $request->has('is_popup') ? 1 : 0,
+            'link_tautan' => $linkTautan,
+            'is_popup' => $isPopup,
             'status' => $request->status ?? $infografis->status ?? 'published',
         ]);
 
