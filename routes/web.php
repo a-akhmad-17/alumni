@@ -14,8 +14,13 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StrukturController;
 use Illuminate\Support\Facades\Route;
 
-// Dynamic XML Sitemap Route
+// Dynamic XML Sitemap & Robots.txt Routes
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', function () {
+    $sitemapUrl = url('/sitemap.xml');
+    $content = "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /login\n\nSitemap: {$sitemapUrl}\n";
+    return response($content, 200)->header('Content-Type', 'text/plain');
+});
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
