@@ -114,9 +114,9 @@
 
             <!-- Mobile Menu Toggle Button -->
             <div class="md:hidden flex items-center">
-                <button @click="open = !open" type="button" class="p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:outline-none">
-                    <i x-show="!open" class="fa-solid fa-bars text-xl"></i>
-                    <i x-show="open" class="fa-solid fa-xmark text-xl" style="display: none;"></i>
+                <button @click="open = !open" type="button" class="p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:outline-none" :aria-expanded="open.toString()" aria-label="Buka atau tutup menu navigasi">
+                    <i x-show="!open" class="fa-solid fa-bars text-xl" aria-hidden="true"></i>
+                    <i x-show="open" class="fa-solid fa-xmark text-xl" style="display: none;" aria-hidden="true"></i>
                 </button>
             </div>
         </div>

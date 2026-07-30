@@ -59,6 +59,7 @@
                     <iframe 
                         src="https://maps.google.com/maps?q=SMA+Negeri+8+Bone+Kajuara+Sulawesi+Selatan&t=&z=15&ie=UTF8&iwloc=&output=embed" 
                         class="w-full h-44 border-0" 
+                        title="Peta Lokasi Sekretariat IKA SMAN Kajuara / SMAN 8 Bone di Kajuara, Kabupaten Bone"
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade">
