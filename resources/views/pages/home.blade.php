@@ -323,16 +323,33 @@
         showFlyerPopup: false, 
         activeSlide: 0, 
         totalSlides: {{ $popupFlyers->count() }},
+        dontShowToday: false,
+        getTodayKey() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        },
         init() {
-            if (!sessionStorage.getItem('hideFlyerPopup')) {
+            const today = this.getTodayKey();
+            const savedHideDate = localStorage.getItem('hideFlyerPopupUntilDate');
+            if (savedHideDate === today) {
+                this.dontShowToday = true;
+            } else {
                 setTimeout(() => { this.showFlyerPopup = true; }, 600);
             }
         },
-        closeModal(dontShowAgain = false) {
-            this.showFlyerPopup = false;
-            if (dontShowAgain) {
-                sessionStorage.setItem('hideFlyerPopup', 'true');
+        toggleDontShowToday() {
+            const today = this.getTodayKey();
+            if (this.dontShowToday) {
+                localStorage.setItem('hideFlyerPopupUntilDate', today);
+            } else {
+                localStorage.removeItem('hideFlyerPopupUntilDate');
             }
+        },
+        closeModal() {
+            if (this.dontShowToday) {
+                localStorage.setItem('hideFlyerPopupUntilDate', this.getTodayKey());
+            }
+            this.showFlyerPopup = false;
         },
         nextSlide() {
             this.activeSlide = (this.activeSlide + 1) % this.totalSlides;
@@ -423,11 +440,13 @@
 
         <!-- Footer Control Buttons -->
         <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-            <button @click="closeModal(true)" class="text-[11px] text-slate-400 hover:text-slate-700 font-semibold underline">
-                Jangan Tampilkan Lagi
-            </button>
-            <button @click="closeModal()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md transition">
-                Tutup Pendaftaran
+            <label class="inline-flex items-center space-x-2 cursor-pointer text-xs font-semibold text-slate-600 hover:text-slate-900 select-none">
+                <input type="checkbox" x-model="dontShowToday" @change="toggleDontShowToday()" class="w-4 h-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500 cursor-pointer">
+                <span>Jangan tampilkan lagi hari ini</span>
+            </label>
+
+            <button @click="closeModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition">
+                Tutup
             </button>
         </div>
     </div>
