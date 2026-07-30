@@ -3,6 +3,16 @@
 @section('title', 'Beranda')
 @section('meta_description', 'Portal Resmi Ikatan Keluarga Alumni SMAN Kajuara / IKA SMAN 8 Bone. Menjalin silaturahmi, jaringan profesional, informasi berita, direktori alumni, dan pengabdian alumni di seluruh nusantara.')
 
+@push('preloads')
+{{-- Preload hero background image (LCP resource) agar bisa ditemukan preload scanner browser --}}
+<link rel="preload" as="image" href="{{ asset('assets/images/background.webp') }}" fetchpriority="high">
+@endpush
+
+@push('apexcharts')
+{{-- ApexCharts hanya dimuat di halaman beranda (dibutuhkan untuk grafik analitik alumni) --}}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
+@endpush
+
 @section('content')
 <!-- Hero Section with background.webp Image & Modern Dark Overlay -->
 <section class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 text-white bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('assets/images/background.webp') }}');">

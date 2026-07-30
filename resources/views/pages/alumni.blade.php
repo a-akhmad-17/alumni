@@ -3,6 +3,11 @@
 @section('title', 'Direktori & Demografi Alumni')
 @section('meta_description', 'Direktori Resmi Alumni IKA SMAN Kajuara / IKA SMAN 8 Bone. Cari alumni per angkatan, domisili kota, dan analisis grafik sebaran kategori profesi.')
 
+@push('apexcharts')
+{{-- ApexCharts dimuat di halaman alumni untuk grafik demografi --}}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
+@endpush
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ modalOpen: false, modalRegister: false, selectedAlumni: {} }">
     

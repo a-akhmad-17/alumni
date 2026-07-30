@@ -103,8 +103,11 @@
     <!-- Alpine.js Interactivity -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- ApexCharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- ApexCharts: hanya dimuat bila dibutuhkan oleh halaman tertentu -->
+    @stack('apexcharts')
+
+    <!-- LCP Resource Preload (setiap halaman bisa push preload hint via @push('preloads')) -->
+    @stack('preloads')
 
     <style>
         .glass-header {

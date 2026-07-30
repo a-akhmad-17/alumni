@@ -32,8 +32,8 @@
     <!-- Alpine.js Interactivity -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- ApexCharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- ApexCharts (selalu dibutuhkan di dashboard admin) -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
 
     <style>
         .admin-sidebar-slate {
