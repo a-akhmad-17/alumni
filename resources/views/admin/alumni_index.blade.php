@@ -2,6 +2,7 @@
 
 @section('title', 'Manajemen Alumni - Dasbor Internal')
 
+@section('content')
 <div class="space-y-6" x-data="{
     modalTambah: false,
     modalEdit: false,
