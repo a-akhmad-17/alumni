@@ -57,7 +57,6 @@
 
         <div class="border-t border-slate-200 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
             <p class="text-center sm:text-left">&copy; {{ date('Y') }} IKA SMAN Kajuara / IKA SMAN 8 Bone. All rights reserved.</p>
-            <p class="shrink-0">Powered by <span class="text-slate-900 font-bold">Alexa Enterprise Engine</span></p>
         </div>
     </div>
 </footer>
