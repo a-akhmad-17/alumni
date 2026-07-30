@@ -120,11 +120,6 @@ class AdminController extends Controller
             $query->where('jenis_kelamin', $request->gender);
         }
 
-        // 6. Filter Alumni Berprestasi
-        if ($request->filled('is_berprestasi') && $request->is_berprestasi == '1') {
-            $query->where('is_berprestasi', 1);
-        }
-
         $alumniList = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         $pendingCount = Alumni::where('status', 'pending')->count();
         $angkatanList = Alumni::distinct()->orderBy('angkatan', 'desc')->pluck('angkatan');
@@ -143,8 +138,6 @@ class AdminController extends Controller
             'domisili' => 'nullable|string|max:150',
             'no_hp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:100',
-            'is_berprestasi' => 'nullable|boolean',
-            'deskripsi_prestasi' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
 
@@ -163,9 +156,8 @@ class AdminController extends Controller
             'domisili' => $request->domisili,
             'no_hp' => $request->no_hp,
             'email' => $request->email,
-            'is_berprestasi' => $request->has('is_berprestasi') ? 1 : 0,
-            'deskripsi_prestasi' => $request->deskripsi_prestasi,
             'foto' => $fotoUrl,
+            'status' => 'approved',
         ]);
 
         return back()->with('success', 'Data alumni berhasil ditambahkan!');
@@ -183,8 +175,6 @@ class AdminController extends Controller
             'domisili' => 'nullable|string|max:150',
             'no_hp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:100',
-            'is_berprestasi' => 'nullable|boolean',
-            'deskripsi_prestasi' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
 
@@ -202,8 +192,6 @@ class AdminController extends Controller
             'domisili' => $request->domisili,
             'no_hp' => $request->no_hp,
             'email' => $request->email,
-            'is_berprestasi' => $request->has('is_berprestasi') ? 1 : 0,
-            'deskripsi_prestasi' => $request->deskripsi_prestasi,
             'foto' => $fotoUrl,
         ]);
 
@@ -391,7 +379,6 @@ class AdminController extends Controller
         if ($request->filled('angkatan')) $query->where('angkatan', $request->angkatan);
         if ($request->filled('domisili')) $query->where('domisili', 'like', "%{$request->domisili}%");
         if ($request->filled('gender')) $query->where('jenis_kelamin', $request->gender);
-        if ($request->filled('is_berprestasi')) $query->where('is_berprestasi', 1);
 
         $alumniList = $query->orderBy('angkatan', 'desc')->orderBy('nama', 'asc')->get();
 
@@ -404,7 +391,7 @@ class AdminController extends Controller
             "Expires" => "0"
         ];
 
-        $columns = ['No', 'Nama Lengkap', 'Jenis Kelamin', 'Angkatan', 'Profesi / Pekerjaan', 'Domisili Kota', 'No WhatsApp / HP', 'Email', 'Status Verifikasi', 'Alumni Berprestasi', 'Catatan Prestasi'];
+        $columns = ['No', 'Nama Lengkap', 'Jenis Kelamin', 'Angkatan', 'Profesi / Pekerjaan', 'Domisili Kota', 'No WhatsApp / HP', 'Email', 'Status Verifikasi'];
 
         $callback = function () use ($columns, $alumniList) {
             $file = fopen('php://output', 'w');
@@ -422,8 +409,6 @@ class AdminController extends Controller
                     $alm->no_hp ?? '-',
                     $alm->email ?? '-',
                     strtoupper($alm->status ?? 'approved'),
-                    $alm->is_berprestasi ? 'Ya' : 'Tidak',
-                    $alm->deskripsi_prestasi ?? '-',
                 ]);
             }
             fclose($file);
@@ -448,7 +433,6 @@ class AdminController extends Controller
         if ($request->filled('angkatan')) $query->where('angkatan', $request->angkatan);
         if ($request->filled('domisili')) $query->where('domisili', 'like', "%{$request->domisili}%");
         if ($request->filled('gender')) $query->where('jenis_kelamin', $request->gender);
-        if ($request->filled('is_berprestasi')) $query->where('is_berprestasi', 1);
 
         $alumniList = $query->orderBy('angkatan', 'desc')->orderBy('nama', 'asc')->get();
 

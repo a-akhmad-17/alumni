@@ -127,9 +127,6 @@
                     <td style="text-align: center;">{{ $index + 1 }}</td>
                     <td>
                         <strong>{{ $alm->nama }}</strong>
-                        @if($alm->is_berprestasi)
-                            <span style="color: #d97706; font-size: 10px;">⭐ Featured</span>
-                        @endif
                     </td>
                     <td style="text-align: center;">{{ $alm->jenis_kelamin == 'Perempuan' ? 'P' : 'L' }}</td>
                     <td style="text-align: center;">{{ $alm->angkatan }}</td>

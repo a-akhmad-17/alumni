@@ -209,16 +209,10 @@
             </div>
 
             <!-- Action Filter Row -->
-            <div class="flex items-center justify-between pt-2 border-t border-slate-200">
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" name="is_berprestasi" value="1" {{ request('is_berprestasi') == '1' ? 'checked' : '' }} class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
-                    <span class="text-xs font-bold text-slate-700">
-                        <i class="fa-solid fa-star text-amber-500 mr-1"></i>Hanya Tampilkan Alumni Berprestasi ⭐
-                    </span>
-                </label>
+            <div class="flex items-center justify-end pt-2 border-t border-slate-200">
 
                 <div class="flex items-center space-x-2">
-                    @if(request()->hasAny(['q', 'angkatan', 'domisili', 'gender', 'is_berprestasi', 'status']))
+                    @if(request()->hasAny(['q', 'angkatan', 'domisili', 'gender', 'status']))
                         <a href="{{ route('admin.alumni') }}" class="px-3 py-2 bg-slate-200 text-slate-700 hover:bg-slate-300 text-xs font-semibold rounded-xl transition flex items-center">
                             <i class="fa-solid fa-rotate-left mr-1"></i>Reset Filter
                         </a>
@@ -311,12 +305,6 @@
                                 @else
                                     <span class="px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-extrabold uppercase inline-block">
                                         <i class="fa-solid fa-ban mr-1"></i>Ditolak
-                                    </span>
-                                @endif
-
-                                @if($alm->is_berprestasi)
-                                    <span class="mt-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[9px] font-extrabold uppercase block w-max">
-                                        <i class="fa-solid fa-star text-amber-500 mr-0.5"></i>Berprestasi
                                     </span>
                                 @endif
                             </td>
@@ -476,19 +464,6 @@
                     </div>
                 </div>
 
-                <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-3">
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" name="is_berprestasi" value="1" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
-                        <span class="text-xs font-bold text-amber-900 uppercase tracking-wider">
-                            <i class="fa-solid fa-star text-amber-500 mr-1"></i>Tampilkan sebagai Alumni Berprestasi di Beranda
-                        </span>
-                    </label>
-                    <div>
-                        <label class="block text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-1">Catatan Prestasi / Pencapaian</label>
-                        <input type="text" name="deskripsi_prestasi" placeholder="Misal: Peraih Beasiswa LN / Tokoh Pengusaha..." class="w-full px-3 py-2 bg-white border border-amber-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
-                    </div>
-                </div>
-
                 <div class="pt-4 flex justify-end space-x-3">
                     <button type="button" @click="modalTambah = false" class="px-5 py-2.5 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl border border-slate-300">Batal</button>
                     <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-md">Simpan Data</button>
@@ -564,19 +539,6 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ganti Foto Profil (Opsional)</label>
                         <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white">
-                    </div>
-                </div>
-
-                <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-3">
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" name="is_berprestasi" value="1" :checked="editAlumniData.is_berprestasi == 1" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
-                        <span class="text-xs font-bold text-amber-900 uppercase tracking-wider">
-                            <i class="fa-solid fa-star text-amber-500 mr-1"></i>Tampilkan sebagai Alumni Berprestasi di Beranda
-                        </span>
-                    </label>
-                    <div>
-                        <label class="block text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-1">Catatan Prestasi / Pencapaian</label>
-                        <input type="text" name="deskripsi_prestasi" x-model="editAlumniData.deskripsi_prestasi" placeholder="Misal: Peraih Beasiswa LN / Tokoh Pengusaha..." class="w-full px-3 py-2 bg-white border border-amber-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-slate-900">
                     </div>
                 </div>
 

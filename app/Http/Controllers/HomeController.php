@@ -130,15 +130,6 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        // Highlight Alumni Berprestasi / Inspiratif (HANYA alumni yang secara khusus ditandai is_berprestasi = 1 oleh admin)
-        $alumniHighlights = Alumni::where('is_berprestasi', 1)
-            ->where(function($q) {
-                $q->where('status', 'approved')->orWhereNull('status');
-            })
-            ->orderBy('updated_at', 'desc')
-            ->take(8)
-            ->get();
-
         // Recent Galeri Preview
         $galeriPreviews = Galeri::orderBy('created_at', 'desc')->take(4)->get();
 
@@ -162,7 +153,6 @@ class HomeController extends Controller
             'trendRegistrasi',
             'trendKegiatan',
             'beritaHighlights',
-            'alumniHighlights',
             'galeriPreviews',
             'availableYears',
             'chartYear',

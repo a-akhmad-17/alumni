@@ -317,54 +317,6 @@
     </div>
 </section>
 
-<!-- Alumni Spotlight Cards (Hanya muncul jika admin telah memilih alumni berprestasi) -->
-@if(isset($alumniHighlights) && $alumniHighlights->count() > 0)
-<section class="py-16 bg-slate-100/60 border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="text-amber-600 font-semibold text-xs uppercase tracking-wider block mb-2">Inspirasi Alumni</span>
-            <h2 class="font-heading font-bold text-3xl text-slate-900">Alumni Berprestasi</h2>
-            <p class="text-sm text-slate-600 mt-2">Mengenal lebih dekat kiprah para alumni SMAN Kajuara / SMAN 8 Bone di berbagai penjuru nusantara.</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($alumniHighlights as $alumni)
-                <div class="glass-card rounded-3xl p-6 text-center group hover:border-amber-400 transition duration-300 bg-white border border-slate-200 shadow-md relative overflow-hidden">
-                    @if($alumni->is_berprestasi)
-                        <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 font-black text-[9px] uppercase px-3 py-1 rounded-bl-xl shadow-sm">
-                            <i class="fa-solid fa-star mr-1"></i>Featured
-                        </div>
-                    @endif
-
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-slate-900 to-slate-800 p-1 mx-auto mb-4 group-hover:scale-105 transition-transform shadow-lg relative">
-                        @if($alumni->foto)
-                            <img src="{{ asset($alumni->foto) }}" alt="{{ $alumni->nama }}" class="w-full h-full object-cover rounded-full">
-                        @else
-                            <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-amber-400 font-heading font-extrabold text-xl uppercase border-2 border-white">
-                                {{ substr($alumni->nama, 0, 2) }}
-                            </div>
-                        @endif
-                    </div>
-                    <h3 class="font-heading font-extrabold text-slate-900 text-base group-hover:text-amber-600 transition-colors">{{ $alumni->nama }}</h3>
-                    <div class="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 text-[11px] font-bold my-2 border border-slate-200">
-                        Angkatan {{ $alumni->angkatan }}
-                    </div>
-                    <p class="text-xs text-slate-800 font-bold truncate mb-1">{{ $alumni->profesi ?? 'Alumni SMAN 8 Bone' }}</p>
-                    
-                    @if($alumni->deskripsi_prestasi)
-                        <p class="text-[11px] text-amber-700 font-semibold line-clamp-2 px-2 my-1 bg-amber-50 py-1 rounded-lg border border-amber-200">
-                            <i class="fa-solid fa-award mr-1"></i>{{ $alumni->deskripsi_prestasi }}
-                        </p>
-                    @endif
-                    
-                    <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-location-dot mr-1"></i>{{ $alumni->domisili ?? 'Indonesia' }}</p>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
 <!-- 📢 AUTO POPUP ANNOUNCEMENT FLYER CAROUSEL (POWERED BY ALPINE.JS) -->
 @if(isset($popupFlyers) && $popupFlyers->count() > 0)
 <div x-data="{ 
