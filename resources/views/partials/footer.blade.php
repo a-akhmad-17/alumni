@@ -29,15 +29,11 @@
                 <div class="space-y-3 text-xs">
                     <p class="flex items-start">
                         <i class="fa-solid fa-location-dot text-slate-700 mr-2.5 mt-0.5 shrink-0"></i>
-                        <span class="leading-relaxed">Jl. H. Abd. Hamid, Kajuara, Kab. Bone, Sulsel 92776</span>
+                        <span class="leading-relaxed">Jl. Pahlawan No.Kel, Awang Tangka, Kec. Kajuara, Kabupaten Bone, Sulawesi Selatan 92776, Indonesia</span>
                     </p>
                     <p class="flex items-center">
                         <i class="fa-solid fa-envelope text-slate-700 mr-2.5 shrink-0"></i>
                         <span>info@ikasman8bone.org</span>
-                    </p>
-                    <p class="flex items-center">
-                        <i class="fa-solid fa-phone text-slate-700 mr-2.5 shrink-0"></i>
-                        <span>+62 812-3456-7890</span>
                     </p>
                 </div>
             </div>
