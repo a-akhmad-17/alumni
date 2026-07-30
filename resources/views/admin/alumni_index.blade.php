@@ -435,7 +435,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Angkatan *</label>
-                        <input type="number" name="angkatan" required min="1970" max="2030" placeholder="2015" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
+                        <input type="number" name="angkatan" required min="1988" max="2026" placeholder="Contoh: 1988 atau 2015" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Domisili Kota</label>
@@ -526,7 +526,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Angkatan *</label>
-                        <input type="number" name="angkatan" x-model="editAlumniData.angkatan" required min="1970" max="2030" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
+                        <input type="number" name="angkatan" x-model="editAlumniData.angkatan" required min="1988" max="2026" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Domisili Kota</label>

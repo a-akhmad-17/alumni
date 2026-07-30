@@ -96,7 +96,7 @@ class AlumniController extends Controller
         $request->validate([
             'nama' => 'required|string|max:150',
             'jenis_kelamin' => 'required|string|max:20',
-            'angkatan' => 'required|integer|min:1970|max:2030',
+            'angkatan' => 'required|integer|min:1988|max:2026',
             'profesi' => 'nullable|string|max:150',
             'kategori_profesi' => 'nullable|string|max:100',
             'domisili' => 'nullable|string|max:150',

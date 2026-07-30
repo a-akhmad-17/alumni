@@ -74,7 +74,7 @@ class HomeController extends Controller
         };
 
         $dekadeData = [
-            '1990 - 1999' => $dekadeQuery(1990, 1999),
+            '1988 - 1999' => $dekadeQuery(1988, 1999),
             '2000 - 2009' => $dekadeQuery(2000, 2009),
             '2010 - 2019' => $dekadeQuery(2010, 2019),
             '2020 - 2026' => $dekadeQuery(2020, 2026),

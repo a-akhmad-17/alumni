@@ -376,7 +376,7 @@
                 ],
                 8 => [
                     'nama' => 'Seksi Koordinator Lintas Angkatan',
-                    'tujuan' => 'Menjembatani komunikasi dan jaringan kebersamaan perwakilan alumni dari setiap angkatan (1990–2026).',
+                    'tujuan' => 'Menjembatani komunikasi dan jaringan kebersamaan perwakilan alumni dari setiap angkatan (1988–2026).',
                     'icon' => 'fa-users-line text-blue-600',
                     'langkah' => [
                         'Penanggung Jawab Angkatan' => 'Menjadi penghubung informasi resmi pengurus pusat ke alumni tiap angkatan.',
