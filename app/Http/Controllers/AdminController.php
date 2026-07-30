@@ -234,6 +234,19 @@ class AdminController extends Controller
         return back()->with('success', 'Data alumni berhasil dihapus!');
     }
 
+    public function bulkDeleteAlumni(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'required|string',
+        ]);
+
+        $count = Alumni::whereIn('id', $request->ids)->count();
+        Alumni::whereIn('id', $request->ids)->delete();
+
+        return back()->with('success', "Berhasil menghapus {$count} data alumni terpilih!");
+    }
+
     // Unduh Template Excel / CSV Pendaftaran Alumni Massal
     public function downloadTemplateAlumni()
     {

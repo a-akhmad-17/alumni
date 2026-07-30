@@ -2,8 +2,24 @@
 
 @section('title', 'Manajemen Alumni - Dasbor Internal')
 
-@section('content')
-<div class="space-y-6" x-data="{ modalTambah: false, modalEdit: false, modalImport: false, editAlumniData: {} }">
+<div class="space-y-6" x-data="{
+    modalTambah: false,
+    modalEdit: false,
+    modalImport: false,
+    editAlumniData: {},
+    selectedIds: [],
+    allIds: @js($alumniList->pluck('id')->toArray()),
+    toggleSelectAll(e) {
+        if (e.target.checked) {
+            this.selectedIds = [...this.allIds];
+        } else {
+            this.selectedIds = [];
+        }
+    },
+    get isAllSelected() {
+        return this.allIds.length > 0 && this.selectedIds.length === this.allIds.length;
+    }
+}">
     <!-- Header Card & Export/Import Action Bar -->
     <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
@@ -213,10 +229,41 @@
             </div>
         </form>
 
+        <!-- Floating Bulk Action Bar -->
+        <div x-show="selectedIds.length > 0" x-transition.opacity class="p-4 bg-slate-900 text-white rounded-2xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-800">
+            <div class="flex items-center space-x-3">
+                <span class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black text-sm flex items-center justify-center shadow-sm" x-text="selectedIds.length"></span>
+                <div>
+                    <h4 class="font-bold text-sm text-white">Data Alumni Terpilih</h4>
+                    <p class="text-xs text-slate-400">Pilih aksi masal untuk data alumni yang anda centang di tabel</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button type="button" @click="selectedIds = []" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-xl transition">
+                    Batal Pilih
+                </button>
+
+                <form action="{{ route('admin.alumni.bulkDelete') }}" method="POST" onsubmit="return confirm('Apakah Boss yakin ingin MENGHAPUS SEMUA (' + selectedIds.length + ') data alumni terpilih ini? Data yang dihapus tidak dapat dikembalikan.')">
+                    @csrf
+                    @method('DELETE')
+                    <template x-for="id in selectedIds" :key="id">
+                        <input type="hidden" name="ids[]" :value="id">
+                    </template>
+                    <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center">
+                        <i class="fa-solid fa-trash mr-1.5"></i>Hapus <span class="mx-1" x-text="selectedIds.length"></span> Terpilih
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-slate-700">
                 <thead class="bg-slate-50 text-xs uppercase font-bold text-slate-500 border-b border-slate-200">
                     <tr>
+                        <th class="p-3 w-10 text-center">
+                            <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll($event)" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500 cursor-pointer" title="Pilih Semua di Halaman Ini">
+                        </th>
                         <th class="p-3">Foto</th>
                         <th class="p-3">Nama Lengkap</th>
                         <th class="p-3">Angkatan</th>
@@ -228,7 +275,10 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($alumniList as $alm)
-                        <tr class="hover:bg-slate-50 transition">
+                        <tr class="hover:bg-slate-50 transition" :class="selectedIds.includes(@js($alm->id)) ? 'bg-amber-50/60' : ''">
+                            <td class="p-3 text-center">
+                                <input type="checkbox" :value="@js($alm->id)" x-model="selectedIds" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500 cursor-pointer">
+                            </td>
                             <td class="p-3">
                                 @if($alm->foto)
                                     <img src="{{ asset($alm->foto) }}" alt="{{ $alm->nama }}" class="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm">
@@ -304,7 +354,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-8 text-center text-slate-400 italic">Belum ada data alumni yang sesuai filter.</td>
+                            <td colspan="8" class="p-8 text-center text-slate-400 italic">Belum ada data alumni yang sesuai filter.</td>
                         </tr>
                     @endforelse
                 </tbody>

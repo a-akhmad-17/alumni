@@ -55,6 +55,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::put('/alumni/{id}', [AdminController::class, 'updateAlumni'])->name('alumni.update');
     Route::put('/alumni/{id}/approve', [AdminController::class, 'approveAlumni'])->name('alumni.approve');
     Route::put('/alumni/{id}/reject', [AdminController::class, 'rejectAlumni'])->name('alumni.reject');
+    Route::delete('/alumni/bulk-delete', [AdminController::class, 'bulkDeleteAlumni'])->name('alumni.bulkDelete');
     Route::delete('/alumni/{id}', [AdminController::class, 'deleteAlumni'])->name('alumni.delete');
 
     // Impor & Ekspor Data Alumni Massal
