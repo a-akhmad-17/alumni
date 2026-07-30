@@ -14,10 +14,22 @@
                     Wadah resmi silaturahmi, jaringan profesional, dan pengabdian alumni Ikatan Keluarga Alumni SMAN Kajuara / SMAN 8 Bone untuk almamater dan masyarakat.
                 </p>
                 <div class="flex space-x-2 pt-1">
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="Instagram" aria-label="Instagram IKA SMAN Kajuara / SMAN 8 Bone">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                        <span class="sr-only">Instagram IKA SMAN Kajuara / SMAN 8 Bone</span>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="Facebook" aria-label="Facebook IKA SMAN Kajuara / SMAN 8 Bone">
+                        <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+                        <span class="sr-only">Facebook IKA SMAN Kajuara / SMAN 8 Bone</span>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="YouTube" aria-label="YouTube IKA SMAN Kajuara / SMAN 8 Bone">
+                        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                        <span class="sr-only">YouTube IKA SMAN Kajuara / SMAN 8 Bone</span>
+                    </a>
+                    <a href="mailto:info@ikasman8bone.org" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white flex items-center justify-center transition-colors text-xs" title="Email" aria-label="Email IKA SMAN Kajuara / SMAN 8 Bone">
+                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        <span class="sr-only">Email IKA SMAN Kajuara / SMAN 8 Bone</span>
+                    </a>
                 </div>
             </div>
 

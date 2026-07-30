@@ -370,8 +370,9 @@
 
     <div @click.away="closeModal()" class="bg-white rounded-3xl p-4 sm:p-6 max-w-lg w-full border border-slate-200 shadow-2xl relative my-auto overflow-hidden">
         <!-- Close Button -->
-        <button @click="closeModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center z-20 shadow-md transition">
-            <i class="fa-solid fa-xmark text-base"></i>
+        <button @click="closeModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center z-20 shadow-md transition" aria-label="Tutup Pengumuman">
+            <i class="fa-solid fa-xmark text-base" aria-hidden="true"></i>
+            <span class="sr-only">Tutup</span>
         </button>
 
         <!-- Top Header Tag -->
