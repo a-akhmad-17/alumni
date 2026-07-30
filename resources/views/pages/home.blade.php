@@ -317,7 +317,8 @@
     </div>
 </section>
 
-<!-- Alumni Spotlight Cards -->
+<!-- Alumni Spotlight Cards (Hanya muncul jika admin telah memilih alumni berprestasi) -->
+@if(isset($alumniHighlights) && $alumniHighlights->count() > 0)
 <section class="py-16 bg-slate-100/60 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-12">
@@ -362,6 +363,7 @@
         </div>
     </div>
 </section>
+@endif
 @endsection
 
 @push('scripts')

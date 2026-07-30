@@ -129,14 +129,14 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        // Highlight Alumni Berprestasi / Inspiratif (Prioritaskan is_berprestasi = 1)
-        $alumniHighlights = Alumni::where('is_berprestasi', 1)->orderBy('updated_at', 'desc')->take(4)->get();
-        if ($alumniHighlights->count() < 4) {
-            $needed = 4 - $alumniHighlights->count();
-            $alreadyIds = $alumniHighlights->pluck('id')->toArray();
-            $extra = Alumni::whereNotIn('id', $alreadyIds)->orderBy('angkatan', 'desc')->take($needed)->get();
-            $alumniHighlights = $alumniHighlights->concat($extra);
-        }
+        // Highlight Alumni Berprestasi / Inspiratif (HANYA alumni yang secara khusus ditandai is_berprestasi = 1 oleh admin)
+        $alumniHighlights = Alumni::where('is_berprestasi', 1)
+            ->where(function($q) {
+                $q->where('status', 'approved')->orWhereNull('status');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->take(8)
+            ->get();
 
         // Recent Galeri Preview
         $galeriPreviews = Galeri::orderBy('created_at', 'desc')->take(4)->get();
