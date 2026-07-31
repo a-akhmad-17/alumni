@@ -91,6 +91,48 @@ class AlumniController extends Controller
         ));
     }
 
+    private function uploadAndConvertToWebp($file, $folder)
+    {
+        $destinationPath = public_path('uploads/' . $folder);
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        $filename = time() . '_' . \Illuminate\Support\Str::random(8) . '.webp';
+        $targetFile = $destinationPath . '/' . $filename;
+
+        $imageInfo = @getimagesize($file->getRealPath());
+        $mime = $imageInfo['mime'] ?? '';
+
+        $image = null;
+        switch ($mime) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                $image = @imagecreatefromjpeg($file->getRealPath());
+                break;
+            case 'image/png':
+                $image = @imagecreatefrompng($file->getRealPath());
+                if ($image) {
+                    imagepalettetotruecolor($image);
+                    imagealphablending($image, true);
+                    imagesavealpha($image, true);
+                }
+                break;
+            case 'image/webp':
+                $image = @imagecreatefromwebp($file->getRealPath());
+                break;
+        }
+
+        if ($image) {
+            imagewebp($image, $targetFile, 80);
+            imagedestroy($image);
+        } else {
+            $file->move($destinationPath, $filename);
+        }
+
+        return asset('uploads/' . $folder . '/' . $filename);
+    }
+
     public function register(Request $request)
     {
         $request->validate([
@@ -102,7 +144,13 @@ class AlumniController extends Controller
             'domisili' => 'nullable|string|max:150',
             'no_hp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:100',
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
+
+        $fotoUrl = null;
+        if ($request->hasFile('foto')) {
+            $fotoUrl = $this->uploadAndConvertToWebp($request->file('foto'), 'alumni');
+        }
 
         $alumni = Alumni::create([
             'id' => (string) \Illuminate\Support\Str::uuid(),
@@ -114,6 +162,7 @@ class AlumniController extends Controller
             'domisili' => $request->domisili,
             'no_hp' => $request->no_hp,
             'email' => $request->email,
+            'foto' => $fotoUrl,
             'status' => 'pending',
         ]);
 
@@ -124,7 +173,8 @@ class AlumniController extends Controller
         $msg .= "💼 <b>Profesi:</b> " . ($alumni->profesi ?? '-') . "\n";
         $msg .= "📍 <b>Domisili:</b> " . ($alumni->domisili ?? '-') . "\n";
         $msg .= "📲 <b>No HP:</b> " . ($alumni->no_hp ?? '-') . "\n";
-        $msg .= "📧 <b>Email:</b> " . ($alumni->email ?? '-') . "\n\n";
+        $msg .= "📧 <b>Email:</b> " . ($alumni->email ?? '-') . "\n";
+        $msg .= "🖼️ <b>Foto:</b> " . ($alumni->foto ? 'Sudah Diunggah ✅' : 'Belum Ada ❌') . "\n\n";
         $msg .= "<i>Silakan buka Admin Panel untuk Verifikasi & Approval.</i>";
 
         \App\Services\NotificationService::sendTelegramNotification($msg);

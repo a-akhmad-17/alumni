@@ -182,7 +182,7 @@
                 <p class="text-xs text-slate-500 mt-1">Isi data Boss di bawah ini. Data akan diverifikasi oleh Admin/Koordinator Angkatan sebelum dipublikasikan.</p>
             </div>
 
-            <form action="{{ route('alumni.register') }}" method="POST" class="space-y-4">
+            <form action="{{ route('alumni.register') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -239,6 +239,20 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Email (Opsional)</label>
                         <input type="email" name="email" placeholder="alumni@email.com" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Foto Profil / Pas Foto (3x4)</label>
+                    <div class="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-xl flex items-center space-x-3">
+                        <div class="w-12 h-14 bg-slate-200 rounded-lg border border-slate-300 flex items-center justify-center shrink-0 text-slate-400 overflow-hidden" id="photoPreviewContainer">
+                            <i class="fa-solid fa-camera text-xl" id="photoPlaceholderIcon"></i>
+                            <img id="photoPreviewImg" class="w-full h-full object-cover hidden" alt="Preview Foto">
+                        </div>
+                        <div class="flex-1">
+                            <input type="file" name="foto" id="fotoInput" accept="image/jpeg,image/png,image/webp" onchange="previewRegistrationPhoto(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 transition cursor-pointer">
+                            <p class="text-[10px] text-slate-500 mt-1">Format JPG, PNG, WEBP (Maks 5MB). Otomatis tampil di KTA Digital.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -385,5 +399,24 @@
         };
         new ApexCharts(document.querySelector("#chartGender"), optionsGender).render();
     });
+
+    function previewRegistrationPhoto(event) {
+        var input = event.target;
+        var icon = document.getElementById('photoPlaceholderIcon');
+        var img = document.getElementById('photoPreviewImg');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                if (img) {
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                }
+                if (icon) {
+                    icon.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 @endpush
