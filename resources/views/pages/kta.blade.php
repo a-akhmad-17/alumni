@@ -501,12 +501,12 @@
                         var itemId = parseInt(item.getAttribute('data-alumni-id'));
                         if (currentSelected.length > 0) {
                             if (currentSelected.indexOf(itemId) !== -1) {
-                                item.style.display = 'flex';
+                                item.style.setProperty('display', 'flex', 'important');
                             } else {
-                                item.style.display = 'none';
+                                item.style.setProperty('display', 'none', 'important');
                             }
                         } else {
-                            item.style.display = 'flex';
+                            item.style.setProperty('display', 'flex', 'important');
                         }
                     });
                 }
@@ -593,7 +593,7 @@
             border: 2px solid #d97706 !important;
             border-radius: 12px !important;
             padding: 3.5mm !important;
-            display: flex !important;
+            display: flex;
             flex-direction: column !important;
             justify-content: space-between !important;
             overflow: hidden !important;
@@ -601,6 +601,12 @@
             break-inside: avoid !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+        }
+
+        /* Enforce inline style override for unchecked items during print */
+        .print-card-box[style*="display: none"] {
+            display: none !important;
+            visibility: hidden !important;
         }
 
         .print-card-box img {
