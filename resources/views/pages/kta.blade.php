@@ -30,6 +30,21 @@
         <div class="lg:col-span-6 flex flex-col items-center">
             
             @if($selectedAlumni)
+                @php
+                    $verifyUrl = url('/kta/verify/' . $selectedAlumni->id);
+                    $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&format=png&data=' . urlencode($verifyUrl);
+                    $qrDataUri = '';
+                    try {
+                        $qrRaw = @file_get_contents($qrApiUrl);
+                        if ($qrRaw) {
+                            $qrDataUri = 'data:image/png;base64,' . base64_encode($qrRaw);
+                        }
+                    } catch (\Throwable $e) {}
+                    if (!$qrDataUri) {
+                        $qrDataUri = $qrApiUrl;
+                    }
+                @endphp
+
                 <!-- Card Container Container with Flip animation -->
                 <div class="w-full max-w-md perspective-1000 mb-6">
                     <div id="ktaCardContainer" class="relative w-full aspect-[85/54] rounded-3xl transition-transform duration-700 transform-style-3d shadow-2xl cursor-pointer group"
@@ -37,16 +52,16 @@
                          @click="isFlipped = !isFlipped">
                         
                         <!-- ================= CARD FRONT (TAMPAK DEPAN) ================= -->
-                        <div class="absolute inset-0 w-full h-full rounded-3xl p-5 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-2 border-amber-500/40 shadow-2xl flex flex-col justify-between overflow-hidden backface-hidden">
+                        <div class="absolute inset-0 w-full h-full rounded-3xl p-4 sm:p-5 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-2 border-amber-500/40 shadow-2xl flex flex-col justify-between overflow-hidden backface-hidden">
                             <!-- Background Metallic Accents -->
                             <div class="absolute -top-12 -right-12 w-44 h-44 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
                             <div class="absolute -bottom-12 -left-12 w-44 h-44 bg-amber-600/10 rounded-full blur-2xl pointer-events-none"></div>
                             <div class="absolute inset-0 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none"></div>
 
                             <!-- Header Kartu -->
-                            <div class="relative z-10 flex items-center justify-between border-b border-amber-500/30 pb-3">
+                            <div class="relative z-10 flex items-center justify-between border-b border-amber-500/30 pb-2.5">
                                 <div class="flex items-center space-x-3">
-                                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-10 w-auto object-contain drop-shadow-md">
+                                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-9 sm:h-10 w-auto object-contain drop-shadow-md">
                                     <div>
                                         <h3 class="font-heading font-extrabold text-xs tracking-tight text-amber-400 leading-tight uppercase">
                                             IKA SMAN KAJUARA / SMAN 8 BONE
@@ -56,17 +71,17 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] font-black tracking-wider uppercase flex items-center space-x-1">
+                                <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] font-black tracking-wider uppercase flex items-center space-x-1 shrink-0">
                                     <i class="fa-solid fa-circle-check text-[10px]"></i>
                                     <span>VERIFIED</span>
                                 </div>
                             </div>
 
                             <!-- Body Kartu: Foto & Details -->
-                            <div class="relative z-10 grid grid-cols-12 gap-3 items-center py-2">
+                            <div class="relative z-10 grid grid-cols-12 gap-3 items-center py-1.5">
                                 <!-- Foto Frame -->
                                 <div class="col-span-4 flex flex-col items-center">
-                                    <div class="w-20 h-24 sm:w-24 sm:h-28 rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden">
+                                    <div class="w-18 h-22 sm:w-22 sm:h-26 rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden">
                                         @if($selectedAlumni->foto)
                                             <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[14px]">
                                         @else
@@ -92,7 +107,7 @@
                                         Domisili: {{ $selectedAlumni->domisili ?? 'Kajuara, Kab. Bone' }}
                                     </p>
 
-                                    <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
+                                    <div class="pt-1 border-t border-slate-800 flex items-center justify-between">
                                         <span class="text-[9px] font-mono text-slate-400 tracking-wider">
                                             KTA: <strong class="text-amber-400 font-bold">KTA-IKA.{{ $selectedAlumni->angkatan }}.{{ strtoupper(substr(md5($selectedAlumni->id), 0, 5)) }}</strong>
                                         </span>
@@ -101,11 +116,11 @@
                             </div>
 
                             <!-- Footer Kartu: QR Code & Signature -->
-                            <div class="relative z-10 flex items-end justify-between border-t border-amber-500/20 pt-2">
+                            <div class="relative z-10 flex items-end justify-between border-t border-amber-500/20 pt-1.5">
                                 <div class="flex items-center space-x-2">
-                                    <!-- QR Code Verified SVG -->
+                                    <!-- QR Code Verified (Base64 Data URI) -->
                                     <div class="p-1 bg-white rounded-xl shadow-md shrink-0 border border-slate-200">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&format=svg&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-11 h-11 object-contain rounded-lg">
+                                        <img src="{{ $qrDataUri }}" alt="QR Verifikasi" class="w-10 h-10 object-contain rounded-lg">
                                     </div>
                                     <div>
                                         <span class="text-[8px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
@@ -122,7 +137,7 @@
                         </div>
 
                         <!-- ================= CARD BACK (TAMPAK BELAKANG) ================= -->
-                        <div class="absolute inset-0 w-full h-full rounded-3xl p-5 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border-2 border-amber-500/40 shadow-2xl flex flex-col justify-between overflow-hidden backface-hidden rotate-y-180">
+                        <div class="absolute inset-0 w-full h-full rounded-3xl p-4 sm:p-5 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border-2 border-amber-500/40 shadow-2xl flex flex-col justify-between overflow-hidden backface-hidden rotate-y-180">
                             <!-- Background Pattern -->
                             <div class="absolute inset-0 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none"></div>
 
@@ -301,31 +316,31 @@
 
     <div class="print-cards-grid">
         <!-- TAMPAK DEPAN (PRINT) -->
-        <div id="ktaFrontCapture" class="print-card-box rounded-3xl p-5 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
-            <div class="flex items-center justify-between border-b border-amber-500/40 pb-3">
-                <div class="flex items-center space-x-3">
-                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-10 w-auto object-contain">
+        <div id="ktaFrontCapture" class="print-card-box rounded-3xl p-3.5 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
+            <div class="flex items-center justify-between border-b border-amber-500/40 pb-2">
+                <div class="flex items-center space-x-2.5">
+                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-8 w-auto object-contain">
                     <div>
-                        <h3 class="font-heading font-extrabold text-xs tracking-tight text-amber-400 leading-tight uppercase">
+                        <h3 class="font-heading font-extrabold text-[11px] tracking-tight text-amber-400 leading-tight uppercase">
                             IKA SMAN KAJUARA / SMAN 8 BONE
                         </h3>
-                        <span class="text-[9px] font-bold tracking-widest uppercase text-slate-300 block">
+                        <span class="text-[8px] font-bold tracking-widest uppercase text-slate-300 block">
                             KARTU TANDA ANGGOTA RESMI
                         </span>
                     </div>
                 </div>
-                <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] font-black tracking-wider uppercase">
+                <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[8px] font-black tracking-wider uppercase shrink-0">
                     VERIFIED
                 </div>
             </div>
 
-            <div class="grid grid-cols-12 gap-3 items-center py-3">
+            <div class="grid grid-cols-12 gap-2.5 items-center py-1.5">
                 <div class="col-span-4 flex flex-col items-center">
-                    <div class="w-20 h-24 rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden">
+                    <div class="w-18 h-22 rounded-xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden">
                         @if($selectedAlumni->foto)
-                            <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[14px]">
+                            <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
                         @else
-                            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-xl">
+                            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-lg">
                                 {{ substr($selectedAlumni->nama, 0, 2) }}
                             </div>
                         @endif
@@ -333,55 +348,55 @@
                 </div>
 
                 <div class="col-span-8 space-y-1 pl-1">
-                    <h2 class="font-heading font-bold text-sm text-white line-clamp-1 leading-snug">
+                    <h2 class="font-heading font-bold text-xs sm:text-sm text-white line-clamp-1 leading-snug">
                         {{ $selectedAlumni->nama }}
                     </h2>
 
-                    <div class="inline-block px-2.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-extrabold tracking-wider uppercase">
+                    <div class="inline-block px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[9px] font-extrabold tracking-wider uppercase">
                         Angkatan {{ $selectedAlumni->angkatan }}
                     </div>
 
-                    <p class="text-[11px] text-slate-300 font-medium truncate pt-0.5">
-                        <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[10px]"></i>
+                    <p class="text-[10px] text-slate-300 font-medium truncate pt-0.5">
+                        <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[9px]"></i>
                         Domisili: {{ $selectedAlumni->domisili ?? 'Kajuara, Kab. Bone' }}
                     </p>
 
-                    <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
-                        <span class="text-[9px] font-mono text-slate-400 tracking-wider">
+                    <div class="pt-1 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-[8px] font-mono text-slate-400 tracking-wider">
                             KTA: <strong class="text-amber-400 font-bold">KTA-IKA.{{ $selectedAlumni->angkatan }}.{{ strtoupper(substr(md5($selectedAlumni->id), 0, 5)) }}</strong>
                         </span>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-end justify-between border-t border-amber-500/30 pt-2">
+            <div class="flex items-end justify-between border-t border-amber-500/30 pt-1.5">
                 <div class="flex items-center space-x-2">
-                    <div class="p-1 bg-white rounded-xl shrink-0 border border-slate-200">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&format=svg&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-10 h-10 object-contain rounded-lg">
+                    <div class="p-1 bg-white rounded-lg shrink-0 border border-slate-200">
+                        <img src="{{ $qrDataUri }}" alt="QR Verifikasi" class="w-9 h-9 object-contain rounded">
                     </div>
                     <div>
-                        <span class="text-[8px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
-                        <span class="text-[9px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
+                        <span class="text-[7.5px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
+                        <span class="text-[8.5px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
                     </div>
                 </div>
 
                 <div class="text-right">
-                    <span class="text-[8px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
-                    <span class="text-[10px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
+                    <span class="text-[7.5px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
+                    <span class="text-[9.5px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
                 </div>
             </div>
         </div>
 
         <!-- TAMPAK BELAKANG (PRINT) -->
-        <div id="ktaBackCapture" class="print-card-box rounded-3xl p-5 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
+        <div id="ktaBackCapture" class="print-card-box rounded-3xl p-3.5 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
             <div class="border-b border-amber-500/40 pb-2 flex items-center justify-between">
-                <span class="font-heading font-extrabold text-[11px] text-amber-400 uppercase tracking-wider">
+                <span class="font-heading font-extrabold text-[10px] text-amber-400 uppercase tracking-wider">
                     KETENTUAN KARTU ANGGOTA
                 </span>
-                <span class="text-[9px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
+                <span class="text-[8.5px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
             </div>
 
-            <div class="space-y-2 text-[10px] text-slate-300 py-3 leading-relaxed">
+            <div class="space-y-1.5 text-[9.5px] text-slate-300 py-2 leading-relaxed">
                 <p class="flex items-start space-x-1.5">
                     <span class="text-amber-400 font-bold">1.</span>
                     <span>Kartu ini merupakan identitas resmi anggota Ikatan Alumni SMAN Kajuara / SMAN 8 Bone.</span>
@@ -396,12 +411,12 @@
                 </p>
             </div>
 
-            <div class="border-t border-amber-500/30 pt-2 flex items-end justify-between">
+            <div class="border-t border-amber-500/30 pt-1.5 flex items-end justify-between">
                 <div>
-                    <span class="text-[8px] text-slate-400 uppercase block">Sekretariat IKA:</span>
-                    <span class="text-[9px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
+                    <span class="text-[7.5px] text-slate-400 uppercase block">Sekretariat IKA:</span>
+                    <span class="text-[8.5px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
                 </div>
-                <div class="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[9px] font-bold uppercase tracking-wider">
+                <div class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[8.5px] font-bold uppercase tracking-wider">
                     OFFICIAL MEMBER
                 </div>
             </div>
@@ -435,7 +450,7 @@
                 aFront.href = canvasFront.toDataURL('image/png');
                 aFront.click();
 
-                // Step 2: Capture & Download KTA Belakang (Jeda 400ms agar browser tidak memblokir download ganda)
+                // Step 2: Capture & Download KTA Belakang (Jeda 500ms agar browser tidak memblokir download ganda)
                 setTimeout(function() {
                     html2canvas(elBack, {
                         scale: 3,
@@ -455,7 +470,7 @@
                         btn.innerHTML = originalText;
                         btn.disabled = false;
                     });
-                }, 400);
+                }, 500);
             }).catch(function(err) {
                 console.error("Gagal mengunduh KTA depan:", err);
                 btn.innerHTML = originalText;
@@ -536,7 +551,7 @@
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            gap: 10mm !important;
+            gap: 8mm !important;
             margin-top: 5mm !important;
         }
 
