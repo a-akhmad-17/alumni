@@ -291,8 +291,8 @@
     <div class="mb-20">
         <div class="text-center max-w-2xl mx-auto mb-12">
             <span class="text-amber-700 font-bold text-xs uppercase tracking-widest block mb-1">Program Kerja Teknis</span>
-            <h2 class="font-heading font-extrabold text-3xl text-slate-900">8 Bidang Kerja & Personel Penanggung Jawab</h2>
-            <p class="text-sm text-slate-600 mt-2">Fokus program dan pengurus teknis yang menahkodai setiap divisi IKA SMAN Kajuara / IKA SMAN 8 Bone.</p>
+            <h2 class="font-heading font-extrabold text-3xl text-slate-900">8 Bidang Kerja Organisasi & Seksi Koordinator</h2>
+            <p class="text-sm text-slate-600 mt-2">Fokus program kerja teknis dan pengurus yang menahkodai setiap divisi IKA SMAN Kajuara / SMAN 8 Bone.</p>
         </div>
 
         @php
@@ -375,6 +375,18 @@
                     ]
                 ],
                 8 => [
+                    'nama' => 'Bidang Pemuda & Olahraga',
+                    'tujuan' => 'Meningkatkan kesehatan dan persatuan alumni melalui kegiatan olahraga dan komunitas hobi.',
+                    'icon' => 'fa-person-running text-sky-500',
+                    'langkah' => [
+                        'Turnamen Alumni' => 'Penyelenggaraan cabang sepak bola, futsal, voli, badminton, dan tenis meja antar alumni.',
+                        'Jalan Santai Alumni' => 'Kegiatan jalan santai bersama alumni saat momen reuni akbar.',
+                        'Senam Bersama' => 'Agenda rutin senam kebugaran alumni minimal dua kali setahun.',
+                        'Pembinaan Atlet Muda' => 'Dukungan dan pembinaan siswa/atlet berprestasi bekerja sama dengan sekolah.',
+                        'Komunitas Hobi Alumni' => 'Wadah silaturahmi komunitas gowes, hiking, lari, memancing, dan fotografi.'
+                    ]
+                ],
+                9 => [
                     'nama' => 'Seksi Koordinator Lintas Angkatan',
                     'tujuan' => 'Menjembatani komunikasi dan jaringan kebersamaan perwakilan alumni dari setiap angkatan (1988–2026).',
                     'icon' => 'fa-users-line text-blue-600',
