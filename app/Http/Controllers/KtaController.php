@@ -74,7 +74,7 @@ class KtaController extends Controller
                 'angkatan' => $alumni->angkatan,
                 'profesi' => !empty($alumni->profesi) ? $alumni->profesi : (!empty($alumni->kategori_profesi) ? $alumni->kategori_profesi : 'Alumni SMAN 8 Bone'),
                 'domisili' => $alumni->domisili ?? 'Indonesia',
-                'foto' => $alumni->foto ? asset('storage/' . $alumni->foto) : null,
+                'foto' => $alumni->foto ? (str_starts_with($alumni->foto, 'http') ? $alumni->foto : asset($alumni->foto)) : null,
                 'no_kta' => $ktaNumber,
                 'verify_url' => route('kta.verify', $alumni->id),
                 'status' => 'Terverifikasi IKA'
