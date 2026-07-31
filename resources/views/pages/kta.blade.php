@@ -192,7 +192,7 @@
                         <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
-                    <!-- Main Batch Print PDF Button (Hanya memakai @click untuk mencegah double popup) -->
+                    <!-- Main Batch Print PDF Button -->
                     <button @click="doPrint()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
@@ -268,15 +268,15 @@
                     </span>
                 </div>
 
-                <!-- List Alumni Selection Grid with Multi Checkboxes -->
+                <!-- List Alumni Selection Grid with Preserved Strict Selection Methods -->
                 <div class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
                     @forelse($alumniList as $alumni)
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <!-- Checkbox Multi Select (Hanya x-model tanpa conflict :checked) -->
+                                <!-- Checkbox Multi Select dengan metode isSelected() & toggleItem() presisi -->
                                 <input type="checkbox" 
-                                       :value="{{ (int)$alumni->id }}" 
-                                       x-model="selectedIds" 
+                                       :checked="isSelected({{ $alumni->id }})" 
+                                       @change="toggleItem({{ $alumni->id }})" 
                                        class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
 
                                 <!-- Foto & Info (Klik untuk Preview 3D) -->
@@ -463,6 +463,26 @@
             selectedIds: [{{ $selectedAlumni ? (int)$selectedAlumni->id : 0 }}],
             selectAll: false,
             
+            isSelected(id) {
+                var numId = parseInt(id);
+                return (this.selectedIds || []).map(Number).indexOf(numId) !== -1;
+            },
+
+            toggleItem(id) {
+                var numId = parseInt(id);
+                var current = (this.selectedIds || []).map(Number);
+                var idx = current.indexOf(numId);
+                if (idx !== -1) {
+                    current.splice(idx, 1);
+                } else {
+                    current.push(numId);
+                }
+                this.selectedIds = current;
+                
+                var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
+                this.selectAll = (this.selectedIds.length === allIds.length && allIds.length > 0);
+            },
+
             toggleAll() {
                 var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
                 if (this.selectAll) {
@@ -473,7 +493,7 @@
             },
 
             doPrint() {
-                var currentSelected = this.selectedIds || [];
+                var currentSelected = (this.selectedIds || []).map(Number);
                 var frontItems = document.querySelectorAll('.kta-print-front-item');
                 
                 if (frontItems && frontItems.length > 0) {
