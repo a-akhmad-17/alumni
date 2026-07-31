@@ -6,7 +6,7 @@
 @section('content')
 <div id="kta-root-container"
      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
-     x-data="ktaManager()">
+     x-data="{ isFlipped: false, selectedIds: [], selectAll: false }">
 
     <!-- Header Banner -->
     <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
@@ -193,7 +193,7 @@
                     </button>
 
                     <!-- Main Batch Print PDF Button -->
-                    <button @click="doPrint()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
+                    <button onclick="printKtaSelection()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
                         <span x-show="selectedIds.length > 0" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]" x-text="selectedIds.length"></span>
@@ -257,10 +257,9 @@
                     </div>
                 </form>
 
-                <!-- Select All Bar -->
                 <div class="flex items-center justify-between px-3 py-2 bg-slate-100 rounded-xl mb-3 border border-slate-200">
                     <label class="flex items-center space-x-2 text-xs font-extrabold text-slate-800 cursor-pointer">
-                        <input type="checkbox" x-model="selectAll" @change="toggleAll()" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer">
+                        <input type="checkbox" x-model="selectAll" @change="if(selectAll){ selectedIds = @json($alumniList->pluck('id')->map(fn($id)=>(string)(int)$id)->toArray()) } else { selectedIds = [] }" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer">
                         <span>Pilih Semua di Halaman Ini ({{ $alumniList->count() }} Alumni)</span>
                     </label>
                     <span class="text-[11px] font-bold text-amber-700" x-show="selectedIds.length > 0">
@@ -273,11 +272,12 @@
                     @forelse($alumniList as $alumni)
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <!-- Checkbox Multi Select dengan metode isSelected() & toggleItem() presisi -->
+                                <!-- Checkbox Multi Select dengan x-model string array standar Alpine.js -->
                                 <input type="checkbox" 
-                                       :checked="isSelected({{ $alumni->id }})" 
-                                       @change="toggleItem({{ $alumni->id }})" 
-                                       class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
+                                       value="{{ $alumni->id }}" 
+                                       x-model="selectedIds" 
+                                       @change="selectAll = (selectedIds.length === {{ $alumniList->count() }})" 
+                                       class="kta-item-cb w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
 
                                 <!-- Foto & Info (Klik untuk Preview 3D) -->
                                 <a href="{{ route('kta.index', array_merge(request()->query(), ['id' => $alumni->id])) }}" class="flex items-center space-x-3 flex-1 min-w-0">
@@ -457,63 +457,26 @@
 </div>
 
 <script>
-    function ktaManager() {
-        return {
-            isFlipped: false,
-            selectedIds: [],
-            selectAll: false,
-            
-            isSelected(id) {
-                var numId = parseInt(id);
-                for (var i = 0; i < this.selectedIds.length; i++) {
-                    if (parseInt(this.selectedIds[i]) === numId) return true;
-                }
-                return false;
-            },
+    function printKtaSelection() {
+        // Baca langsung dari DOM checkbox yang tercentang — tidak bergantung pada Alpine state
+        var checkedBoxes = document.querySelectorAll('input[type="checkbox"].kta-item-cb:checked');
+        var selectedIds = [];
+        checkedBoxes.forEach(function(cb) {
+            selectedIds.push(parseInt(cb.value));
+        });
 
-            toggleItem(id) {
-                var numId = parseInt(id);
-                var found = -1;
-                for (var i = 0; i < this.selectedIds.length; i++) {
-                    if (parseInt(this.selectedIds[i]) === numId) { found = i; break; }
-                }
-                var newArr = this.selectedIds.slice();
-                if (found !== -1) {
-                    newArr.splice(found, 1);
+        var frontItems = document.querySelectorAll('.kta-print-front-item');
+        if (frontItems && frontItems.length > 0) {
+            frontItems.forEach(function(item) {
+                var itemId = parseInt(item.getAttribute('data-alumni-id'));
+                if (selectedIds.length === 0 || selectedIds.indexOf(itemId) !== -1) {
+                    item.classList.remove('kta-hidden-print');
                 } else {
-                    newArr.push(numId);
+                    item.classList.add('kta-hidden-print');
                 }
-                this.selectedIds = newArr;
-                var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
-                this.selectAll = (this.selectedIds.length === allIds.length && allIds.length > 0);
-            },
-
-            toggleAll() {
-                var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
-                if (this.selectAll) {
-                    this.selectedIds = allIds.slice();
-                } else {
-                    this.selectedIds = [];
-                }
-            },
-
-            doPrint() {
-                var currentSelected = this.selectedIds.map(function(x){ return parseInt(x); });
-                var frontItems = document.querySelectorAll('.kta-print-front-item');
-                if (frontItems && frontItems.length > 0) {
-                    frontItems.forEach(function(item) {
-                        var itemId = parseInt(item.getAttribute('data-alumni-id'));
-                        var isMatch = currentSelected.length === 0 || currentSelected.indexOf(itemId) !== -1;
-                        if (isMatch) {
-                            item.classList.remove('kta-hidden-print');
-                        } else {
-                            item.classList.add('kta-hidden-print');
-                        }
-                    });
-                }
-                window.print();
-            }
-        };
+            });
+        }
+        window.print();
     }
 </script>
 
