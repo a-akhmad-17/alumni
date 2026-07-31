@@ -77,10 +77,10 @@
                                 </div>
                             </div>
 
-                            <!-- Body Kartu: Foto & Details (Ukuran Foto Tetap / Fixed) -->
-                            <div class="relative z-10 flex items-center space-x-3.5 py-1">
-                                <!-- Foto Frame (Ukuran Tetap 80px x 100px) -->
-                                <div class="w-[80px] h-[100px] min-w-[80px] min-h-[100px] rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden shrink-0">
+                            <!-- Body Kartu: Foto Lebar & Details -->
+                            <div class="relative z-10 flex items-center space-x-4 py-1">
+                                <!-- Foto Frame (Diperlebar: 105px x 120px dengan Border Emas Melengkung) -->
+                                <div class="w-[105px] h-[120px] min-w-[105px] min-h-[120px] rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden shrink-0">
                                     @if($selectedAlumni->foto)
                                         <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[14px]">
                                     @else
@@ -305,7 +305,7 @@
 </div>
 
 @if($selectedAlumni)
-<!-- ================= DEDICATED OFF-SCREEN CAPTURE & PRINT AREA (PURE FLEXBOX & FIXED PHOTO) ================= -->
+<!-- ================= DEDICATED OFF-SCREEN CAPTURE & PRINT AREA (PURE FLEXBOX, ARIAL FONT & BORDER EMAS MELENGKUNG) ================= -->
 <div id="ktaPrintArea">
     <div class="text-center mb-3">
         <h2 class="text-base font-bold text-slate-900 uppercase tracking-tight">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI</h2>
@@ -314,34 +314,34 @@
 
     <div class="print-cards-grid">
         <!-- TAMPAK DEPAN (PRINT & CAPTURE) -->
-        <div id="ktaFrontCapture" style="width: 450px; height: 285px; padding: 18px; background-color: #0f172a; color: #ffffff; border: 2px solid #f59e0b; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; font-family: system-ui, -apple-system, sans-serif;">
+        <div id="ktaFrontCapture" style="width: 460px; height: 290px; padding: 18px; background-color: #0f172a; color: #ffffff; border: 2px solid #f59e0b; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif !important;">
             
             <!-- Header Kartu -->
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(245, 158, 11, 0.4); padding-bottom: 8px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" style="height: 36px; width: auto; object-fit: contain;">
                     <div>
-                        <div style="font-size: 11px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.5px; line-height: 14px;">
+                        <div style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.5px; line-height: 14px;">
                             IKA SMAN KAJUARA / SMAN 8 BONE
                         </div>
-                        <div style="font-size: 8px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">
+                        <div style="font-size: 8px; font-weight: bold; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">
                             KARTU TANDA ANGGOTA RESMI
                         </div>
                     </div>
                 </div>
-                <div style="padding: 2px 8px; background-color: rgba(16, 185, 129, 0.2); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7; font-size: 8px; font-weight: 900; letter-spacing: 1px; border-radius: 9999px; text-transform: uppercase;">
+                <div style="padding: 2px 8px; background-color: rgba(16, 185, 129, 0.2); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7; font-size: 8px; font-weight: bold; letter-spacing: 1px; border-radius: 9999px; text-transform: uppercase;">
                     VERIFIED
                 </div>
             </div>
 
-            <!-- Body Kartu: Foto Tetap (Fixed 90px x 115px) & Flex Details -->
+            <!-- Body Kartu: Foto Lebar (115px x 130px) dengan Frame Emas Melengkung -->
             <div style="display: flex; align-items: center; gap: 14px; margin: 4px 0;">
-                <!-- Frame Foto Ukuran Tetap (Tidak Dinamis) -->
-                <div style="width: 90px; height: 115px; min-width: 90px; min-height: 115px; border-radius: 14px; padding: 2px; background: linear-gradient(to bottom, #fbbf24, #d97706, #fef08a); box-sizing: border-box; overflow: hidden; flex-shrink: 0;">
+                <!-- Frame Foto Ukuran Tetap Diperlebar & Garis Emas Melengkung Sesuai Web -->
+                <div style="width: 115px; height: 130px; min-width: 115px; min-height: 130px; border-radius: 16px; padding: 2.5px; background: linear-gradient(180deg, #fbbf24, #d97706, #fef08a); box-sizing: border-box; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);">
                     @if($selectedAlumni->foto)
-                        <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px; display: block;">
+                        <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 13px; display: block;">
                     @else
-                        <div style="width: 100%; height: 100%; background-color: #0f172a; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fbbf24; font-weight: 800; font-size: 22px;">
+                        <div style="width: 100%; height: 100%; background-color: #0f172a; border-radius: 13px; display: flex; align-items: center; justify-content: center; color: #fbbf24; font-weight: bold; font-size: 24px;">
                             {{ substr($selectedAlumni->nama, 0, 2) }}
                         </div>
                     @endif
@@ -349,23 +349,23 @@
 
                 <!-- Info Detail Alumni -->
                 <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 15px; font-weight: 800; color: #ffffff; line-height: 20px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <div style="font-size: 15px; font-weight: bold; color: #ffffff; line-height: 20px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         {{ $selectedAlumni->nama }}
                     </div>
 
                     <div style="margin-bottom: 6px;">
-                        <span style="display: inline-block; padding: 3px 10px; background-color: rgba(245, 158, 11, 0.2); border: 1px solid rgba(251, 191, 36, 0.3); color: #fef08a; font-size: 10px; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <span style="display: inline-block; padding: 3px 10px; background-color: rgba(245, 158, 11, 0.2); border: 1px solid rgba(251, 191, 36, 0.3); color: #fef08a; font-size: 10px; font-weight: bold; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
                             Angkatan {{ $selectedAlumni->angkatan }}
                         </span>
                     </div>
 
-                    <div style="font-size: 11px; color: #cbd5e1; font-weight: 500; line-height: 16px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <div style="font-size: 11px; color: #cbd5e1; font-weight: normal; line-height: 16px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         <span style="color: #fbbf24; margin-right: 4px;">📍</span>
                         Domisili: {{ $selectedAlumni->domisili ?? 'Kajuara, Kab. Bone' }}
                     </div>
 
                     <div style="border-top: 1px solid #1e293b; padding-top: 4px; font-size: 9px; font-family: monospace; color: #94a3b8; letter-spacing: 0.5px;">
-                        KTA: <strong style="color: #fbbf24; font-weight: 700;">KTA-IKA.{{ $selectedAlumni->angkatan }}.{{ strtoupper(substr(md5($selectedAlumni->id), 0, 5)) }}</strong>
+                        KTA: <strong style="color: #fbbf24; font-weight: bold;">KTA-IKA.{{ $selectedAlumni->angkatan }}.{{ strtoupper(substr(md5($selectedAlumni->id), 0, 5)) }}</strong>
                     </div>
                 </div>
             </div>
@@ -378,22 +378,22 @@
                     </div>
                     <div>
                         <div style="font-size: 7.5px; color: #cbd5e1; line-height: 10px;">Scan untuk Validasi</div>
-                        <div style="font-size: 8.5px; font-weight: 800; color: #fbbf24; line-height: 11px;">ikasman8bone.id</div>
+                        <div style="font-size: 8.5px; font-weight: bold; color: #fbbf24; line-height: 11px;">ikasman8bone.id</div>
                     </div>
                 </div>
 
                 <div style="text-align: right;">
                     <div style="font-size: 7.5px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; line-height: 10px;">Ketua Umum IKA</div>
-                    <div style="font-size: 9.5px; font-weight: 700; color: #fef08a; line-height: 13px;">Dr. H. Andi Akmal Pasluddin, M.M.</div>
+                    <div style="font-size: 9.5px; font-weight: bold; color: #fef08a; line-height: 13px;">Dr. H. Andi Akmal Pasluddin, M.M.</div>
                 </div>
             </div>
 
         </div>
 
         <!-- TAMPAK BELAKANG (PRINT & CAPTURE) -->
-        <div id="ktaBackCapture" style="width: 450px; height: 285px; padding: 18px; background-color: #0f172a; color: #ffffff; border: 2px solid #f59e0b; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; font-family: system-ui, -apple-system, sans-serif;">
+        <div id="ktaBackCapture" style="width: 460px; height: 290px; padding: 18px; background-color: #0f172a; color: #ffffff; border: 2px solid #f59e0b; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif !important;">
             <div style="border-bottom: 1px solid rgba(245, 158, 11, 0.4); padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
-                <span style="font-size: 11px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px;">
+                <span style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px;">
                     KETENTUAN KARTU ANGGOTA
                 </span>
                 <span style="font-size: 8.5px; color: #94a3b8;">IKA SMAN KAJUARA / SMAN 8 BONE</span>
@@ -419,7 +419,7 @@
                     <div style="font-size: 7.5px; color: #94a3b8; text-transform: uppercase;">Sekretariat IKA:</div>
                     <div style="font-size: 9px; font-weight: 600; color: #e2e8f0; margin-top: 2px;">Kajuara, Kab. Bone, Sulawesi Selatan</div>
                 </div>
-                <div style="padding: 3px 10px; background-color: rgba(245, 158, 11, 0.2); border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24; font-size: 8.5px; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                <div style="padding: 3px 10px; background-color: rgba(245, 158, 11, 0.2); border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24; font-size: 8.5px; font-weight: bold; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
                     OFFICIAL MEMBER
                 </div>
             </div>
@@ -532,7 +532,7 @@
         position: absolute;
         left: -9999px;
         top: -9999px;
-        width: 450px;
+        width: 460px;
         opacity: 1;
         pointer-events: none;
     }
