@@ -6,37 +6,7 @@
 @section('content')
 <div id="kta-root-container"
      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
-     x-data="{ 
-         isFlipped: false, 
-         selectedIds: [{{ $selectedAlumni ? $selectedAlumni->id : 0 }}], 
-         selectAll: false, 
-         toggleAll() { 
-             if (this.selectAll) { 
-                 this.selectedIds = [{{ implode(',', $alumniList->pluck('id')->toArray()) }}]; 
-             } else { 
-                 this.selectedIds = []; 
-             } 
-         },
-         doPrint() {
-             var currentSelected = this.selectedIds || [];
-             var rows = document.querySelectorAll('.kta-print-row');
-             if (rows && rows.length > 0) {
-                 rows.forEach(function(row) {
-                     var rowId = parseInt(row.getAttribute('data-alumni-id'));
-                     if (currentSelected.length > 0) {
-                         if (currentSelected.includes(rowId) || currentSelected.includes(rowId.toString())) {
-                             row.style.display = 'flex';
-                         } else {
-                             row.style.display = 'none';
-                         }
-                     } else {
-                         row.style.display = 'flex';
-                     }
-                 });
-             }
-             window.print();
-         }
-     }">
+     x-data="ktaManager()">
 
     <!-- Header Banner -->
     <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
@@ -222,7 +192,7 @@
                         <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
-                    <!-- Main Batch Print PDF Button (Linked to Alpine doPrint method) -->
+                    <!-- Main Batch Print PDF Button -->
                     <button @click="doPrint()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
@@ -253,7 +223,7 @@
                     </span>
                 </div>
 
-                <!-- Form Search & Filter -->
+                <!-- Form Search & Filter (Auto-Submit Saat Dropdown Angkatan Berubah) -->
                 <form action="{{ route('kta.index') }}" method="GET" class="space-y-4 mb-5">
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                         <div class="sm:col-span-7">
@@ -266,10 +236,10 @@
                         </div>
 
                         <div class="sm:col-span-5">
-                            <select name="angkatan" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900 transition">
+                            <select name="angkatan" onchange="this.form.submit()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-slate-900 transition font-bold">
                                 <option value="">Semua Angkatan</option>
                                 @foreach($angkatanList as $thn)
-                                    <option value="{{ $thn }}" {{ request('angkatan') == $thn ? 'selected' : '' }}>Angkatan {{ $thn }}</option>
+                                    <option value="{{ $thn }}" {{ (string)request('angkatan') === (string)$thn ? 'selected' : '' }}>Angkatan {{ $thn }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -290,7 +260,7 @@
                 <!-- Select All Bar -->
                 <div class="flex items-center justify-between px-3 py-2 bg-slate-100 rounded-xl mb-3 border border-slate-200">
                     <label class="flex items-center space-x-2 text-xs font-extrabold text-slate-800 cursor-pointer">
-                        <input type="checkbox" x-model="selectAll" @change="toggleAll()" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400">
+                        <input type="checkbox" x-model="selectAll" @change="toggleAll()" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer">
                         <span>Pilih Semua di Halaman Ini ({{ $alumniList->count() }} Alumni)</span>
                     </label>
                     <span class="text-[11px] font-bold text-amber-700" x-show="selectedIds.length > 0">
@@ -304,7 +274,7 @@
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
                                 <!-- Checkbox Multi Select -->
-                                <input type="checkbox" value="{{ $alumni->id }}" x-model="selectedIds" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
+                                <input type="checkbox" :value="{{ $alumni->id }}" x-model="selectedIds" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
 
                                 <!-- Foto & Info (Klik untuk Preview 3D) -->
                                 <a href="{{ route('kta.index', array_merge(request()->query(), ['id' => $alumni->id])) }}" class="flex items-center space-x-3 flex-1 min-w-0">
@@ -489,6 +459,43 @@
 
 @push('scripts')
 <script>
+    function ktaManager() {
+        return {
+            isFlipped: false,
+            selectedIds: [{{ $selectedAlumni ? $selectedAlumni->id : 0 }}],
+            selectAll: false,
+            
+            toggleAll() {
+                var allIds = @json($alumniList->pluck('id')->toArray());
+                if (this.selectAll) {
+                    this.selectedIds = allIds.map(function(id) { return parseInt(id); });
+                } else {
+                    this.selectedIds = [];
+                }
+            },
+
+            doPrint() {
+                var currentSelected = this.selectedIds || [];
+                var rows = document.querySelectorAll('.kta-print-row');
+                if (rows && rows.length > 0) {
+                    rows.forEach(function(row) {
+                        var rowId = parseInt(row.getAttribute('data-alumni-id'));
+                        if (currentSelected.length > 0) {
+                            if (currentSelected.includes(rowId) || currentSelected.includes(rowId.toString())) {
+                                row.style.display = 'flex';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        } else {
+                            row.style.display = 'flex';
+                        }
+                    });
+                }
+                window.print();
+            }
+        };
+    }
+
     function printKtaSelection() {
         var el = document.getElementById('kta-root-container');
         if (el && window.Alpine) {
