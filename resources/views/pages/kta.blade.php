@@ -192,8 +192,8 @@
                         <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
-                    <!-- Main Batch Print PDF Button -->
-                    <button @click="doPrint()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
+                    <!-- Main Batch Print PDF Button (Linked to doPrint() and printKtaSelection()) -->
+                    <button @click="doPrint()" onclick="printKtaSelection()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
                         <span x-show="selectedIds.length > 0" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]" x-text="selectedIds.length"></span>
@@ -223,7 +223,7 @@
                     </span>
                 </div>
 
-                <!-- Form Search & Filter (Auto-Submit Saat Dropdown Angkatan Berubah) -->
+                <!-- Form Search & Filter -->
                 <form action="{{ route('kta.index') }}" method="GET" class="space-y-4 mb-5">
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                         <div class="sm:col-span-7">
@@ -273,8 +273,12 @@
                     @forelse($alumniList as $alumni)
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <!-- Checkbox Multi Select -->
-                                <input type="checkbox" :value="{{ $alumni->id }}" x-model="selectedIds" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
+                                <!-- Checkbox Multi Select (loose checked binding to ensure checkmark is ALWAYS visible when selected) -->
+                                <input type="checkbox" 
+                                       :value="{{ (int)$alumni->id }}" 
+                                       x-model="selectedIds" 
+                                       :checked="selectedIds.includes({{ $alumni->id }}) || selectedIds.includes('{{ $alumni->id }}')"
+                                       class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
 
                                 <!-- Foto & Info (Klik untuk Preview 3D) -->
                                 <a href="{{ route('kta.index', array_merge(request()->query(), ['id' => $alumni->id])) }}" class="flex items-center space-x-3 flex-1 min-w-0">
@@ -457,58 +461,72 @@
     </div>
 </div>
 
-@push('scripts')
 <script>
     function ktaManager() {
         return {
             isFlipped: false,
-            selectedIds: [{{ $selectedAlumni ? $selectedAlumni->id : 0 }}],
+            selectedIds: [{{ $selectedAlumni ? (int)$selectedAlumni->id : 0 }}],
             selectAll: false,
             
             toggleAll() {
-                var allIds = @json($alumniList->pluck('id')->toArray());
+                var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
                 if (this.selectAll) {
-                    this.selectedIds = allIds.map(function(id) { return parseInt(id); });
+                    var list = [];
+                    allIds.forEach(function(id) {
+                        list.push(id);
+                        list.push(id.toString());
+                    });
+                    this.selectedIds = list;
                 } else {
                     this.selectedIds = [];
                 }
             },
 
             doPrint() {
-                var currentSelected = this.selectedIds || [];
-                var rows = document.querySelectorAll('.kta-print-row');
-                if (rows && rows.length > 0) {
-                    rows.forEach(function(row) {
-                        var rowId = parseInt(row.getAttribute('data-alumni-id'));
-                        if (currentSelected.length > 0) {
-                            if (currentSelected.includes(rowId) || currentSelected.includes(rowId.toString())) {
-                                row.style.display = 'flex';
-                            } else {
-                                row.style.display = 'none';
-                            }
-                        } else {
-                            row.style.display = 'flex';
-                        }
-                    });
-                }
-                window.print();
+                printKtaSelection();
             }
         };
     }
 
     function printKtaSelection() {
-        var el = document.getElementById('kta-root-container');
-        if (el && window.Alpine) {
-            var data = window.Alpine.$data(el);
-            if (data && typeof data.doPrint === 'function') {
-                data.doPrint();
-                return;
+        try {
+            var el = document.getElementById('kta-root-container');
+            var selectedIds = [];
+            if (el && window.Alpine) {
+                var data = window.Alpine.$data(el);
+                if (data && data.selectedIds) {
+                    selectedIds = data.selectedIds;
+                }
             }
+
+            var rows = document.querySelectorAll('.kta-print-row');
+            if (rows && rows.length > 0) {
+                rows.forEach(function(row) {
+                    var rowId = row.getAttribute('data-alumni-id');
+                    var isMatch = false;
+                    if (selectedIds && selectedIds.length > 0) {
+                        for (var i = 0; i < selectedIds.length; i++) {
+                            if (selectedIds[i] == rowId) {
+                                isMatch = true;
+                                break;
+                            }
+                        }
+                        if (isMatch) {
+                            row.style.display = 'flex';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        row.style.display = 'flex';
+                    }
+                });
+            }
+        } catch(err) {
+            console.error("Print selection error:", err);
         }
         window.print();
     }
 </script>
-@endpush
 
 <!-- Styles for 3D Card Flip & A4 Multi-Card Print Layout -->
 <style>
