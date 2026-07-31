@@ -103,9 +103,9 @@
                             <!-- Footer Kartu: QR Code & Signature -->
                             <div class="relative z-10 flex items-end justify-between border-t border-amber-500/20 pt-2">
                                 <div class="flex items-center space-x-2">
-                                    <!-- QR Code Verified (300x300 High Clarity) -->
+                                    <!-- QR Code Verified SVG -->
                                     <div class="p-1 bg-white rounded-xl shadow-md shrink-0 border border-slate-200">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-11 h-11 object-contain rounded-lg">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&format=svg&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-11 h-11 object-contain rounded-lg">
                                     </div>
                                     <div>
                                         <span class="text-[8px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
@@ -171,18 +171,15 @@
                     <span>Klik atau tap pada kartu untuk membalikkan tampilan (Depan / Belakang).</span>
                 </p>
 
-                <!-- Action Buttons: Rotate, Download Front/Back PNG, & Print PDF -->
-                <div class="flex flex-wrap items-center justify-center gap-2.5 w-full max-w-lg">
-                    <button @click="isFlipped = !isFlipped" class="px-3.5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
+                <!-- Action Buttons: Rotate, Download Both (PNG), & Print PDF -->
+                <div class="flex flex-wrap items-center justify-center gap-3 w-full max-w-lg">
+                    <button @click="isFlipped = !isFlipped" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
                         <i class="fa-solid fa-rotate-left mr-1.5"></i>Balik Kartu
                     </button>
 
-                    <button onclick="downloadKtaFront(this)" class="px-3.5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition flex items-center">
-                        <i class="fa-solid fa-download mr-1.5"></i>Unduh Depan (PNG)
-                    </button>
-
-                    <button onclick="downloadKtaBack(this)" class="px-3.5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center">
-                        <i class="fa-solid fa-download mr-1.5"></i>Unduh Belakang (PNG)
+                    <!-- Single Download Button (Auto Download Both PNG Files) -->
+                    <button onclick="downloadKtaAll(this)" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center">
+                        <i class="fa-solid fa-download mr-2"></i>Unduh KTA Digital (PNG)
                     </button>
 
                     <button onclick="window.print()" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center border border-slate-700">
@@ -295,11 +292,11 @@
 </div>
 
 @if($selectedAlumni)
-<!-- ================= DEDICATED PRINT CONTAINER (HANYA MUNCUL SAAT CETAK / WINDOW.PRINT) ================= -->
-<div id="ktaPrintArea" class="hidden">
+<!-- ================= DEDICATED PRINT CONTAINER (MENAMPILKAN KTA DEPAN & BELAKANG DENGAN WARNA TAJAM) ================= -->
+<div id="ktaPrintArea">
     <div class="text-center mb-4">
-        <h2 class="text-base font-bold text-slate-900 uppercase">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI</h2>
-        <p class="text-xs text-slate-600">IKATAN KELUARGA ALUMNI (IKA) SMAN KAJUARA / SMAN 8 BONE</p>
+        <h2 class="text-base font-bold text-slate-900 uppercase tracking-tight">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI</h2>
+        <p class="text-xs text-slate-600 font-semibold">IKATAN KELUARGA ALUMNI (IKA) SMAN KAJUARA / SMAN 8 BONE</p>
     </div>
 
     <div class="print-cards-grid">
@@ -360,7 +357,7 @@
             <div class="flex items-end justify-between border-t border-amber-500/30 pt-2">
                 <div class="flex items-center space-x-2">
                     <div class="p-1 bg-white rounded-xl shrink-0 border border-slate-200">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-10 h-10 object-contain rounded-lg">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&format=svg&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-10 h-10 object-contain rounded-lg">
                     </div>
                     <div>
                         <span class="text-[8px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
@@ -413,58 +410,54 @@
 </div>
 @endif
 
-<!-- Script html2canvas untuk Unduh Gambar KTA -->
+<!-- Script html2canvas untuk Unduh Otomatis 2 Berkas PNG (Depan & Belakang) -->
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    function downloadKtaFront(btn) {
+    function downloadKtaAll(btn) {
         var originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1"></i> Mengunduh...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> Mengunduh KTA Depan & Belakang...';
         btn.disabled = true;
 
-        var el = document.getElementById('ktaFrontCapture');
-        if (el) {
-            html2canvas(el, {
+        var elFront = document.getElementById('ktaFrontCapture');
+        var elBack = document.getElementById('ktaBackCapture');
+
+        if (elFront && elBack) {
+            // Step 1: Capture & Download KTA Depan
+            html2canvas(elFront, {
                 scale: 3,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#0f172a'
-            }).then(function(canvas) {
-                var a = document.createElement('a');
-                a.download = 'KTA-Depan-{{ Str::slug($selectedAlumni->nama ?? "Alumni") }}.png';
-                a.href = canvas.toDataURL('image/png');
-                a.click();
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }).catch(function(err) {
-                console.error(err);
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            });
-        }
-    }
+            }).then(function(canvasFront) {
+                var aFront = document.createElement('a');
+                aFront.download = 'KTA-Depan-{{ Str::slug($selectedAlumni->nama ?? "Alumni") }}.png';
+                aFront.href = canvasFront.toDataURL('image/png');
+                aFront.click();
 
-    function downloadKtaBack(btn) {
-        var originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1"></i> Mengunduh...';
-        btn.disabled = true;
+                // Step 2: Capture & Download KTA Belakang (Jeda 400ms agar browser tidak memblokir download ganda)
+                setTimeout(function() {
+                    html2canvas(elBack, {
+                        scale: 3,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#0f172a'
+                    }).then(function(canvasBack) {
+                        var aBack = document.createElement('a');
+                        aBack.download = 'KTA-Belakang-{{ Str::slug($selectedAlumni->nama ?? "Alumni") }}.png';
+                        aBack.href = canvasBack.toDataURL('image/png');
+                        aBack.click();
 
-        var el = document.getElementById('ktaBackCapture');
-        if (el) {
-            html2canvas(el, {
-                scale: 3,
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#0f172a'
-            }).then(function(canvas) {
-                var a = document.createElement('a');
-                a.download = 'KTA-Belakang-{{ Str::slug($selectedAlumni->nama ?? "Alumni") }}.png';
-                a.href = canvas.toDataURL('image/png');
-                a.click();
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }).catch(function(err) {
+                        console.error("Gagal mengunduh KTA belakang:", err);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    });
+                }, 400);
             }).catch(function(err) {
-                console.error(err);
+                console.error("Gagal mengunduh KTA depan:", err);
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             });
@@ -473,7 +466,7 @@
 </script>
 @endpush
 
-<!-- Styles for 3D Card Flip & Clean Print View -->
+<!-- Styles for 3D Card Flip & Forced High-Contrast Print View -->
 <style>
     .perspective-1000 {
         perspective: 1000px;
@@ -496,31 +489,33 @@
         to { transform: rotate(360deg); }
     }
 
-    /* Print card box styling */
+    /* Standard CR80 ID Card dimensions */
     .print-card-box {
         width: 85.6mm;
         height: 53.98mm;
         box-sizing: border-box;
     }
 
-    /* Dedicated Clean Print Media Rules */
+    #ktaPrintArea {
+        display: none;
+    }
+
+    /* Dedicated Print Media Rules (Forcing Color & Graphic rendering in all browsers) */
     @media print {
-        body * {
-            visibility: hidden !important;
-        }
-        
-        header, footer, nav, button, form, .no-print {
-            display: none !important;
+        *, *::before, *::after {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
 
         body {
-            background: white !important;
+            background: #ffffff !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        #ktaPrintArea, #ktaPrintArea * {
-            visibility: visible !important;
+        header, footer, nav, button, form, .no-print, .perspective-1000 {
+            display: none !important;
         }
 
         #ktaPrintArea {
@@ -529,8 +524,12 @@
             left: 0 !important;
             top: 0 !important;
             width: 100% !important;
-            background: white !important;
+            background: #ffffff !important;
             padding: 10mm !important;
+        }
+
+        #ktaPrintArea * {
+            visibility: visible !important;
         }
 
         .print-cards-grid {
@@ -545,8 +544,28 @@
             width: 85.6mm !important;
             height: 53.98mm !important;
             page-break-inside: avoid !important;
+            background-color: #0f172a !important;
+            color: #ffffff !important;
+            border: 2px solid #d97706 !important;
+            border-radius: 16px !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+        }
+
+        .print-card-box img {
+            max-width: 100% !important;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .print-card-box .text-amber-300,
+        .print-card-box .text-amber-400 {
+            color: #fbbf24 !important;
+        }
+
+        .print-card-box .text-slate-300,
+        .print-card-box .text-slate-400 {
+            color: #cbd5e1 !important;
         }
     }
 </style>
