@@ -307,7 +307,7 @@
 </div>
 
 @if($selectedAlumni)
-<!-- ================= DEDICATED OFF-SCREEN CAPTURE & PRINT AREA (OFF-SCREEN DEPAN & BELAKANG) ================= -->
+<!-- ================= DEDICATED OFF-SCREEN CAPTURE & PRINT AREA ================= -->
 <div id="ktaPrintArea">
     <div class="text-center mb-3">
         <h2 class="text-base font-bold text-slate-900 uppercase tracking-tight">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI</h2>
@@ -316,107 +316,110 @@
 
     <div class="print-cards-grid">
         <!-- TAMPAK DEPAN (PRINT & CAPTURE) -->
-        <div id="ktaFrontCapture" class="print-card-box rounded-3xl p-3 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
-            <div class="flex items-center justify-between border-b border-amber-500/40 pb-1.5">
-                <div class="flex items-center space-x-2">
-                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-7 w-auto object-contain">
+        <div id="ktaFrontCapture" class="print-card-box rounded-3xl p-5 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
+            <!-- Header Kartu -->
+            <div class="flex items-center justify-between border-b border-amber-500/40 pb-2.5">
+                <div class="flex items-center space-x-3">
+                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-9 w-auto object-contain">
                     <div>
-                        <h3 class="font-heading font-extrabold text-[10px] tracking-tight text-amber-400 leading-none uppercase">
+                        <h3 class="font-heading font-extrabold text-xs tracking-tight text-amber-400 leading-normal uppercase">
                             IKA SMAN KAJUARA / SMAN 8 BONE
                         </h3>
-                        <span class="text-[8px] font-bold tracking-widest uppercase text-slate-300 block mt-0.5">
+                        <span class="text-[9px] font-bold tracking-widest uppercase text-slate-300 block">
                             KARTU TANDA ANGGOTA RESMI
                         </span>
                     </div>
                 </div>
-                <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[8px] font-black tracking-wider uppercase shrink-0">
+                <div class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] font-black tracking-wider uppercase shrink-0">
                     VERIFIED
                 </div>
             </div>
 
-            <div class="grid grid-cols-12 gap-2 items-center py-1">
+            <!-- Body Kartu -->
+            <div class="grid grid-cols-12 gap-3 items-center py-2">
                 <div class="col-span-4 flex flex-col items-center">
-                    <div class="w-16 h-20 rounded-xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden">
+                    <div class="w-20 h-24 rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden">
                         @if($selectedAlumni->foto)
-                            <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
+                            <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[14px]">
                         @else
-                            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-base">
+                            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-xl">
                                 {{ substr($selectedAlumni->nama, 0, 2) }}
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <div class="col-span-8 space-y-0.5 pl-1">
-                    <h2 class="font-heading font-bold text-xs text-white line-clamp-1 leading-tight">
+                <div class="col-span-8 space-y-1.5 pl-1">
+                    <h2 class="font-heading font-bold text-base text-white leading-normal">
                         {{ $selectedAlumni->nama }}
                     </h2>
 
-                    <div class="inline-block px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[8.5px] font-extrabold tracking-wider uppercase">
+                    <div class="inline-block px-2.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-extrabold tracking-wider uppercase">
                         Angkatan {{ $selectedAlumni->angkatan }}
                     </div>
 
-                    <p class="text-[9.5px] text-slate-300 font-medium truncate">
-                        <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[8px]"></i>
+                    <p class="text-[11px] text-slate-300 font-medium leading-normal pt-0.5">
+                        <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[10px]"></i>
                         Domisili: {{ $selectedAlumni->domisili ?? 'Kajuara, Kab. Bone' }}
                     </p>
 
-                    <div class="pt-0.5 border-t border-slate-800 flex items-center justify-between">
-                        <span class="text-[7.5px] font-mono text-slate-400 tracking-wider">
+                    <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-[9px] font-mono text-slate-400 tracking-wider">
                             KTA: <strong class="text-amber-400 font-bold">KTA-IKA.{{ $selectedAlumni->angkatan }}.{{ strtoupper(substr(md5($selectedAlumni->id), 0, 5)) }}</strong>
                         </span>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-end justify-between border-t border-amber-500/30 pt-1">
-                <div class="flex items-center space-x-1.5">
-                    <div class="p-0.5 bg-white rounded-lg shrink-0 border border-slate-200">
-                        <img src="{{ $qrDataUri }}" alt="QR Verifikasi" class="w-8 h-8 object-contain rounded">
+            <!-- Footer Kartu -->
+            <div class="flex items-end justify-between border-t border-amber-500/30 pt-2">
+                <div class="flex items-center space-x-2">
+                    <div class="p-1 bg-white rounded-xl shrink-0 border border-slate-200">
+                        <img src="{{ $qrDataUri }}" alt="QR Verifikasi" class="w-10 h-10 object-contain rounded-lg">
                     </div>
                     <div>
-                        <span class="text-[7px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
-                        <span class="text-[8px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
+                        <span class="text-[8px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
+                        <span class="text-[9px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
                     </div>
                 </div>
 
                 <div class="text-right">
-                    <span class="text-[7px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
-                    <span class="text-[9px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
+                    <span class="text-[8px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
+                    <span class="text-[10px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
                 </div>
             </div>
         </div>
 
         <!-- TAMPAK BELAKANG (PRINT & CAPTURE) -->
-        <div id="ktaBackCapture" class="print-card-box rounded-3xl p-3 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
-            <div class="border-b border-amber-500/40 pb-1.5 flex items-center justify-between">
-                <span class="font-heading font-extrabold text-[9.5px] text-amber-400 uppercase tracking-wider">
+        <div id="ktaBackCapture" class="print-card-box rounded-3xl p-5 bg-slate-950 text-white border-2 border-amber-500 flex flex-col justify-between overflow-hidden shadow-none">
+            <div class="border-b border-amber-500/40 pb-2 flex items-center justify-between">
+                <span class="font-heading font-extrabold text-[11px] text-amber-400 uppercase tracking-wider">
                     KETENTUAN KARTU ANGGOTA
                 </span>
-                <span class="text-[8px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
+                <span class="text-[9px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
             </div>
 
-            <div class="space-y-1 text-[9px] text-slate-300 py-1.5 leading-snug">
-                <p class="flex items-start space-x-1">
+            <div class="space-y-2 text-[10px] text-slate-300 py-3 leading-relaxed">
+                <p class="flex items-start space-x-1.5">
                     <span class="text-amber-400 font-bold">1.</span>
                     <span>Kartu ini merupakan identitas resmi anggota Ikatan Alumni SMAN Kajuara / SMAN 8 Bone.</span>
                 </p>
-                <p class="flex items-start space-x-1">
+                <p class="flex items-start space-x-1.5">
                     <span class="text-amber-400 font-bold">2.</span>
                     <span>Pemegang kartu berhak mendapatkan akses jaringan alumni, program kemitraan, dan kegiatan IKA.</span>
                 </p>
-                <p class="flex items-start space-x-1">
+                <p class="flex items-start space-x-1.5">
                     <span class="text-amber-400 font-bold">3.</span>
                     <span>Keaslian kartu terjamin secara digital dan dapat diverifikasi via scan QR Code.</span>
                 </p>
             </div>
 
-            <div class="border-t border-amber-500/30 pt-1 flex items-end justify-between">
+            <div class="border-t border-amber-500/30 pt-2 flex items-end justify-between">
                 <div>
-                    <span class="text-[7px] text-slate-400 uppercase block">Sekretariat IKA:</span>
-                    <span class="text-[8px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
+                    <span class="text-[8px] text-slate-400 uppercase block">Sekretariat IKA:</span>
+                    <span class="text-[9px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
                 </div>
-                <div class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[8px] font-bold uppercase tracking-wider">
+                <div class="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[9px] font-bold uppercase tracking-wider">
                     OFFICIAL MEMBER
                 </div>
             </div>
@@ -444,7 +447,7 @@
             return;
         }
 
-        // Jalankan html2canvas dengan skala tinggi
+        // Jalankan html2canvas dengan skala tinggi tanpa line-clamp/overflow restriction
         html2canvas(elFront, {
             scale: 3,
             useCORS: true,
@@ -524,10 +527,10 @@
         to { transform: rotate(360deg); }
     }
 
-    /* Standard CR80 ID Card dimensions (85.6mm x 53.98mm) */
+    /* Fixed Aspect Capture Box for html2canvas Rendering */
     .print-card-box {
-        width: 85.6mm;
-        min-height: 53.98mm;
+        width: 440px;
+        min-height: 280px;
         height: auto;
         box-sizing: border-box;
     }
@@ -537,7 +540,7 @@
         position: absolute;
         left: -9999px;
         top: -9999px;
-        width: 85.6mm;
+        width: 440px;
         opacity: 1;
         pointer-events: none;
     }
@@ -586,6 +589,7 @@
             width: 85.6mm !important;
             min-height: 53.98mm !important;
             height: auto !important;
+            padding: 4mm !important;
             page-break-inside: avoid !important;
             background-color: #0f172a !important;
             color: #ffffff !important;
