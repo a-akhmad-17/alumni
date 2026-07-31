@@ -192,8 +192,8 @@
                         <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
-                    <!-- Main Batch Print PDF Button (Linked to doPrint() and printKtaSelection()) -->
-                    <button @click="doPrint()" onclick="printKtaSelection()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
+                    <!-- Main Batch Print PDF Button (Hanya memakai @click untuk mencegah double popup) -->
+                    <button @click="doPrint()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
                         <span x-show="selectedIds.length > 0" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]" x-text="selectedIds.length"></span>
@@ -273,11 +273,10 @@
                     @forelse($alumniList as $alumni)
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <!-- Checkbox Multi Select -->
+                                <!-- Checkbox Multi Select (Hanya x-model tanpa conflict :checked) -->
                                 <input type="checkbox" 
                                        :value="{{ (int)$alumni->id }}" 
                                        x-model="selectedIds" 
-                                       :checked="selectedIds.includes({{ $alumni->id }}) || selectedIds.includes('{{ $alumni->id }}')"
                                        class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
 
                                 <!-- Foto & Info (Klik untuk Preview 3D) -->
@@ -467,60 +466,33 @@
             toggleAll() {
                 var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
                 if (this.selectAll) {
-                    var list = [];
-                    allIds.forEach(function(id) {
-                        list.push(id);
-                        list.push(id.toString());
-                    });
-                    this.selectedIds = list;
+                    this.selectedIds = allIds;
                 } else {
                     this.selectedIds = [];
                 }
             },
 
             doPrint() {
-                printKtaSelection();
+                var currentSelected = this.selectedIds || [];
+                var frontItems = document.querySelectorAll('.kta-print-front-item');
+                
+                if (frontItems && frontItems.length > 0) {
+                    frontItems.forEach(function(item) {
+                        var itemId = parseInt(item.getAttribute('data-alumni-id'));
+                        if (currentSelected.length > 0) {
+                            if (currentSelected.indexOf(itemId) !== -1) {
+                                item.style.display = 'flex';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        } else {
+                            item.style.display = 'flex';
+                        }
+                    });
+                }
+                window.print();
             }
         };
-    }
-
-    function printKtaSelection() {
-        try {
-            var el = document.getElementById('kta-root-container');
-            var selectedIds = [];
-            if (el && window.Alpine) {
-                var data = window.Alpine.$data(el);
-                if (data && data.selectedIds) {
-                    selectedIds = data.selectedIds;
-                }
-            }
-
-            var frontItems = document.querySelectorAll('.kta-print-front-item');
-            if (frontItems && frontItems.length > 0) {
-                frontItems.forEach(function(item) {
-                    var itemId = item.getAttribute('data-alumni-id');
-                    var isMatch = false;
-                    if (selectedIds && selectedIds.length > 0) {
-                        for (var i = 0; i < selectedIds.length; i++) {
-                            if (selectedIds[i] == itemId) {
-                                isMatch = true;
-                                break;
-                            }
-                        }
-                        if (isMatch) {
-                            item.style.display = 'flex';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    } else {
-                        item.style.display = 'flex';
-                    }
-                });
-            }
-        } catch(err) {
-            console.error("Print selection error:", err);
-        }
-        window.print();
     }
 </script>
 
