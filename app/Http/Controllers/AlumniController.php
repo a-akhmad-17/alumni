@@ -91,6 +91,35 @@ class AlumniController extends Controller
         ));
     }
 
+    private function saveBase64Webp($base64Data, $folder)
+    {
+        $destinationPath = public_path('uploads/' . $folder);
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data)) {
+            $data = substr($base64Data, strpos($base64Data, ',') + 1);
+            $imageBase64 = base64_decode($data);
+            if ($imageBase64 === false) return null;
+        } else {
+            return null;
+        }
+
+        $filename = time() . '_' . \Illuminate\Support\Str::random(8) . '.webp';
+        $targetFile = $destinationPath . '/' . $filename;
+
+        $image = @imagecreatefromstring($imageBase64);
+        if ($image) {
+            imagewebp($image, $targetFile, 85);
+            imagedestroy($image);
+        } else {
+            file_put_contents($targetFile, $imageBase64);
+        }
+
+        return asset('uploads/' . $folder . '/' . $filename);
+    }
+
     private function uploadAndConvertToWebp($file, $folder)
     {
         $destinationPath = public_path('uploads/' . $folder);
@@ -145,10 +174,13 @@ class AlumniController extends Controller
             'no_hp' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:100',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'foto_cropped' => 'nullable|string',
         ]);
 
         $fotoUrl = null;
-        if ($request->hasFile('foto')) {
+        if ($request->filled('foto_cropped')) {
+            $fotoUrl = $this->saveBase64Webp($request->foto_cropped, 'alumni');
+        } elseif ($request->hasFile('foto')) {
             $fotoUrl = $this->uploadAndConvertToWebp($request->file('foto'), 'alumni');
         }
 

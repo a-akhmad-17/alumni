@@ -8,6 +8,10 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
 @endpush
 
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+@endpush
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ modalOpen: false, modalRegister: false, selectedAlumni: {} }">
     
@@ -244,14 +248,20 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Foto Profil / Pas Foto (3x4)</label>
+                    <input type="hidden" name="foto_cropped" id="fotoCroppedInput">
                     <div class="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-xl flex items-center space-x-3">
-                        <div class="w-12 h-14 bg-slate-200 rounded-lg border border-slate-300 flex items-center justify-center shrink-0 text-slate-400 overflow-hidden" id="photoPreviewContainer">
-                            <i class="fa-solid fa-camera text-xl" id="photoPlaceholderIcon"></i>
+                        <div class="w-14 h-16 bg-slate-200 rounded-xl border border-slate-300 flex items-center justify-center shrink-0 text-slate-400 overflow-hidden relative" id="photoPreviewContainer">
+                            <i class="fa-solid fa-camera text-2xl" id="photoPlaceholderIcon"></i>
                             <img id="photoPreviewImg" class="w-full h-full object-cover hidden" alt="Preview Foto">
                         </div>
                         <div class="flex-1">
                             <input type="file" name="foto" id="fotoInput" accept="image/jpeg,image/png,image/webp" onchange="previewRegistrationPhoto(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 transition cursor-pointer">
-                            <p class="text-[10px] text-slate-500 mt-1">Format JPG, PNG, WEBP (Maks 5MB). Otomatis tampil di KTA Digital.</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <p class="text-[10px] text-slate-500">Format JPG, PNG, WEBP. Editor crop 3x4 akan terbuka otomatis.</p>
+                                <button type="button" id="btnReCrop" onclick="reOpenCropModal()" class="hidden px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 text-[10px] font-bold rounded-lg border border-amber-300 transition flex items-center shrink-0">
+                                    <i class="fa-solid fa-crop-simple mr-1 text-amber-700"></i>Edit Foto
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -263,6 +273,53 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ✂️ MODAL EDITOR / CROPPER PAS FOTO 3x4 -->
+    <div id="modalCropPhoto" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" style="display: none;">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full border border-slate-200 shadow-2xl relative flex flex-col max-h-[92vh]">
+            <button type="button" onclick="closeCropModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-3 shrink-0">
+                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black uppercase tracking-wider inline-block mb-1">Editor Pas Foto 3x4</span>
+                <h3 class="font-heading font-extrabold text-lg text-slate-900">Sesuaikan Posisi & Ukuran Foto</h3>
+                <p class="text-xs text-slate-500">Geser, perbesar/perkecil, atau putar foto agar pas dengan bingkai KTA Digital (Rasio 3:4).</p>
+            </div>
+
+            <!-- Cropper Canvas Area -->
+            <div class="relative w-full h-80 bg-slate-950 rounded-2xl overflow-hidden mb-4 flex items-center justify-center shrink-0 border border-slate-800">
+                <img id="cropperImage" class="max-w-full max-h-full block" alt="Crop Source">
+            </div>
+
+            <!-- Toolbar Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-4 shrink-0">
+                <button type="button" onclick="rotatePhoto(-90)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center">
+                    <i class="fa-solid fa-rotate-left mr-1.5 text-slate-500"></i>Putar Kiri
+                </button>
+                <button type="button" onclick="rotatePhoto(90)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center">
+                    <i class="fa-solid fa-rotate-right mr-1.5 text-slate-500"></i>Putar Kanan
+                </button>
+                <button type="button" onclick="zoomPhoto(0.1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center">
+                    <i class="fa-solid fa-magnifying-glass-plus mr-1.5 text-slate-500"></i>Zoom In
+                </button>
+                <button type="button" onclick="zoomPhoto(-0.1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center">
+                    <i class="fa-solid fa-magnifying-glass-minus mr-1.5 text-slate-500"></i>Zoom Out
+                </button>
+                <button type="button" onclick="resetCrop()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 transition flex items-center">
+                    <i class="fa-solid fa-arrows-rotate mr-1.5 text-slate-500"></i>Reset
+                </button>
+            </div>
+
+            <!-- Actions Footer -->
+            <div class="pt-3 border-t border-slate-100 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closeCropModal()" class="px-5 py-2.5 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl border border-slate-300">Batal</button>
+                <button type="button" onclick="applyCroppedPhoto()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm rounded-xl shadow-md flex items-center">
+                    <i class="fa-solid fa-crop-simple mr-2 text-amber-400"></i>Gunakan Foto Ini
+                </button>
+            </div>
         </div>
     </div>
 
@@ -400,23 +457,111 @@
         new ApexCharts(document.querySelector("#chartGender"), optionsGender).render();
     });
 
+    // =============================================
+    // EDITOR CROPPER PAS FOTO 3x4 (KTA DIGITAL)
+    // =============================================
+    var cropperInstance = null;
+    var rawPhotoDataUrl = null;
+
     function previewRegistrationPhoto(event) {
         var input = event.target;
-        var icon = document.getElementById('photoPlaceholderIcon');
-        var img = document.getElementById('photoPreviewImg');
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                if (img) {
-                    img.src = e.target.result;
-                    img.classList.remove('hidden');
-                }
-                if (icon) {
-                    icon.classList.add('hidden');
-                }
+                rawPhotoDataUrl = e.target.result;
+                openCropModal(rawPhotoDataUrl);
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    function openCropModal(imageSrc) {
+        var modal = document.getElementById('modalCropPhoto');
+        var image = document.getElementById('cropperImage');
+        if (!modal || !image) return;
+
+        image.src = imageSrc;
+        modal.style.display = 'flex';
+
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
+        }
+
+        setTimeout(function() {
+            cropperInstance = new Cropper(image, {
+                aspectRatio: 3 / 4, // Pas foto standar 3x4
+                viewMode: 1,
+                autoCropArea: 0.9,
+                responsive: true,
+                restore: true,
+                guides: true,
+                center: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false,
+            });
+        }, 150);
+    }
+
+    function closeCropModal() {
+        var modal = document.getElementById('modalCropPhoto');
+        if (modal) modal.style.display = 'none';
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
+        }
+    }
+
+    function rotatePhoto(degree) {
+        if (cropperInstance) cropperInstance.rotate(degree);
+    }
+
+    function zoomPhoto(ratio) {
+        if (cropperInstance) cropperInstance.zoom(ratio);
+    }
+
+    function resetCrop() {
+        if (cropperInstance) cropperInstance.reset();
+    }
+
+    function applyCroppedPhoto() {
+        if (!cropperInstance) return;
+        var canvas = cropperInstance.getCroppedCanvas({
+            width: 600,
+            height: 800,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+        });
+
+        if (canvas) {
+            var croppedBase64 = canvas.toDataURL('image/webp', 0.9);
+
+            var hiddenInput = document.getElementById('fotoCroppedInput');
+            var imgPreview = document.getElementById('photoPreviewImg');
+            var iconPlaceholder = document.getElementById('photoPlaceholderIcon');
+            var btnReCrop = document.getElementById('btnReCrop');
+
+            if (hiddenInput) hiddenInput.value = croppedBase64;
+            if (imgPreview) {
+                imgPreview.src = croppedBase64;
+                imgPreview.classList.remove('hidden');
+            }
+            if (iconPlaceholder) iconPlaceholder.classList.add('hidden');
+            if (btnReCrop) btnReCrop.classList.remove('hidden');
+        }
+
+        closeCropModal();
+    }
+
+    function reOpenCropModal() {
+        var imgPreview = document.getElementById('photoPreviewImg');
+        var srcToUse = rawPhotoDataUrl || (imgPreview ? imgPreview.src : null);
+        if (srcToUse) {
+            openCropModal(srcToUse);
+        }
+    }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 @endpush
