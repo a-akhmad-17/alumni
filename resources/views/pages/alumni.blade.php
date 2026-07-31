@@ -175,7 +175,7 @@
 
     <!-- 📝 MODAL PENDAFTARAN MANDIRI ALUMNI BARU -->
     <div x-show="modalRegister" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-4 overflow-y-auto" style="display: none;">
-        <div @click.away="modalRegister = false" class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl relative my-8">
+        <div @click.away="if (document.getElementById('modalCropPhoto') && document.getElementById('modalCropPhoto').style.display !== 'none') { return; } modalRegister = false" class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl relative my-8">
             <button @click="modalRegister = false" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -277,7 +277,7 @@
     </div>
 
     <!-- ✂️ MODAL EDITOR / CROPPER PAS FOTO 3x4 -->
-    <div id="modalCropPhoto" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" style="display: none;">
+    <div id="modalCropPhoto" @click.stop class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4" style="display: none;">
         <div class="bg-white rounded-3xl p-6 max-w-lg w-full border border-slate-200 shadow-2xl relative flex flex-col max-h-[92vh]">
             <button type="button" onclick="closeCropModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center z-10">
                 <i class="fa-solid fa-xmark"></i>
