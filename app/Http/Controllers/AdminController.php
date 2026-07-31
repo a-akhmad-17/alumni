@@ -404,7 +404,7 @@ class AdminController extends Controller
                     $alm->nama,
                     $alm->jenis_kelamin,
                     $alm->angkatan,
-                    $alm->profesi ?? '-',
+                    !empty($alm->profesi) ? $alm->profesi : (!empty($alm->kategori_profesi) ? $alm->kategori_profesi : '-'),
                     $alm->domisili ?? '-',
                     $alm->no_hp ?? '-',
                     $alm->email ?? '-',

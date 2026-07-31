@@ -103,7 +103,7 @@
                         <tr>
                             <td class="p-3 font-semibold text-slate-900">{{ $alm->nama }}</td>
                             <td class="p-3"><span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 text-xs font-bold border border-slate-200">Angkatan {{ $alm->angkatan }}</span></td>
-                            <td class="p-3">{{ $alm->profesi ?? '-' }}</td>
+                            <td class="p-3">{{ !empty($alm->profesi) ? $alm->profesi : (!empty($alm->kategori_profesi) ? $alm->kategori_profesi : '-') }}</td>
                             <td class="p-3">{{ $alm->domisili ?? '-' }}</td>
                             <td class="p-3 font-semibold text-rose-600">{{ $alm->no_hp ?? '-' }}</td>
                             <td class="p-3">

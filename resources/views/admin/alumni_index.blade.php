@@ -289,7 +289,7 @@
                             </td>
                             <td class="p-3"><span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 text-xs font-bold border border-slate-200">{{ $alm->angkatan }}</span></td>
                             <td class="p-3">
-                                <div class="font-semibold text-slate-800">{{ $alm->profesi ?? '-' }}</div>
+                                <div class="font-semibold text-slate-800">{{ !empty($alm->profesi) ? $alm->profesi : (!empty($alm->kategori_profesi) ? $alm->kategori_profesi : '-') }}</div>
                                 <div class="text-xs text-slate-500"><i class="fa-solid fa-location-dot mr-1 text-[10px]"></i>{{ $alm->domisili ?? '-' }}</div>
                             </td>
                             <td class="p-3 font-semibold text-slate-900">{{ $alm->no_hp ?? '-' }}</td>

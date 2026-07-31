@@ -130,7 +130,7 @@
                     </td>
                     <td style="text-align: center;">{{ $alm->jenis_kelamin == 'Perempuan' ? 'P' : 'L' }}</td>
                     <td style="text-align: center;">{{ $alm->angkatan }}</td>
-                    <td>{{ $alm->profesi ?? '-' }}</td>
+                    <td>{{ !empty($alm->profesi) ? $alm->profesi : (!empty($alm->kategori_profesi) ? $alm->kategori_profesi : '-') }}</td>
                     <td>{{ $alm->domisili ?? '-' }}</td>
                     <td>{{ $alm->no_hp ?? '-' }}</td>
                     <td>
