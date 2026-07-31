@@ -4,7 +4,8 @@
 @section('meta_description', 'Kartu Tanda Anggota (KTA) Digital Resmi Alumni IKA SMAN Kajuara / SMAN 8 Bone. Cetak KTA dengan verifikasi QR Code resmi.')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
+<div id="kta-root-container"
+     class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
      x-data="{ 
          isFlipped: false, 
          selectedIds: [{{ $selectedAlumni ? $selectedAlumni->id : 0 }}], 
@@ -15,7 +16,26 @@
              } else { 
                  this.selectedIds = []; 
              } 
-         } 
+         },
+         doPrint() {
+             var currentSelected = this.selectedIds || [];
+             var rows = document.querySelectorAll('.kta-print-row');
+             if (rows && rows.length > 0) {
+                 rows.forEach(function(row) {
+                     var rowId = parseInt(row.getAttribute('data-alumni-id'));
+                     if (currentSelected.length > 0) {
+                         if (currentSelected.includes(rowId) || currentSelected.includes(rowId.toString())) {
+                             row.style.display = 'flex';
+                         } else {
+                             row.style.display = 'none';
+                         }
+                     } else {
+                         row.style.display = 'flex';
+                     }
+                 });
+             }
+             window.print();
+         }
      }">
 
     <!-- Header Banner -->
@@ -198,12 +218,12 @@
 
                 <!-- Action Buttons: Rotate & Print PDF -->
                 <div class="flex flex-wrap items-center justify-center gap-3 w-full max-w-lg">
-                    <button @click="isFlipped = !isFlipped" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
+                    <button @click="isFlipped = !isFlipped" type="button" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
                         <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
-                    <!-- Main Batch Print PDF Button -->
-                    <button onclick="printKtaSelection()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
+                    <!-- Main Batch Print PDF Button (Linked to Alpine doPrint method) -->
+                    <button @click="doPrint()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
                         <span x-show="selectedIds.length > 0" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]" x-text="selectedIds.length"></span>
@@ -470,23 +490,14 @@
 @push('scripts')
 <script>
     function printKtaSelection() {
-        var xData = Alpine.$data(document.querySelector('[x-data]'));
-        var selectedIds = xData ? xData.selectedIds : [];
-        var rows = document.querySelectorAll('.kta-print-row');
-
-        rows.forEach(function(row) {
-            var rowId = parseInt(row.getAttribute('data-alumni-id'));
-            if (selectedIds.length > 0) {
-                if (selectedIds.includes(rowId) || selectedIds.includes(rowId.toString())) {
-                    row.style.display = 'flex';
-                } else {
-                    row.style.display = 'none';
-                }
-            } else {
-                row.style.display = 'flex';
+        var el = document.getElementById('kta-root-container');
+        if (el && window.Alpine) {
+            var data = window.Alpine.$data(el);
+            if (data && typeof data.doPrint === 'function') {
+                data.doPrint();
+                return;
             }
-        });
-
+        }
         window.print();
     }
 </script>
