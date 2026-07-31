@@ -1,10 +1,22 @@
 @extends('layouts.app')
 
 @section('title', 'KTA Digital Alumni - IKA SMAN Kajuara / SMAN 8 Bone')
-@section('meta_description', 'Kartu Tanda Anggota (KTA) Digital Resmi Alumni IKA SMAN Kajuara / SMAN 8 Bone. Cetak dan unduh KTA dengan verifikasi QR Code resmi.')
+@section('meta_description', 'Kartu Tanda Anggota (KTA) Digital Resmi Alumni IKA SMAN Kajuara / SMAN 8 Bone. Cetak KTA dengan verifikasi QR Code resmi.')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ isFlipped: false }">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
+     x-data="{ 
+         isFlipped: false, 
+         selectedIds: [{{ $selectedAlumni ? $selectedAlumni->id : 0 }}], 
+         selectAll: false, 
+         toggleAll() { 
+             if (this.selectAll) { 
+                 this.selectedIds = [{{ implode(',', $alumniList->pluck('id')->toArray()) }}]; 
+             } else { 
+                 this.selectedIds = []; 
+             } 
+         } 
+     }">
 
     <!-- Header Banner -->
     <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
@@ -13,7 +25,7 @@
                 <i class="fa-solid fa-id-card mr-1 text-amber-600"></i>Kartu Anggota Digital
             </span>
             <h1 class="font-heading text-3xl sm:text-4xl font-extrabold text-slate-900">KTA Digital Alumni IKA SMAN Kajuara</h1>
-            <p class="text-slate-600 text-sm mt-1">Cari data alumni terverifikasi, lihat Kartu Tanda Anggota (KTA) digital resmi, dan unduh/cetak kartu Boss.</p>
+            <p class="text-slate-600 text-sm mt-1">Cari data alumni terverifikasi, lihat Kartu Tanda Anggota (KTA) digital resmi, dan cetak kartu secara massal (PDF).</p>
         </div>
 
         <div class="flex items-center space-x-3">
@@ -23,7 +35,7 @@
         </div>
     </div>
 
-    <!-- Main Grid: Left (Card Preview & Actions) & Right (Alumni Selector & Search) -->
+    <!-- Main Grid: Left (Card Preview & Actions) & Right (Alumni Selector & Multi-Check) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12 no-print">
         
         <!-- LEFT COLUMN: 3D Flip Card Preview & Controls -->
@@ -45,7 +57,7 @@
                     }
                 @endphp
 
-                <!-- Card Container Container with Flip animation -->
+                <!-- Card Container with 3D Flip Animation -->
                 <div class="w-full max-w-md perspective-1000 mb-6">
                     <div id="ktaCardContainer" class="relative w-full aspect-[85/54] rounded-3xl transition-transform duration-700 transform-style-3d shadow-2xl cursor-pointer group"
                          :class="{ 'rotate-y-180': isFlipped }"
@@ -77,9 +89,9 @@
                                 </div>
                             </div>
 
-                            <!-- Body Kartu: Foto Lebar & Details -->
+                            <!-- Body Kartu: Foto & Details -->
                             <div class="relative z-10 flex items-center space-x-4 py-1">
-                                <!-- Foto Frame (Diperlebar: 105px x 120px dengan Border Emas Melengkung) -->
+                                <!-- Foto Frame (Ukuran Tetap 105px x 120px dengan Border Emas Melengkung) -->
                                 <div class="w-[105px] h-[120px] min-w-[105px] min-h-[120px] rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden shrink-0">
                                     @if($selectedAlumni->foto)
                                         <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[14px]">
@@ -184,19 +196,17 @@
                     <span>Klik atau tap pada kartu untuk membalikkan tampilan (Depan / Belakang).</span>
                 </p>
 
-                <!-- Action Buttons: Rotate, Download Both (PNG), & Print PDF -->
+                <!-- Action Buttons: Rotate & Print PDF -->
                 <div class="flex flex-wrap items-center justify-center gap-3 w-full max-w-lg">
-                    <button @click="isFlipped = !isFlipped" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
-                        <i class="fa-solid fa-rotate-left mr-1.5"></i>Balik Kartu
+                    <button @click="isFlipped = !isFlipped" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
+                        <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
-                    <!-- Single Download Button (Auto Download Both PNG Files) -->
-                    <button onclick="downloadKtaAll(this)" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center cursor-pointer">
-                        <i class="fa-solid fa-download mr-2"></i>Unduh KTA Digital (PNG)
-                    </button>
-
-                    <button onclick="window.print()" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center border border-slate-700 cursor-pointer">
-                        <i class="fa-solid fa-print mr-1.5 text-amber-400"></i>Cetak Kartu (PDF)
+                    <!-- Main Batch Print PDF Button -->
+                    <button onclick="printKtaSelection()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
+                        <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
+                        <span>Cetak KTA Terpilih (PDF)</span>
+                        <span x-show="selectedIds.length > 0" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]" x-text="selectedIds.length"></span>
                     </button>
                 </div>
             @else
@@ -209,22 +219,22 @@
 
         </div>
 
-        <!-- RIGHT COLUMN: Alumni Search & Selector -->
+        <!-- RIGHT COLUMN: Alumni Search, Multi-Select & Batch Selector -->
         <div class="lg:col-span-6">
             <div class="glass-card rounded-3xl p-6 bg-white border border-slate-200 shadow-sm">
                 
                 <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
                     <div>
-                        <h3 class="font-heading font-bold text-lg text-slate-900">Pilih / Cari Alumni</h3>
-                        <p class="text-slate-500 text-xs">Cari nama atau angkatan untuk menampilkan KTA Digital resmi.</p>
+                        <h3 class="font-heading font-bold text-lg text-slate-900">Pilih & Centang KTA Alumni</h3>
+                        <p class="text-slate-500 text-xs">Centang alumni yang ingin dicetak sekaligus pada kertas A4 (PDF).</p>
                     </div>
                     <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold">
-                        {{ $alumniList->total() }} Alumni Terverifikasi
+                        {{ $alumniList->total() }} Terverifikasi
                     </span>
                 </div>
 
                 <!-- Form Search & Filter -->
-                <form action="{{ route('kta.index') }}" method="GET" class="space-y-4 mb-6">
+                <form action="{{ route('kta.index') }}" method="GET" class="space-y-4 mb-5">
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                         <div class="sm:col-span-7">
                             <div class="relative">
@@ -257,25 +267,41 @@
                     </div>
                 </form>
 
-                <!-- List Alumni Selection Grid -->
+                <!-- Select All Bar -->
+                <div class="flex items-center justify-between px-3 py-2 bg-slate-100 rounded-xl mb-3 border border-slate-200">
+                    <label class="flex items-center space-x-2 text-xs font-extrabold text-slate-800 cursor-pointer">
+                        <input type="checkbox" x-model="selectAll" @change="toggleAll()" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400">
+                        <span>Pilih Semua di Halaman Ini ({{ $alumniList->count() }} Alumni)</span>
+                    </label>
+                    <span class="text-[11px] font-bold text-amber-700" x-show="selectedIds.length > 0">
+                        <i class="fa-solid fa-check-double mr-1"></i><span x-text="selectedIds.length"></span> Dicentang
+                    </span>
+                </div>
+
+                <!-- List Alumni Selection Grid with Multi Checkboxes -->
                 <div class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
                     @forelse($alumniList as $alumni)
-                        <a href="{{ route('kta.index', array_merge(request()->query(), ['id' => $alumni->id])) }}"
-                           class="flex items-center justify-between p-3.5 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
+                        <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white p-0.5 shrink-0 overflow-hidden">
-                                    @if($alumni->foto)
-                                        <img src="{{ asset($alumni->foto) }}" alt="{{ $alumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
-                                    @else
-                                        <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-bold text-xs">
-                                            {{ substr($alumni->nama, 0, 2) }}
-                                        </div>
-                                    @endif
-                                </div>
-                                <div>
-                                    <h4 class="font-heading font-bold text-sm text-slate-900 leading-tight">{{ $alumni->nama }}</h4>
-                                    <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot mr-1 text-[10px] text-amber-600"></i>{{ $alumni->domisili ?? 'Kajuara, Bone' }}</p>
-                                </div>
+                                <!-- Checkbox Multi Select -->
+                                <input type="checkbox" value="{{ $alumni->id }}" x-model="selectedIds" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
+
+                                <!-- Foto & Info (Klik untuk Preview 3D) -->
+                                <a href="{{ route('kta.index', array_merge(request()->query(), ['id' => $alumni->id])) }}" class="flex items-center space-x-3 flex-1 min-w-0">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white p-0.5 shrink-0 overflow-hidden">
+                                        @if($alumni->foto)
+                                            <img src="{{ asset($alumni->foto) }}" alt="{{ $alumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
+                                        @else
+                                            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-bold text-xs">
+                                                {{ substr($alumni->nama, 0, 2) }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="truncate">
+                                        <h4 class="font-heading font-bold text-sm text-slate-900 leading-tight truncate">{{ $alumni->nama }}</h4>
+                                        <p class="text-xs text-slate-500 truncate"><i class="fa-solid fa-location-dot mr-1 text-[10px] text-amber-600"></i>{{ $alumni->domisili ?? 'Kajuara, Bone' }}</p>
+                                    </div>
+                                </a>
                             </div>
 
                             <div class="text-right shrink-0">
@@ -283,7 +309,7 @@
                                     Angkatan {{ $alumni->angkatan }}
                                 </span>
                             </div>
-                        </a>
+                        </div>
                     @empty
                         <div class="py-10 text-center text-slate-500">
                             <i class="fa-solid fa-user-slash text-3xl mb-2 text-slate-400"></i>
@@ -304,207 +330,169 @@
 
 </div>
 
-@if($selectedAlumni)
-<!-- ================= DEDICATED OFF-SCREEN CAPTURE & PRINT AREA (PURE FLEXBOX, ARIAL FONT & BORDER EMAS MELENGKUNG) ================= -->
+<!-- ================= DEDICATED A4 PRINT LAYOUT FOR MULTIPLE KTA CARDS ================= -->
 <div id="ktaPrintArea">
-    <div class="text-center mb-3">
-        <h2 class="text-base font-bold text-slate-900 uppercase tracking-tight">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI</h2>
+    <div class="text-center mb-6 no-print-head">
+        <h2 class="text-lg font-bold text-slate-900 uppercase tracking-tight">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI ALUMNI</h2>
         <p class="text-xs text-slate-600 font-semibold">IKATAN KELUARGA ALUMNI (IKA) SMAN KAJUARA / SMAN 8 BONE</p>
     </div>
 
     <div class="print-cards-grid">
-        <!-- TAMPAK DEPAN (PRINT & CAPTURE) -->
-        <div id="ktaFrontCapture" style="width: 460px; height: 290px; padding: 18px; background-color: #0f172a; color: #ffffff; border: 2px solid #f59e0b; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif !important;">
-            
-            <!-- Header Kartu -->
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(245, 158, 11, 0.4); padding-bottom: 8px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" style="height: 36px; width: auto; object-fit: contain;">
-                    <div>
-                        <div style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.5px; line-height: 14px;">
-                            IKA SMAN KAJUARA / SMAN 8 BONE
+        @foreach($alumniList as $alumni)
+            @php
+                $vUrl = url('/kta/verify/' . $alumni->id);
+                $qUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&format=png&data=' . urlencode($vUrl);
+                $qUri = '';
+                try {
+                    $qRaw = @file_get_contents($qUrl);
+                    if ($qRaw) {
+                        $qUri = 'data:image/png;base64,' . base64_encode($qRaw);
+                    }
+                } catch (\Throwable $e) {}
+                if (!$qUri) {
+                    $qUri = $qUrl;
+                }
+            @endphp
+            <!-- 1 ROW PAIR PER ALUMNI: FRONT (LEFT) & BACK (RIGHT) -->
+            <div class="kta-print-row" data-alumni-id="{{ $alumni->id }}">
+                
+                <!-- TAMPAK DEPAN (PRINT) -->
+                <div class="print-card-box">
+                    <div class="flex items-center justify-between border-b border-amber-500/40 pb-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-7 w-auto object-contain">
+                            <div>
+                                <h3 class="font-heading font-extrabold text-[10px] tracking-tight text-amber-400 leading-none uppercase">
+                                    IKA SMAN KAJUARA / SMAN 8 BONE
+                                </h3>
+                                <span class="text-[7.5px] font-bold tracking-widest uppercase text-slate-300 block mt-0.5">
+                                    KARTU TANDA ANGGOTA RESMI
+                                </span>
+                            </div>
                         </div>
-                        <div style="font-size: 8px; font-weight: bold; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">
-                            KARTU TANDA ANGGOTA RESMI
+                        <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[7.5px] font-black tracking-wider uppercase shrink-0">
+                            VERIFIED
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 py-1">
+                        <!-- Foto Frame Fixed 75px x 92px -->
+                        <div class="w-[75px] h-[92px] min-w-[75px] min-h-[92px] rounded-xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden shrink-0">
+                            @if($alumni->foto)
+                                <img src="{{ asset($alumni->foto) }}" alt="{{ $alumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
+                            @else
+                                <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-base">
+                                    {{ substr($alumni->nama, 0, 2) }}
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <h2 class="font-heading font-bold text-xs text-white truncate leading-tight">
+                                {{ $alumni->nama }}
+                            </h2>
+
+                            <div class="inline-block px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[8.5px] font-extrabold tracking-wider uppercase">
+                                Angkatan {{ $alumni->angkatan }}
+                            </div>
+
+                            <p class="text-[9.5px] text-slate-300 font-medium truncate">
+                                <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[8px]"></i>
+                                Domisili: {{ $alumni->domisili ?? 'Kajuara, Kab. Bone' }}
+                            </p>
+
+                            <div class="pt-0.5 border-t border-slate-800 flex items-center justify-between">
+                                <span class="text-[7.5px] font-mono text-slate-400 tracking-wider">
+                                    KTA: <strong class="text-amber-400 font-bold">KTA-IKA.{{ $alumni->angkatan }}.{{ strtoupper(substr(md5($alumni->id), 0, 5)) }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-end justify-between border-t border-amber-500/30 pt-1">
+                        <div class="flex items-center space-x-1.5">
+                            <div class="p-0.5 bg-white rounded-md shrink-0 border border-slate-200">
+                                <img src="{{ $qUri }}" alt="QR Verifikasi" class="w-7 h-7 object-contain rounded">
+                            </div>
+                            <div>
+                                <span class="text-[6.5px] text-slate-300 block leading-tight">Scan Verifikasi</span>
+                                <span class="text-[8px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <span class="text-[6.5px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
+                            <span class="text-[8.5px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
                         </div>
                     </div>
                 </div>
-                <div style="padding: 2px 8px; background-color: rgba(16, 185, 129, 0.2); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7; font-size: 8px; font-weight: bold; letter-spacing: 1px; border-radius: 9999px; text-transform: uppercase;">
-                    VERIFIED
-                </div>
-            </div>
 
-            <!-- Body Kartu: Foto Lebar (115px x 130px) dengan Frame Emas Melengkung -->
-            <div style="display: flex; align-items: center; gap: 14px; margin: 4px 0;">
-                <!-- Frame Foto Ukuran Tetap Diperlebar & Garis Emas Melengkung Sesuai Web -->
-                <div style="width: 115px; height: 130px; min-width: 115px; min-height: 130px; border-radius: 16px; padding: 2.5px; background: linear-gradient(180deg, #fbbf24, #d97706, #fef08a); box-sizing: border-box; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);">
-                    @if($selectedAlumni->foto)
-                        <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 13px; display: block;">
-                    @else
-                        <div style="width: 100%; height: 100%; background-color: #0f172a; border-radius: 13px; display: flex; align-items: center; justify-content: center; color: #fbbf24; font-weight: bold; font-size: 24px;">
-                            {{ substr($selectedAlumni->nama, 0, 2) }}
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Info Detail Alumni -->
-                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 15px; font-weight: bold; color: #ffffff; line-height: 20px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        {{ $selectedAlumni->nama }}
-                    </div>
-
-                    <div style="margin-bottom: 6px;">
-                        <span style="display: inline-block; padding: 3px 10px; background-color: rgba(245, 158, 11, 0.2); border: 1px solid rgba(251, 191, 36, 0.3); color: #fef08a; font-size: 10px; font-weight: bold; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
-                            Angkatan {{ $selectedAlumni->angkatan }}
+                <!-- TAMPAK BELAKANG (PRINT) -->
+                <div class="print-card-box">
+                    <div class="border-b border-amber-500/40 pb-1.5 flex items-center justify-between">
+                        <span class="font-heading font-extrabold text-[9.5px] text-amber-400 uppercase tracking-wider">
+                            KETENTUAN KARTU ANGGOTA
                         </span>
+                        <span class="text-[7.5px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
                     </div>
 
-                    <div style="font-size: 11px; color: #cbd5e1; font-weight: normal; line-height: 16px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        <span style="color: #fbbf24; margin-right: 4px;">📍</span>
-                        Domisili: {{ $selectedAlumni->domisili ?? 'Kajuara, Kab. Bone' }}
+                    <div class="space-y-1.5 text-[8.5px] text-slate-300 py-1.5 leading-tight">
+                        <p class="flex items-start space-x-1">
+                            <span class="text-amber-400 font-bold">1.</span>
+                            <span>Kartu ini merupakan identitas resmi anggota Ikatan Alumni SMAN Kajuara / SMAN 8 Bone.</span>
+                        </p>
+                        <p class="flex items-start space-x-1">
+                            <span class="text-amber-400 font-bold">2.</span>
+                            <span>Pemegang kartu berhak mendapatkan akses jaringan alumni, program kemitraan, dan kegiatan IKA.</span>
+                        </p>
+                        <p class="flex items-start space-x-1">
+                            <span class="text-amber-400 font-bold">3.</span>
+                            <span>Keaslian kartu terjamin secara digital dan dapat diverifikasi via scan QR Code.</span>
+                        </p>
                     </div>
 
-                    <div style="border-top: 1px solid #1e293b; padding-top: 4px; font-size: 9px; font-family: monospace; color: #94a3b8; letter-spacing: 0.5px;">
-                        KTA: <strong style="color: #fbbf24; font-weight: bold;">KTA-IKA.{{ $selectedAlumni->angkatan }}.{{ strtoupper(substr(md5($selectedAlumni->id), 0, 5)) }}</strong>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Kartu -->
-            <div style="display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid rgba(245, 158, 11, 0.3); padding-top: 6px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="padding: 3px; background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; line-height: 0;">
-                        <img src="{{ $qrDataUri }}" alt="QR Verifikasi" style="width: 36px; height: 36px; object-fit: contain; display: block;">
-                    </div>
-                    <div>
-                        <div style="font-size: 7.5px; color: #cbd5e1; line-height: 10px;">Scan untuk Validasi</div>
-                        <div style="font-size: 8.5px; font-weight: bold; color: #fbbf24; line-height: 11px;">ikasman8bone.id</div>
+                    <div class="border-t border-amber-500/30 pt-1 flex items-end justify-between">
+                        <div>
+                            <span class="text-[6.5px] text-slate-400 uppercase block">Sekretariat IKA:</span>
+                            <span class="text-[7.5px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
+                        </div>
+                        <div class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[7.5px] font-bold uppercase tracking-wider">
+                            OFFICIAL MEMBER
+                        </div>
                     </div>
                 </div>
 
-                <div style="text-align: right;">
-                    <div style="font-size: 7.5px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; line-height: 10px;">Ketua Umum IKA</div>
-                    <div style="font-size: 9.5px; font-weight: bold; color: #fef08a; line-height: 13px;">Dr. H. Andi Akmal Pasluddin, M.M.</div>
-                </div>
             </div>
-
-        </div>
-
-        <!-- TAMPAK BELAKANG (PRINT & CAPTURE) -->
-        <div id="ktaBackCapture" style="width: 460px; height: 290px; padding: 18px; background-color: #0f172a; color: #ffffff; border: 2px solid #f59e0b; border-radius: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; position: relative; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif !important;">
-            <div style="border-bottom: 1px solid rgba(245, 158, 11, 0.4); padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
-                <span style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px;">
-                    KETENTUAN KARTU ANGGOTA
-                </span>
-                <span style="font-size: 8.5px; color: #94a3b8;">IKA SMAN KAJUARA / SMAN 8 BONE</span>
-            </div>
-
-            <div style="padding: 10px 0; font-size: 10.5px; color: #cbd5e1; line-height: 18px;">
-                <div style="margin-bottom: 6px; display: flex; gap: 6px;">
-                    <strong style="color: #fbbf24;">1.</strong>
-                    <span>Kartu ini merupakan identitas resmi anggota Ikatan Alumni SMAN Kajuara / SMAN 8 Bone.</span>
-                </div>
-                <div style="margin-bottom: 6px; display: flex; gap: 6px;">
-                    <strong style="color: #fbbf24;">2.</strong>
-                    <span>Pemegang kartu berhak mendapatkan akses jaringan alumni, program kemitraan, dan kegiatan IKA.</span>
-                </div>
-                <div style="margin-bottom: 6px; display: flex; gap: 6px;">
-                    <strong style="color: #fbbf24;">3.</strong>
-                    <span>Keaslian kartu terjamin secara digital dan dapat diverifikasi via scan QR Code.</span>
-                </div>
-            </div>
-
-            <div style="border-top: 1px solid rgba(245, 158, 11, 0.3); padding-top: 6px; display: flex; align-items: flex-end; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 7.5px; color: #94a3b8; text-transform: uppercase;">Sekretariat IKA:</div>
-                    <div style="font-size: 9px; font-weight: 600; color: #e2e8f0; margin-top: 2px;">Kajuara, Kab. Bone, Sulawesi Selatan</div>
-                </div>
-                <div style="padding: 3px 10px; background-color: rgba(245, 158, 11, 0.2); border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24; font-size: 8.5px; font-weight: bold; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
-                    OFFICIAL MEMBER
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
 </div>
-@endif
 
-<!-- Script html2canvas untuk Unduh Otomatis 2 Berkas PNG (Depan & Belakang) -->
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    function downloadKtaAll(btn) {
-        var originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> Mengunduh KTA...';
-        btn.disabled = true;
+    function printKtaSelection() {
+        var xData = Alpine.$data(document.querySelector('[x-data]'));
+        var selectedIds = xData ? xData.selectedIds : [];
+        var rows = document.querySelectorAll('.kta-print-row');
 
-        var elFront = document.getElementById('ktaFrontCapture');
-        var elBack = document.getElementById('ktaBackCapture');
-
-        if (!elFront || !elBack) {
-            alert('Elemen kartu KTA tidak ditemukan.');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            return;
-        }
-
-        // Jalankan html2canvas dengan skala 3x Ultra HD
-        html2canvas(elFront, {
-            scale: 3,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#0f172a',
-            logging: false
-        }).then(function(canvasFront) {
-            try {
-                var aFront = document.createElement('a');
-                aFront.download = 'KTA-Depan-{{ Str::slug($selectedAlumni->nama ?? "Alumni") }}.png';
-                aFront.href = canvasFront.toDataURL('image/png');
-                document.body.appendChild(aFront);
-                aFront.click();
-                document.body.removeChild(aFront);
-            } catch(e) {
-                console.error("Download front error:", e);
+        rows.forEach(function(row) {
+            var rowId = parseInt(row.getAttribute('data-alumni-id'));
+            if (selectedIds.length > 0) {
+                if (selectedIds.includes(rowId) || selectedIds.includes(rowId.toString())) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            } else {
+                row.style.display = 'flex';
             }
-
-            setTimeout(function() {
-                html2canvas(elBack, {
-                    scale: 3,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#0f172a',
-                    logging: false
-                }).then(function(canvasBack) {
-                    try {
-                        var aBack = document.createElement('a');
-                        aBack.download = 'KTA-Belakang-{{ Str::slug($selectedAlumni->nama ?? "Alumni") }}.png';
-                        aBack.href = canvasBack.toDataURL('image/png');
-                        document.body.appendChild(aBack);
-                        aBack.click();
-                        document.body.removeChild(aBack);
-                    } catch(e) {
-                        console.error("Download back error:", e);
-                    }
-
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }).catch(function(err) {
-                    console.error("Gagal html2canvas belakang:", err);
-                    alert("Gagal memproses gambar KTA Belakang. Silakan coba lagi.");
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                });
-            }, 600);
-        }).catch(function(err) {
-            console.error("Gagal html2canvas depan:", err);
-            alert("Gagal memproses gambar KTA Depan. Silakan coba lagi.");
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         });
+
+        window.print();
     }
 </script>
 @endpush
 
-<!-- Styles for 3D Card Flip & Off-screen Capture / Forced High-Contrast Print View -->
+<!-- Styles for 3D Card Flip & A4 Multi-Card Print Layout -->
 <style>
     .perspective-1000 {
         perspective: 1000px;
@@ -527,17 +515,11 @@
         to { transform: rotate(360deg); }
     }
 
-    /* Render capture container off-screen so html2canvas has REAL layout size without being visible */
     #ktaPrintArea {
-        position: absolute;
-        left: -9999px;
-        top: -9999px;
-        width: 460px;
-        opacity: 1;
-        pointer-events: none;
+        display: none;
     }
 
-    /* Dedicated Print Media Rules */
+    /* Dedicated A4 Print Layout for Multiple KTA Cards */
     @media print {
         *, *::before, *::after {
             -webkit-print-color-adjust: exact !important;
@@ -556,13 +538,13 @@
         }
 
         #ktaPrintArea {
+            display: block !important;
             position: absolute !important;
             left: 0 !important;
             top: 0 !important;
             width: 100% !important;
             background: #ffffff !important;
-            padding: 10mm !important;
-            pointer-events: auto !important;
+            padding: 10mm 5mm !important;
         }
 
         #ktaPrintArea * {
@@ -573,28 +555,54 @@
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            gap: 10mm !important;
-            margin-top: 5mm !important;
+            gap: 6mm !important;
         }
 
-        #ktaFrontCapture, #ktaBackCapture {
+        .kta-print-row {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 6mm !important;
+            margin-bottom: 6mm !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .print-card-box {
             width: 85.6mm !important;
             height: 53.98mm !important;
             min-height: 53.98mm !important;
-            padding: 4mm !important;
-            page-break-inside: avoid !important;
+            box-sizing: border-box !important;
             background-color: #0f172a !important;
             color: #ffffff !important;
             border: 2px solid #d97706 !important;
-            border-radius: 16px !important;
+            border-radius: 12px !important;
+            padding: 3.5mm !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
 
-        #ktaFrontCapture img, #ktaBackCapture img {
+        .print-card-box img {
             max-width: 100% !important;
             display: block !important;
             visibility: visible !important;
+        }
+
+        .print-card-box .text-amber-300,
+        .print-card-box .text-amber-400 {
+            color: #fbbf24 !important;
+        }
+
+        .print-card-box .text-slate-300,
+        .print-card-box .text-slate-400 {
+            color: #cbd5e1 !important;
         }
     }
 </style>
