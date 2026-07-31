@@ -21,7 +21,7 @@
 @endpush
 
 @section('content')
-<div class="space-y-6" x-data="{ modalTambah: false, modalEdit: false, editData: {} }">
+<div id="berita-manager" class="space-y-6" x-data="{ modalTambah: false, modalEdit: false, editData: {} }">
     <!-- Header Card -->
     <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -342,15 +342,21 @@
     });
 
     function openEditModal(beritaData) {
-        let alpineComponent = document.querySelector('[x-data]');
-        if (alpineComponent && alpineComponent._x_dataStack) {
-            let data = alpineComponent._x_dataStack[0];
-            if (!beritaData.kategori) beritaData.kategori = 'Berita';
-            if (!beritaData.status) beritaData.status = 'published';
-            data.editData = beritaData;
-            data.modalEdit = true;
-            if (editorEditInstance) {
-                editorEditInstance.setData(beritaData.isi || '');
+        let el = document.getElementById('berita-manager');
+        if (el) {
+            let data = (window.Alpine && Alpine.$data) ? Alpine.$data(el) : (el._x_dataStack ? el._x_dataStack[0] : null);
+            if (data) {
+                if (!beritaData.kategori) beritaData.kategori = 'Berita';
+                if (!beritaData.status) beritaData.status = 'published';
+                data.editData = beritaData;
+                data.modalEdit = true;
+                if (editorEditInstance) {
+                    editorEditInstance.setData(beritaData.isi || '');
+                }
+                var inputEdit = document.getElementById('isiInputEdit');
+                if (inputEdit) {
+                    inputEdit.value = beritaData.isi || '';
+                }
             }
         }
     }
