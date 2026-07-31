@@ -460,25 +460,30 @@
     function ktaManager() {
         return {
             isFlipped: false,
-            selectedIds: [{{ $selectedAlumni ? (int)$selectedAlumni->id : 0 }}],
+            selectedIds: [],
             selectAll: false,
             
             isSelected(id) {
                 var numId = parseInt(id);
-                return (this.selectedIds || []).map(Number).indexOf(numId) !== -1;
+                for (var i = 0; i < this.selectedIds.length; i++) {
+                    if (parseInt(this.selectedIds[i]) === numId) return true;
+                }
+                return false;
             },
 
             toggleItem(id) {
                 var numId = parseInt(id);
-                var current = (this.selectedIds || []).map(Number);
-                var idx = current.indexOf(numId);
-                if (idx !== -1) {
-                    current.splice(idx, 1);
-                } else {
-                    current.push(numId);
+                var found = -1;
+                for (var i = 0; i < this.selectedIds.length; i++) {
+                    if (parseInt(this.selectedIds[i]) === numId) { found = i; break; }
                 }
-                this.selectedIds = current;
-                
+                var newArr = this.selectedIds.slice();
+                if (found !== -1) {
+                    newArr.splice(found, 1);
+                } else {
+                    newArr.push(numId);
+                }
+                this.selectedIds = newArr;
                 var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
                 this.selectAll = (this.selectedIds.length === allIds.length && allIds.length > 0);
             },
@@ -486,27 +491,23 @@
             toggleAll() {
                 var allIds = @json($alumniList->pluck('id')->map(fn($id) => (int)$id)->toArray());
                 if (this.selectAll) {
-                    this.selectedIds = allIds;
+                    this.selectedIds = allIds.slice();
                 } else {
                     this.selectedIds = [];
                 }
             },
 
             doPrint() {
-                var currentSelected = (this.selectedIds || []).map(Number);
+                var currentSelected = this.selectedIds.map(function(x){ return parseInt(x); });
                 var frontItems = document.querySelectorAll('.kta-print-front-item');
-                
                 if (frontItems && frontItems.length > 0) {
                     frontItems.forEach(function(item) {
                         var itemId = parseInt(item.getAttribute('data-alumni-id'));
-                        if (currentSelected.length > 0) {
-                            if (currentSelected.indexOf(itemId) !== -1) {
-                                item.style.setProperty('display', 'flex', 'important');
-                            } else {
-                                item.style.setProperty('display', 'none', 'important');
-                            }
+                        var isMatch = currentSelected.length === 0 || currentSelected.indexOf(itemId) !== -1;
+                        if (isMatch) {
+                            item.classList.remove('kta-hidden-print');
                         } else {
-                            item.style.setProperty('display', 'flex', 'important');
+                            item.classList.add('kta-hidden-print');
                         }
                     });
                 }
@@ -571,8 +572,14 @@
             padding: 8mm 6mm !important;
         }
 
-        #ktaPrintArea * {
+        #ktaPrintArea .print-card-box {
             visibility: visible !important;
+        }
+
+        /* Sembunyikan kartu yang tidak dicentang saat cetak */
+        .kta-hidden-print {
+            display: none !important;
+            visibility: hidden !important;
         }
 
         .print-cards-grid {
