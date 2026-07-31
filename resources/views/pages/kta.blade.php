@@ -5,8 +5,7 @@
 
 @section('content')
 <div id="kta-root-container"
-     class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
-     x-data="{ isFlipped: false, selectedIds: [], selectAll: false }">
+     class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
     <!-- Header Banner -->
     <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
@@ -48,7 +47,7 @@
                 @endphp
 
                 <!-- Card Container with 3D Flip Animation -->
-                <div class="w-full max-w-md perspective-1000 mb-6">
+                <div class="w-full max-w-md perspective-1000 mb-6" x-data="{ isFlipped: false }">
                     <div id="ktaCardContainer" class="relative w-full aspect-[85/54] rounded-3xl transition-transform duration-700 transform-style-3d shadow-2xl cursor-pointer group"
                          :class="{ 'rotate-y-180': isFlipped }"
                          @click="isFlipped = !isFlipped">
@@ -188,7 +187,7 @@
 
                 <!-- Action Buttons: Rotate & Print PDF -->
                 <div class="flex flex-wrap items-center justify-center gap-3 w-full max-w-lg">
-                    <button @click="isFlipped = !isFlipped" type="button" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
+                    <button onclick="ktaFlipCard()" type="button" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition flex items-center shadow-sm">
                         <i class="fa-solid fa-rotate-left mr-2"></i>Balik Kartu
                     </button>
 
@@ -196,7 +195,7 @@
                     <button onclick="printKtaSelection()" type="button" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-xl transition flex items-center border border-slate-700 cursor-pointer">
                         <i class="fa-solid fa-print mr-2 text-amber-400 text-sm"></i>
                         <span>Cetak KTA Terpilih (PDF)</span>
-                        <span x-show="selectedIds.length > 0" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]" x-text="selectedIds.length"></span>
+                        <span id="kta-print-badge" style="display:none" class="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]"></span>
                     </button>
                 </div>
             @else
@@ -257,13 +256,14 @@
                     </div>
                 </form>
 
+                <!-- Select All Bar -->
                 <div class="flex items-center justify-between px-3 py-2 bg-slate-100 rounded-xl mb-3 border border-slate-200">
                     <label class="flex items-center space-x-2 text-xs font-extrabold text-slate-800 cursor-pointer">
-                        <input type="checkbox" x-model="selectAll" @change="if(selectAll){ selectedIds = @json($alumniList->pluck('id')->map(fn($id)=>(string)(int)$id)->toArray()) } else { selectedIds = [] }" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer">
+                        <input type="checkbox" id="kta-select-all" onchange="ktaToggleAll(this)" class="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer">
                         <span>Pilih Semua di Halaman Ini ({{ $alumniList->count() }} Alumni)</span>
                     </label>
-                    <span class="text-[11px] font-bold text-amber-700" x-show="selectedIds.length > 0">
-                        <i class="fa-solid fa-check-double mr-1"></i><span x-text="selectedIds.length"></span> Dicentang
+                    <span id="kta-counter-wrap" style="display:none" class="text-[11px] font-bold text-amber-700">
+                        <i class="fa-solid fa-check-double mr-1"></i><span id="kta-counter">0</span> Dicentang
                     </span>
                 </div>
 
@@ -272,11 +272,11 @@
                     @forelse($alumniList as $alumni)
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <!-- Checkbox Multi Select dengan x-model string array standar Alpine.js -->
+                                <!-- Checkbox plain HTML - auto-centang jika alumni ini yang sedang dipreview -->
                                 <input type="checkbox" 
                                        value="{{ $alumni->id }}" 
-                                       x-model="selectedIds" 
-                                       @change="selectAll = (selectedIds.length === {{ $alumniList->count() }})" 
+                                       {{ ($selectedAlumni && $selectedAlumni->id == $alumni->id) ? 'checked' : '' }}
+                                       onchange="ktaUpdateCounter()" 
                                        class="kta-item-cb w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-400 cursor-pointer shrink-0">
 
                                 <!-- Foto & Info (Klik untuk Preview 3D) -->
@@ -457,27 +457,93 @@
 </div>
 
 <script>
+    // =============================================
+    // KTA MANAGER - Pure Vanilla JS (No Alpine)
+    // =============================================
+
+    // Update counter badge setiap kali checkbox berubah
+    function ktaUpdateCounter() {
+        var checked = document.querySelectorAll('.kta-item-cb:checked');
+        var count = checked.length;
+
+        // Update counter text & visibility
+        var counterEl = document.getElementById('kta-counter');
+        var counterWrap = document.getElementById('kta-counter-wrap');
+        if (counterEl) counterEl.textContent = count;
+        if (counterWrap) counterWrap.style.display = count > 0 ? 'inline-flex' : 'none';
+
+        // Update print badge
+        var badge = document.getElementById('kta-print-badge');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'inline-flex' : 'none';
+        }
+
+        // Sinkronisasi checkbox Pilih Semua
+        var allBoxes = document.querySelectorAll('.kta-item-cb');
+        var selectAllCb = document.getElementById('kta-select-all');
+        if (selectAllCb && allBoxes.length > 0) {
+            selectAllCb.checked = (count === allBoxes.length);
+            selectAllCb.indeterminate = (count > 0 && count < allBoxes.length);
+        }
+    }
+
+    // Toggle Pilih Semua
+    function ktaToggleAll(selectAllCheckbox) {
+        var allBoxes = document.querySelectorAll('.kta-item-cb');
+        allBoxes.forEach(function(cb) {
+            cb.checked = selectAllCheckbox.checked;
+        });
+        ktaUpdateCounter();
+    }
+
+    // Flip kartu (untuk tombol Balik Kartu)
+    function ktaFlipCard() {
+        var cardContainer = document.getElementById('ktaCardContainer');
+        if (!cardContainer) return;
+        // Cari Alpine component parent
+        var parent = cardContainer.closest('[x-data]');
+        if (parent && parent._x_dataStack && parent._x_dataStack[0]) {
+            parent._x_dataStack[0].isFlipped = !parent._x_dataStack[0].isFlipped;
+        } else if (window.Alpine) {
+            var data = Alpine.$data(cardContainer);
+            if (data) data.isFlipped = !data.isFlipped;
+        }
+    }
+
+    // Cetak KTA yang tercentang saja
     function printKtaSelection() {
-        // Baca langsung dari DOM checkbox yang tercentang — tidak bergantung pada Alpine state
-        var checkedBoxes = document.querySelectorAll('input[type="checkbox"].kta-item-cb:checked');
+        var checked = document.querySelectorAll('.kta-item-cb:checked');
         var selectedIds = [];
-        checkedBoxes.forEach(function(cb) {
-            selectedIds.push(parseInt(cb.value));
+        checked.forEach(function(cb) {
+            selectedIds.push(cb.value); // Gunakan string langsung - ID bisa berupa UUID
         });
 
         var frontItems = document.querySelectorAll('.kta-print-front-item');
-        if (frontItems && frontItems.length > 0) {
-            frontItems.forEach(function(item) {
-                var itemId = parseInt(item.getAttribute('data-alumni-id'));
-                if (selectedIds.length === 0 || selectedIds.indexOf(itemId) !== -1) {
-                    item.classList.remove('kta-hidden-print');
-                } else {
-                    item.classList.add('kta-hidden-print');
-                }
-            });
-        }
+        frontItems.forEach(function(item) {
+            var itemId = item.getAttribute('data-alumni-id'); // Gunakan string langsung
+            // Inline style setProperty 'important' selalu menang atas external CSS !important
+            if (selectedIds.length === 0 || selectedIds.indexOf(itemId) !== -1) {
+                item.style.removeProperty('display');
+            } else {
+                item.style.setProperty('display', 'none', 'important');
+            }
+        });
+
         window.print();
+
+        // Reset inline style setelah dialog print selesai
+        setTimeout(function() {
+            frontItems.forEach(function(item) {
+                item.style.removeProperty('display');
+            });
+        }, 2000);
     }
+
+    // Inisialisasi saat halaman selesai load
+    document.addEventListener('DOMContentLoaded', function() {
+        ktaUpdateCounter();
+    });
 </script>
 
 <!-- Styles for 3D Card Flip & Optimized A4 Multi-Card Print Grid -->
@@ -521,7 +587,12 @@
             padding: 0 !important;
         }
 
-        header, footer, nav, button, form, .no-print, .perspective-1000 {
+        header, footer, nav, button, form, .no-print {
+            display: none !important;
+        }
+
+        /* Sembunyikan preview kartu interaktif (bukan area cetak) */
+        .perspective-1000 {
             display: none !important;
         }
 
@@ -559,11 +630,12 @@
             min-height: 53.98mm !important;
             box-sizing: border-box !important;
             background-color: #0f172a !important;
+            background-image: none !important;
             color: #ffffff !important;
             border: 2px solid #d97706 !important;
             border-radius: 12px !important;
             padding: 3.5mm !important;
-            display: flex;
+            display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
             overflow: hidden !important;
@@ -571,12 +643,19 @@
             break-inside: avoid !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            visibility: visible !important;
         }
 
-        /* Enforce inline style override for unchecked items during print */
-        .print-card-box[style*="display: none"] {
-            display: none !important;
-            visibility: hidden !important;
+        /* Pastikan KTA depan tampil — display diwariskan dari .print-card-box */
+        .kta-print-front-item {
+            background-color: #0f172a !important;
+            visibility: visible !important;
+        }
+
+        /* Pastikan KTA belakang bersama tampil */
+        .kta-print-back-shared {
+            background-color: #0f172a !important;
+            visibility: visible !important;
         }
 
         .print-card-box img {
