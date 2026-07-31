@@ -72,7 +72,7 @@ class KtaController extends Controller
                 'nama' => $alumni->nama,
                 'jenis_kelamin' => $alumni->jenis_kelamin,
                 'angkatan' => $alumni->angkatan,
-                'profesi' => $alumni->profesi ?? 'Alumni SMAN 8 Bone',
+                'profesi' => !empty($alumni->profesi) ? $alumni->profesi : (!empty($alumni->kategori_profesi) ? $alumni->kategori_profesi : 'Alumni SMAN 8 Bone'),
                 'domisili' => $alumni->domisili ?? 'Indonesia',
                 'foto' => $alumni->foto ? asset('storage/' . $alumni->foto) : null,
                 'no_kta' => $ktaNumber,

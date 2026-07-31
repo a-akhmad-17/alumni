@@ -146,7 +146,7 @@
                     </div>
 
                     <h3 class="font-heading font-bold text-lg text-slate-900 group-hover:text-amber-600 transition-colors mb-1">{{ $alumni->nama }}</h3>
-                    <p class="text-sm font-medium text-slate-600 mb-3"><i class="fa-solid fa-briefcase mr-1.5 text-amber-600 text-xs"></i>{{ $alumni->profesi ?? 'Alumni SMAN 8 Bone' }}</p>
+                    <p class="text-sm font-medium text-slate-600 mb-3"><i class="fa-solid fa-briefcase mr-1.5 text-amber-600 text-xs"></i>{{ !empty($alumni->profesi) ? $alumni->profesi : (!empty($alumni->kategori_profesi) ? $alumni->kategori_profesi : 'Alumni SMAN 8 Bone') }}</p>
 
                     <div class="space-y-1.5 text-xs text-slate-500 border-t border-slate-100 pt-3">
                         <p><i class="fa-solid fa-location-dot w-4 text-slate-400"></i>{{ $alumni->domisili ?? 'Indonesia' }}</p>
