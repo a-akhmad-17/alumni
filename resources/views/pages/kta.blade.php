@@ -103,13 +103,13 @@
                             <!-- Footer Kartu: QR Code & Signature -->
                             <div class="relative z-10 flex items-end justify-between border-t border-amber-500/20 pt-2">
                                 <div class="flex items-center space-x-2">
-                                    <!-- QR Code Verified -->
-                                    <div class="p-1 bg-white rounded-lg shadow-md shrink-0">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode(route('kta.verify', $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-10 h-10 object-contain">
+                                    <!-- QR Code Verified (300x300 High Clarity) -->
+                                    <div class="p-1 bg-white rounded-xl shadow-md shrink-0 border border-slate-200">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1&data={{ urlencode(url('/kta/verify/' . $selectedAlumni->id)) }}" alt="QR Verifikasi" class="w-11 h-11 object-contain rounded-lg">
                                     </div>
                                     <div>
-                                        <span class="text-[8px] text-slate-400 block leading-tight">Scan untuk Validasi</span>
-                                        <span class="text-[9px] font-bold text-amber-400 block tracking-tight">ikasmankajuara.org</span>
+                                        <span class="text-[8px] text-slate-300 block leading-tight">Scan untuk Validasi</span>
+                                        <span class="text-[9px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
                                     </div>
                                 </div>
 
