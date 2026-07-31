@@ -79,10 +79,10 @@
                                 </div>
                             </div>
 
-                            <!-- Body Kartu: Foto & Details -->
+                            <!-- Body Kartu: Foto Format Pas 3x4 (105px x 140px) & Details -->
                             <div class="relative z-10 flex items-center space-x-4 py-1">
-                                <!-- Foto Frame (Ukuran Tetap 105px x 120px dengan Border Emas Melengkung) -->
-                                <div class="w-[105px] h-[120px] min-w-[105px] min-h-[120px] rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden shrink-0">
+                                <!-- Foto Frame Format Standar 3x4 (105px x 140px) dengan Bingkai Emas Melengkung -->
+                                <div class="w-[105px] h-[140px] min-w-[105px] min-h-[140px] rounded-2xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-xl overflow-hidden shrink-0">
                                     @if($selectedAlumni->foto)
                                         <img src="{{ asset($selectedAlumni->foto) }}" alt="{{ $selectedAlumni->nama }}" class="w-full h-full object-cover rounded-[14px]">
                                     @else
@@ -273,7 +273,7 @@
                     @forelse($alumniList as $alumni)
                         <div class="flex items-center justify-between p-3 rounded-2xl border transition duration-200 {{ ($selectedAlumni && $selectedAlumni->id === $alumni->id) ? 'bg-amber-500/10 border-amber-500/50 shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100' }}">
                             <div class="flex items-center space-x-3">
-                                <!-- Checkbox Multi Select (loose checked binding to ensure checkmark is ALWAYS visible when selected) -->
+                                <!-- Checkbox Multi Select -->
                                 <input type="checkbox" 
                                        :value="{{ (int)$alumni->id }}" 
                                        x-model="selectedIds" 
@@ -324,13 +324,14 @@
 
 </div>
 
-<!-- ================= DEDICATED A4 PRINT LAYOUT FOR MULTIPLE KTA CARDS ================= -->
+<!-- ================= DEDICATED A4 PRINT LAYOUT (KTA DEPAN SEMUA ALUMNI + 1 HALAMAN BELAKANG BERSAMA) ================= -->
 <div id="ktaPrintArea">
-    <div class="text-center mb-6 no-print-head">
+    <div class="text-center mb-4 no-print-head">
         <h2 class="text-lg font-bold text-slate-900 uppercase tracking-tight">KARTU TANDA ANGGOTA (KTA) DIGITAL RESMI ALUMNI</h2>
         <p class="text-xs text-slate-600 font-semibold">IKATAN KELUARGA ALUMNI (IKA) SMAN KAJUARA / SMAN 8 BONE</p>
     </div>
 
+    <!-- GRID CETAK MANDIRI (KTA DEPAN SEMUA TERPILIH + 1 KTA BELAKANG BERSAMA) -->
     <div class="print-cards-grid">
         @foreach($alumniList as $alumni)
             @php
@@ -347,117 +348,112 @@
                     $qUri = $qUrl;
                 }
             @endphp
-            <!-- 1 ROW PAIR PER ALUMNI: FRONT (LEFT) & BACK (RIGHT) -->
-            <div class="kta-print-row" data-alumni-id="{{ $alumni->id }}">
-                
-                <!-- TAMPAK DEPAN (PRINT) -->
-                <div class="print-card-box">
-                    <div class="flex items-center justify-between border-b border-amber-500/40 pb-1.5">
-                        <div class="flex items-center space-x-2">
-                            <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-7 w-auto object-contain">
-                            <div>
-                                <h3 class="font-heading font-extrabold text-[10px] tracking-tight text-amber-400 leading-none uppercase">
-                                    IKA SMAN KAJUARA / SMAN 8 BONE
-                                </h3>
-                                <span class="text-[7.5px] font-bold tracking-widest uppercase text-slate-300 block mt-0.5">
-                                    KARTU TANDA ANGGOTA RESMI
-                                </span>
-                            </div>
-                        </div>
-                        <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[7.5px] font-black tracking-wider uppercase shrink-0">
-                            VERIFIED
-                        </div>
-                    </div>
-
-                    <div class="flex items-center space-x-3 py-1">
-                        <!-- Foto Frame Fixed 75px x 92px -->
-                        <div class="w-[75px] h-[92px] min-w-[75px] min-h-[92px] rounded-xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden shrink-0">
-                            @if($alumni->foto)
-                                <img src="{{ asset($alumni->foto) }}" alt="{{ $alumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
-                            @else
-                                <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-base">
-                                    {{ substr($alumni->nama, 0, 2) }}
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="flex-1 min-w-0 space-y-1">
-                            <h2 class="font-heading font-bold text-xs text-white truncate leading-tight">
-                                {{ $alumni->nama }}
-                            </h2>
-
-                            <div class="inline-block px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[8.5px] font-extrabold tracking-wider uppercase">
-                                Angkatan {{ $alumni->angkatan }}
-                            </div>
-
-                            <p class="text-[9.5px] text-slate-300 font-medium truncate">
-                                <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[8px]"></i>
-                                Domisili: {{ $alumni->domisili ?? 'Kajuara, Kab. Bone' }}
-                            </p>
-
-                            <div class="pt-0.5 border-t border-slate-800 flex items-center justify-between">
-                                <span class="text-[7.5px] font-mono text-slate-400 tracking-wider">
-                                    KTA: <strong class="text-amber-400 font-bold">KTA-IKA.{{ $alumni->angkatan }}.{{ strtoupper(substr(md5($alumni->id), 0, 5)) }}</strong>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-end justify-between border-t border-amber-500/30 pt-1">
-                        <div class="flex items-center space-x-1.5">
-                            <div class="p-0.5 bg-white rounded-md shrink-0 border border-slate-200">
-                                <img src="{{ $qUri }}" alt="QR Verifikasi" class="w-7 h-7 object-contain rounded">
-                            </div>
-                            <div>
-                                <span class="text-[6.5px] text-slate-300 block leading-tight">Scan Verifikasi</span>
-                                <span class="text-[8px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
-                            </div>
-                        </div>
-
-                        <div class="text-right">
-                            <span class="text-[6.5px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
-                            <span class="text-[8.5px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAMPAK BELAKANG (PRINT) -->
-                <div class="print-card-box">
-                    <div class="border-b border-amber-500/40 pb-1.5 flex items-center justify-between">
-                        <span class="font-heading font-extrabold text-[9.5px] text-amber-400 uppercase tracking-wider">
-                            KETENTUAN KARTU ANGGOTA
-                        </span>
-                        <span class="text-[7.5px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
-                    </div>
-
-                    <div class="space-y-1.5 text-[8.5px] text-slate-300 py-1.5 leading-tight">
-                        <p class="flex items-start space-x-1">
-                            <span class="text-amber-400 font-bold">1.</span>
-                            <span>Kartu ini merupakan identitas resmi anggota Ikatan Alumni SMAN Kajuara / SMAN 8 Bone.</span>
-                        </p>
-                        <p class="flex items-start space-x-1">
-                            <span class="text-amber-400 font-bold">2.</span>
-                            <span>Pemegang kartu berhak mendapatkan akses jaringan alumni, program kemitraan, dan kegiatan IKA.</span>
-                        </p>
-                        <p class="flex items-start space-x-1">
-                            <span class="text-amber-400 font-bold">3.</span>
-                            <span>Keaslian kartu terjamin secara digital dan dapat diverifikasi via scan QR Code.</span>
-                        </p>
-                    </div>
-
-                    <div class="border-t border-amber-500/30 pt-1 flex items-end justify-between">
+            <!-- KTA TAMPAK DEPAN ALUMNI -->
+            <div class="print-card-box kta-print-front-item" data-alumni-id="{{ $alumni->id }}">
+                <div class="flex items-center justify-between border-b border-amber-500/40 pb-1.5">
+                    <div class="flex items-center space-x-2">
+                        <img src="{{ asset('assets/images/logo.webp') }}" alt="Logo IKA" class="h-7 w-auto object-contain">
                         <div>
-                            <span class="text-[6.5px] text-slate-400 uppercase block">Sekretariat IKA:</span>
-                            <span class="text-[7.5px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
+                            <h3 class="font-heading font-extrabold text-[10px] tracking-tight text-amber-400 leading-none uppercase">
+                                IKA SMAN KAJUARA / SMAN 8 BONE
+                            </h3>
+                            <span class="text-[7.5px] font-bold tracking-widest uppercase text-slate-300 block mt-0.5">
+                                KARTU TANDA ANGGOTA RESMI
+                            </span>
                         </div>
-                        <div class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[7.5px] font-bold uppercase tracking-wider">
-                            OFFICIAL MEMBER
+                    </div>
+                    <div class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[7.5px] font-black tracking-wider uppercase shrink-0">
+                        VERIFIED
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 py-1">
+                    <!-- Foto Format Standar 3x4 (75px x 98px) -->
+                    <div class="w-[75px] h-[98px] min-w-[75px] min-h-[98px] rounded-xl p-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-300 shadow-md overflow-hidden shrink-0">
+                        @if($alumni->foto)
+                            <img src="{{ asset($alumni->foto) }}" alt="{{ $alumni->nama }}" class="w-full h-full object-cover rounded-[10px]">
+                        @else
+                            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-amber-400 font-heading font-extrabold text-base">
+                                {{ substr($alumni->nama, 0, 2) }}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="flex-1 min-w-0 space-y-1">
+                        <h2 class="font-heading font-bold text-xs text-white truncate leading-tight">
+                            {{ $alumni->nama }}
+                        </h2>
+
+                        <div class="inline-block px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[8.5px] font-extrabold tracking-wider uppercase">
+                            Angkatan {{ $alumni->angkatan }}
+                        </div>
+
+                        <p class="text-[9.5px] text-slate-300 font-medium truncate">
+                            <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[8px]"></i>
+                            Domisili: {{ $alumni->domisili ?? 'Kajuara, Kab. Bone' }}
+                        </p>
+
+                        <div class="pt-0.5 border-t border-slate-800 flex items-center justify-between">
+                            <span class="text-[7.5px] font-mono text-slate-400 tracking-wider">
+                                KTA: <strong class="text-amber-400 font-bold">KTA-IKA.{{ $alumni->angkatan }}.{{ strtoupper(substr(md5($alumni->id), 0, 5)) }}</strong>
+                            </span>
                         </div>
                     </div>
                 </div>
 
+                <div class="flex items-end justify-between border-t border-amber-500/30 pt-1">
+                    <div class="flex items-center space-x-1.5">
+                        <div class="p-0.5 bg-white rounded-md shrink-0 border border-slate-200">
+                            <img src="{{ $qUri }}" alt="QR Verifikasi" class="w-7 h-7 object-contain rounded">
+                        </div>
+                        <div>
+                            <span class="text-[6.5px] text-slate-300 block leading-tight">Scan Verifikasi</span>
+                            <span class="text-[8px] font-extrabold text-amber-400 block tracking-tight">ikasman8bone.id</span>
+                        </div>
+                    </div>
+
+                    <div class="text-right">
+                        <span class="text-[6.5px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
+                        <span class="text-[8.5px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
+                    </div>
+                </div>
             </div>
         @endforeach
+
+        <!-- 1 TAMPAK BELAKANG KTA BERSAMA (HANYA DICETAK 1 KALI UNTUK MENGHEMAT RUANG KERTAS A4) -->
+        <div class="print-card-box kta-print-back-shared">
+            <div class="border-b border-amber-500/40 pb-1.5 flex items-center justify-between">
+                <span class="font-heading font-extrabold text-[9.5px] text-amber-400 uppercase tracking-wider">
+                    KETENTUAN KARTU ANGGOTA
+                </span>
+                <span class="text-[7.5px] text-slate-400">IKA SMAN KAJUARA / SMAN 8 BONE</span>
+            </div>
+
+            <div class="space-y-1.5 text-[8.5px] text-slate-300 py-1.5 leading-tight">
+                <p class="flex items-start space-x-1">
+                    <span class="text-amber-400 font-bold">1.</span>
+                    <span>Kartu ini merupakan identitas resmi anggota Ikatan Alumni SMAN Kajuara / SMAN 8 Bone.</span>
+                </p>
+                <p class="flex items-start space-x-1">
+                    <span class="text-amber-400 font-bold">2.</span>
+                    <span>Pemegang kartu berhak mendapatkan akses jaringan alumni, program kemitraan, dan kegiatan IKA.</span>
+                </p>
+                <p class="flex items-start space-x-1">
+                    <span class="text-amber-400 font-bold">3.</span>
+                    <span>Keaslian kartu terjamin secara digital dan dapat diverifikasi via scan QR Code.</span>
+                </p>
+            </div>
+
+            <div class="border-t border-amber-500/30 pt-1 flex items-end justify-between">
+                <div>
+                    <span class="text-[6.5px] text-slate-400 uppercase block">Sekretariat IKA:</span>
+                    <span class="text-[7.5px] font-semibold text-slate-200 block">Kajuara, Kab. Bone, Sulawesi Selatan</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-400 text-[7.5px] font-bold uppercase tracking-wider">
+                    OFFICIAL MEMBER
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -499,25 +495,25 @@
                 }
             }
 
-            var rows = document.querySelectorAll('.kta-print-row');
-            if (rows && rows.length > 0) {
-                rows.forEach(function(row) {
-                    var rowId = row.getAttribute('data-alumni-id');
+            var frontItems = document.querySelectorAll('.kta-print-front-item');
+            if (frontItems && frontItems.length > 0) {
+                frontItems.forEach(function(item) {
+                    var itemId = item.getAttribute('data-alumni-id');
                     var isMatch = false;
                     if (selectedIds && selectedIds.length > 0) {
                         for (var i = 0; i < selectedIds.length; i++) {
-                            if (selectedIds[i] == rowId) {
+                            if (selectedIds[i] == itemId) {
                                 isMatch = true;
                                 break;
                             }
                         }
                         if (isMatch) {
-                            row.style.display = 'flex';
+                            item.style.display = 'flex';
                         } else {
-                            row.style.display = 'none';
+                            item.style.display = 'none';
                         }
                     } else {
-                        row.style.display = 'flex';
+                        item.style.display = 'flex';
                     }
                 });
             }
@@ -528,7 +524,7 @@
     }
 </script>
 
-<!-- Styles for 3D Card Flip & A4 Multi-Card Print Layout -->
+<!-- Styles for 3D Card Flip & Optimized A4 Multi-Card Print Grid -->
 <style>
     .perspective-1000 {
         perspective: 1000px;
@@ -555,7 +551,7 @@
         display: none;
     }
 
-    /* Dedicated A4 Print Layout for Multiple KTA Cards */
+    /* Dedicated A4 Multi-Card Print Layout: 2 Columns Grid */
     @media print {
         *, *::before, *::after {
             -webkit-print-color-adjust: exact !important;
@@ -580,7 +576,7 @@
             top: 0 !important;
             width: 100% !important;
             background: #ffffff !important;
-            padding: 10mm 5mm !important;
+            padding: 8mm 6mm !important;
         }
 
         #ktaPrintArea * {
@@ -588,21 +584,11 @@
         }
 
         .print-cards-grid {
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 6mm !important;
-        }
-
-        .kta-print-row {
-            display: flex !important;
-            flex-direction: row !important;
+            display: grid !important;
+            grid-template-columns: repeat(2, 85.6mm) !important;
             justify-content: center !important;
-            align-items: center !important;
-            gap: 6mm !important;
-            margin-bottom: 6mm !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
+            gap: 6mm 8mm !important;
+            margin-top: 4mm !important;
         }
 
         .print-card-box {
