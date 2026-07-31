@@ -62,7 +62,7 @@
                             <h2 class="font-heading font-bold text-lg sm:text-xl text-white">{{ $alumni->nama }}</h2>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                             <div>
                                 <span class="text-[10px] uppercase text-slate-400 tracking-wider">Angkatan</span>
                                 <p class="font-semibold text-amber-300">Angkatan {{ $alumni->angkatan }}</p>
@@ -72,12 +72,8 @@
                                 <p class="font-mono font-bold text-amber-400">{{ $ktaNumber }}</p>
                             </div>
                             <div>
-                                <span class="text-[10px] uppercase text-slate-400 tracking-wider">Profesi</span>
-                                <p class="font-semibold text-slate-200 truncate">{{ $alumni->profesi ?? 'Alumni' }}</p>
-                            </div>
-                            <div>
-                                <span class="text-[10px] uppercase text-slate-400 tracking-wider">Domisili</span>
-                                <p class="font-semibold text-slate-200 truncate">{{ $alumni->domisili ?? 'Indonesia' }}</p>
+                                <span class="text-[10px] uppercase text-slate-400 tracking-wider">Alamat Domisili</span>
+                                <p class="font-semibold text-slate-200 truncate">{{ $alumni->domisili ?? 'Kajuara, Kab. Bone' }}</p>
                             </div>
                         </div>
                     </div>

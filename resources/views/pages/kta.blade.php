@@ -88,13 +88,8 @@
                                     </div>
 
                                     <p class="text-[11px] text-slate-300 font-medium truncate pt-0.5">
-                                        <i class="fa-solid fa-briefcase text-amber-400 mr-1 text-[10px]"></i>
-                                        {{ $selectedAlumni->profesi ?? 'Alumni SMAN 8 Bone' }}
-                                    </p>
-
-                                    <p class="text-[10px] text-slate-400 truncate">
-                                        <i class="fa-solid fa-location-dot text-amber-400/70 mr-1 text-[9px]"></i>
-                                        {{ $selectedAlumni->domisili ?? 'Indonesia' }}
+                                        <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[10px]"></i>
+                                        Domisili: {{ $selectedAlumni->domisili ?? 'Kajuara, Kab. Bone' }}
                                     </p>
 
                                     <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between">
@@ -120,7 +115,7 @@
 
                                 <div class="text-right">
                                     <span class="text-[8px] uppercase tracking-widest text-slate-400 block">Ketua Umum IKA</span>
-                                    <span class="text-[10px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Syamsul, M.Si</span>
+                                    <span class="text-[10px] font-bold text-amber-300 block leading-tight">Dr. H. Andi Akmal Pasluddin, M.M.</span>
                                 </div>
                             </div>
 
