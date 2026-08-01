@@ -80,6 +80,8 @@ class AdminController extends Controller
             $file->move($destinationPath, $filename);
         }
 
+        @chmod($targetFile, 0644);
+
         return 'uploads/' . $folder . '/' . $filename;
     }
 

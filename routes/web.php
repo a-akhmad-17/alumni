@@ -22,6 +22,16 @@ Route::get('/robots.txt', function () {
     return response($content, 200)->header('Content-Type', 'text/plain');
 });
 
+Route::get('/clear-cache', function () {
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Seluruh cache view, config, dan data Laravel di server berhasil dibersihkan!'
+    ]);
+});
+
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/alumni', [HomeController::class, 'index']);

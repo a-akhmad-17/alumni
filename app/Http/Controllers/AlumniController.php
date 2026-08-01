@@ -117,6 +117,8 @@ class AlumniController extends Controller
             file_put_contents($targetFile, $imageBase64);
         }
 
+        @chmod($targetFile, 0644);
+
         return 'uploads/' . $folder . '/' . $filename;
     }
 
@@ -125,6 +127,7 @@ class AlumniController extends Controller
         $destinationPath = public_path('uploads/' . $folder);
         if (!file_exists($destinationPath)) {
             mkdir($destinationPath, 0777, true);
+            @chmod($destinationPath, 0755);
         }
 
         $filename = time() . '_' . \Illuminate\Support\Str::random(8) . '.webp';
@@ -158,6 +161,8 @@ class AlumniController extends Controller
         } else {
             $file->move($destinationPath, $filename);
         }
+
+        @chmod($targetFile, 0644);
 
         return 'uploads/' . $folder . '/' . $filename;
     }
