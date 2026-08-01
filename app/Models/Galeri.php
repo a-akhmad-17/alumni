@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Galeri extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\HasImageAttribute;
 
     protected $table = 'trn_galeri';
     protected $keyType = 'string';
@@ -25,4 +25,9 @@ class Galeri extends Model
         'is_cover',
         'tipe',
     ];
+
+    public function getGambarAttribute($value)
+    {
+        return self::normalizeImageUrl($value);
+    }
 }

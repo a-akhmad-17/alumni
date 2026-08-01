@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Beasiswa extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\HasImageAttribute;
 
     protected $table = 'trn_beasiswa';
     protected $keyType = 'string';
@@ -25,4 +25,9 @@ class Beasiswa extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function getGambarAttribute($value)
+    {
+        return self::normalizeImageUrl($value);
+    }
 }

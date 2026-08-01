@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Alumni extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\HasImageAttribute;
 
     protected $table = 'mst_alumni';
     protected $keyType = 'string';
@@ -32,6 +32,11 @@ class Alumni extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function getFotoAttribute($value)
+    {
+        return self::normalizeImageUrl($value);
+    }
 
     /**
      * Helper Kategori Profesi Utama (Grouped) untuk Grafik & Statistik

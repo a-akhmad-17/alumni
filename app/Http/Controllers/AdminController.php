@@ -80,7 +80,7 @@ class AdminController extends Controller
             $file->move($destinationPath, $filename);
         }
 
-        return asset('uploads/' . $folder . '/' . $filename);
+        return 'uploads/' . $folder . '/' . $filename;
     }
 
     // ==================== KELOLA ALUMNI ====================

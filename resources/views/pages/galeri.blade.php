@@ -228,7 +228,7 @@
             <!-- Main Slide Photo / Video Viewer -->
             <div class="relative flex-grow min-h-[50vh] max-h-[68vh] bg-slate-950 flex items-center justify-center overflow-hidden">
                 <template x-if="currentAlbum.length > 0 && currentAlbum[currentIndex].gambar">
-                    <img :src="currentAlbum[currentIndex].gambar.startsWith('http') ? currentAlbum[currentIndex].gambar : '{{ url('/') }}/' + currentAlbum[currentIndex].gambar.replace('http://localhost/', '').replace('{{ url('/') }}/', '')" :alt="currentTitle" class="max-h-[68vh] w-auto max-w-full object-contain select-none transition-all duration-300">
+                    <img :src="currentAlbum[currentIndex].gambar" :alt="currentTitle" class="max-h-[68vh] w-auto max-w-full object-contain select-none transition-all duration-300">
                 </template>
 
                 <!-- Prev & Next Arrow Buttons -->
@@ -255,7 +255,7 @@
                     <div class="flex items-center space-x-2 overflow-x-auto pt-2 border-t border-slate-800/80 pb-1">
                         <template x-for="(fotoItem, idx) in currentAlbum" :key="idx">
                             <button @click="currentIndex = idx" :class="currentIndex === idx ? 'border-2 border-amber-400 scale-105 shadow-md' : 'border border-slate-700 opacity-60 hover:opacity-100'" class="w-12 h-12 rounded-xl overflow-hidden shrink-0 transition duration-200 bg-slate-900">
-                                <img :src="fotoItem.gambar.startsWith('http') ? fotoItem.gambar : '{{ url('/') }}/' + fotoItem.gambar.replace('http://localhost/', '').replace('{{ url('/') }}/', '')" class="w-full h-full object-cover">
+                                <img :src="fotoItem.gambar" class="w-full h-full object-cover">
                             </button>
                         </template>
                     </div>

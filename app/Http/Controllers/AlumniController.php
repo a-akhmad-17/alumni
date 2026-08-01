@@ -117,7 +117,7 @@ class AlumniController extends Controller
             file_put_contents($targetFile, $imageBase64);
         }
 
-        return asset('uploads/' . $folder . '/' . $filename);
+        return 'uploads/' . $folder . '/' . $filename;
     }
 
     private function uploadAndConvertToWebp($file, $folder)
@@ -159,7 +159,7 @@ class AlumniController extends Controller
             $file->move($destinationPath, $filename);
         }
 
-        return asset('uploads/' . $folder . '/' . $filename);
+        return 'uploads/' . $folder . '/' . $filename;
     }
 
     public function register(Request $request)

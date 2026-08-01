@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Berita extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\HasImageAttribute;
 
     protected $table = 'trn_berita';
     protected $keyType = 'string';
@@ -25,4 +25,9 @@ class Berita extends Model
         'kategori',
         'status',
     ];
+
+    public function getGambarAttribute($value)
+    {
+        return self::normalizeImageUrl($value);
+    }
 }

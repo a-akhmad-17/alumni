@@ -333,7 +333,7 @@
             <div class="text-center mb-6">
                 <div class="w-20 h-20 rounded-full bg-slate-900 text-white p-0.5 mx-auto mb-3 shadow-md overflow-hidden">
                     <template x-if="selectedAlumni.foto">
-                        <img :src="'{{ url('/') }}/' + selectedAlumni.foto.replace('http://localhost/', '').replace('{{ url('/') }}/', '')" class="w-full h-full object-cover rounded-full">
+                        <img :src="selectedAlumni.foto" class="w-full h-full object-cover rounded-full">
                     </template>
                     <template x-if="!selectedAlumni.foto">
                         <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-amber-400 font-heading font-bold text-2xl" x-text="selectedAlumni.nama ? selectedAlumni.nama.substring(0, 2) : ''"></div>

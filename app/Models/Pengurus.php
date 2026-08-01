@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pengurus extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\HasImageAttribute;
 
     protected $table = 'mst_pengurus';
     protected $keyType = 'string';
@@ -27,6 +27,11 @@ class Pengurus extends Model
         'urutan',
         'is_inti',
     ];
+
+    public function getFotoAttribute($value)
+    {
+        return self::normalizeImageUrl($value);
+    }
 
     public function bidang()
     {

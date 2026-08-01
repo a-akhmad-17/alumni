@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Infografis extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\HasImageAttribute;
 
     protected $table = 'trn_infografis';
     protected $keyType = 'string';
@@ -27,4 +27,9 @@ class Infografis extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function getGambarAttribute($value)
+    {
+        return self::normalizeImageUrl($value);
+    }
 }
